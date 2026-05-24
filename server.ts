@@ -362,7 +362,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[Lavish Lathers Backend] Server initialized successfully on http://localhost:${PORT}`);
+    console.log(`Server initialized successfully on http://localhost:${PORT}`);
   });
 }
 

@@ -91,7 +91,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- NAVBAR SECTION 1 (UPPER ROW using a rigid 3-way symmetric CSS grid) --- */}
-        <div className={`grid grid-cols-3 items-center min-h-[64px] md:min-h-[110px] py-1.5 md:py-2 border-b transition-colors duration-500 ${
+        <div className={`grid grid-cols-3 items-center min-h-[64px] md:min-h-[15px] py-1.5 md:py-2 border-b transition-colors duration-500 ${
           isAtHomeTop ? 'border-white/10' : 'border-brand-beige/25'
         }`}>
           
