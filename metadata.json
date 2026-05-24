@@ -1,0 +1,6 @@
+{
+  "name": "Lavish Lathers",
+  "description": "Complete premium luxury ecommerce website for handmade herbal skincare and exquisite artisan souvenir gifting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

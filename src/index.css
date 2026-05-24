@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif-cormorant: "Cormorant Garamond", Georgia, serif;
+  --font-serif-playfair: "Playfair Display", Georgia, serif;
+  --font-sans-inter: "Inter", system-ui, sans-serif;
+  --font-sans-poppins: "Poppins", system-ui, sans-serif;
+
+  --color-brand-black: #0B0B0B;
+  --color-brand-gold: #D4AF37;
+  --color-brand-gold-light: #F7E7C4;
+  --color-brand-beige: #E7D1C5;
+  --color-brand-pink: #F5E4E0;
+  --color-brand-cream: #FAF7F2;
+  --color-brand-ivory: #F3ECE5;
+}
+
+/* Base transitions and premium refinements */
+body {
+  font-family: var(--font-sans-inter);
+  background-color: var(--color-brand-cream);
+  color: var(--color-brand-black);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif-cormorant);
+}
+
+/* Custom scrollbar for editorial feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-brand-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-beige);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-gold);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
