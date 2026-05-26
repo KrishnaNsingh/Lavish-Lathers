@@ -6,7 +6,7 @@ import { Order, CheckoutDetails, CartItem, ContactMessage, Review, Product } fro
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = 5173;
 
   // Middleware for parsing JSON requests
   app.use(express.json());
