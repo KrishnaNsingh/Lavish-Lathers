@@ -29,27 +29,27 @@ export const productApi = {
   },
 
   // Create a customer product review
-  submitReview: async (
-    id: string,
-    review: { name: string; rating: number; text: string }
-  ): Promise<{ success: boolean; review: Review; updatedRating: number; reviewsCount: number }> => {
-    return apiClient<any>(`/products/${id}/reviews`, {
-      method: 'POST',
-      body: JSON.stringify(review),
-    });
-  },
+  // submitReview: async (
+  //   id: string,
+  //   review: { name: string; rating: number; text: string }
+  // ): Promise<{ success: boolean; review: Review; updatedRating: number; reviewsCount: number }> => {
+  //   return apiClient<any>(`/products/${id}/reviews`, {
+  //     method: 'POST',
+  //     body: JSON.stringify(review),
+  //   });
+  // },
 
   // ADMIN ONLY: Add a new artisan product
-  addProduct: async (product: Omit<Product, 'reviewsCount' | 'rating'>): Promise<Product> => {
-    return apiClient<Product>(`/admin/products`, {
+  addProduct: async (product: Omit<Product, 'reviewsCount' | 'rating'>): Promise<{ message: string; product: Product }> => {
+    return apiClient<{ message: string; product: Product }>(`/admin/products`, {
       method: 'POST',
       body: JSON.stringify(product),
     });
   },
 
   // ADMIN ONLY: Edit an existing product
-  editProduct: async (id: string, product: Partial<Product>): Promise<Product> => {
-    return apiClient<Product>(`/admin/products/${id}`, {
+  editProduct: async (id: string, product: Partial<Product>): Promise<{ message: string; product: Product }> => {
+    return apiClient<{ message: string; product: Product }>(`/admin/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(product),
     });

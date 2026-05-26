@@ -9,7 +9,7 @@ export interface LoginResponse {
 export const authApi = {
   // Auths the admin credentials and receives a token
   login: async (email: string, password: string): Promise<LoginResponse> => {
-    return apiClient<LoginResponse>('/admin/login', {
+    return apiClient<LoginResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
