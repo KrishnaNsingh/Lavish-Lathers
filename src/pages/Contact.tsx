@@ -216,7 +216,7 @@ export default function ContactPage() {
               
               <div className="pt-2 font-sans-poppins">
                 <a
-                  href="https://wa.me/15550199000?text=Hi%21%20I%20am%20interested%20in%20obtaining%20custom%20floral%20soap%20wedding%20souvenirs."
+                  href="https://wa.me/918520016964?text=Hi%21%20I%20am%20interested%20in%20obtaining%20custom%20floral%20soap%20wedding%20souvenirs."
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center space-x-2 bg-[#25D366] hover:bg-[#128C7E] text-[#FAF7F2] py-3.5 px-6 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors w-full justify-center shadow"

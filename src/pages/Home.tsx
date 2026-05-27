@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Hero from '../components/home/Hero';
 import FeaturedCollections from '../components/home/FeaturedCollections';
-import BestSellers from '../components/home/BestSellers';
+// import BestSellers from '../components/home/BestSellers';
 import SouvenirSection from '../components/home/SouvenirSection';
 import AboutSection from '../components/home/AboutSection';
 import SocialGallery from '../components/home/SocialGallery';
@@ -26,7 +26,7 @@ export default function Home() {
       <FeaturedCollections />
 
       {/* 4. Famous Patrons Best-Sellers Catalog */}
-      <BestSellers />
+      {/* <BestSellers /> */}
 
       {/* 5. Gifting & Keepsake Souvenirs Atelier */}
       <SouvenirSection />
