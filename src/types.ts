@@ -1,19 +1,43 @@
 export interface Product {
-  id: string;
+  _id: string;
+
+  registryId: string;
+
   name: string;
-  type: 'skincare' | 'souvenir' | 'giftbox' | 'other';
-  category: string;
+
+  shortDescription: string;
+
+  detailedDescription: string;
+
   price: number;
-  rating: number;
-  reviewsCount: number;
-  description: string;
-  details: string; // Dynamic marketing text
-  ingredients?: string[];
-  benefits?: string[];
-  images: string[];
+
   stock: number;
-  isBestSeller?: boolean;
-  isCollectible?: boolean;
+
+  category:
+    | 'Herbal Soaps'
+    | 'Essential Oils'
+    | 'Gift Boxes'
+    | 'Souvenirs';
+
+  artistryType:
+    | 'Skincare formulation'
+    | 'Keepsake Souvenir';
+
+  imageUrl: string;
+
+  featured: boolean;
+
+  souvenir: boolean;
+
+  ingredients?: string[];
+
+  benefits?: string[];
+
+  customMessageAvailable: boolean;
+
+  createdAt?: string;
+
+  updatedAt?: string;
 }
 
 export interface Review {

@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ShieldCheck, Ticket, CheckCircle2, Loader2, Sparkles, CreditCard, ChevronRight } from 'lucide-react';
-import { CartItem, CheckoutDetails, Order } from '../types';
+import React, { useState } from "react";
+import {
+  ArrowLeft,
+  ShieldCheck,
+  Ticket,
+  CheckCircle2,
+  Loader2,
+  Sparkles,
+  CreditCard,
+  ChevronRight,
+} from "lucide-react";
+import { CartItem, CheckoutDetails, Order } from "../types";
 
 interface CheckoutViewProps {
   cart: CartItem[];
@@ -11,71 +20,90 @@ interface CheckoutViewProps {
 export default function CheckoutView({
   cart,
   onBack,
-  onOrderCompleted
+  onOrderCompleted,
 }: CheckoutViewProps) {
-  
-  const subtotal = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  const subtotal = cart.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0,
+  );
   const isFreeShipping = subtotal >= 75;
-  const shippingCharge = isFreeShipping ? 0 : 9.50;
+  const shippingCharge = isFreeShipping ? 0 : 9.5;
   const grandTotal = subtotal + shippingCharge;
 
   // Form Fields
   const [formData, setFormData] = useState<CheckoutDetails>({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'United States',
-    notes: ''
+    fullName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "United States",
+    notes: "",
   });
 
   const [whatsappAlerts, setWhatsappAlerts] = useState(true);
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   // Payment Simulation states
   const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
-  const [paymentStep, setPaymentStep] = useState<'idle' | 'linking' | 'choice' | 'processing' | 'success'>('idle');
-  const [selectedMethod, setSelectedMethod] = useState<'upi' | 'card' | 'netbank'>('card');
+  const [paymentStep, setPaymentStep] = useState<
+    "idle" | "linking" | "choice" | "processing" | "success"
+  >("idle");
+  const [selectedMethod, setSelectedMethod] = useState<
+    "upi" | "card" | "netbank"
+  >("card");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const applyCoupon = () => {
-    if (couponCode.toUpperCase() === 'LAVISH20') {
-      setDiscount(subtotal * 0.20);
+    if (couponCode.toUpperCase() === "LAVISH20") {
+      setDiscount(subtotal * 0.2);
       setMessage("Success: 20% Discount applied with Botanical Love!");
     } else {
       setMessage("Error: Invalid or stale coupon code.");
     }
-    setTimeout(() => setMessage(''), 3000);
+    setTimeout(() => setMessage(""), 3000);
   };
 
   const handleTriggerCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.address || !formData.city || !formData.zipCode) {
-      alert("Please provide all required guest credentials and shipping fields.");
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.city ||
+      !formData.zipCode
+    ) {
+      alert(
+        "Please provide all required guest credentials and shipping fields.",
+      );
       return;
     }
-    
+
     // Open the premium Razorpay visual gateway mockup
     setIsRazorpayModalOpen(true);
-    setPaymentStep('linking');
+    setPaymentStep("linking");
     setTimeout(() => {
-      setPaymentStep('choice');
+      setPaymentStep("choice");
     }, 1800);
   };
 
   const handleSimulatePaymentProcess = () => {
-    setPaymentStep('processing');
+    setPaymentStep("processing");
     setTimeout(() => {
-      setPaymentStep('success');
+      setPaymentStep("success");
       setTimeout(async () => {
         // Post the real order details to Express server database
         try {
@@ -85,15 +113,15 @@ export default function CheckoutView({
             shippingDetails: formData,
             subtotal: subtotal - discount,
             shipping: shippingCharge,
-            total: finalTotal
+            total: finalTotal,
           };
 
-          const response = await fetch('/api/orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderPayload)
+          const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload),
           });
-          
+
           if (!response.ok) {
             const errData = await response.json();
             throw new Error(errData.error || "Order post failed");
@@ -102,7 +130,6 @@ export default function CheckoutView({
           const responseData = await response.json();
           setIsRazorpayModalOpen(false);
           onOrderCompleted(responseData.order as Order);
-
         } catch (error: any) {
           alert(`Order Curing Issue: ${error.message}. Please restore values.`);
           setIsRazorpayModalOpen(false);
@@ -114,7 +141,6 @@ export default function CheckoutView({
   return (
     <div className="bg-brand-cream py-12 min-h-screen text-brand-black font-sans-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        
         {/* Back navigation */}
         <button
           onClick={onBack}
@@ -128,25 +154,26 @@ export default function CheckoutView({
         {/* Section title */}
         <div className="text-left mb-12 border-b border-brand-beige/20 pb-4">
           <span className="text-[10px] uppercase tracking-[0.4em] font-sans-poppins font-semibold text-brand-gold">
-             Atelier Checkout Portal
+            Atelier Checkout Portal
           </span>
           <h1 className="font-serif-playfair text-3xl sm:text-4xl text-brand-black tracking-wide font-light whitespace-pre-wrap">
-             Complete Your Bathing Order
+            Complete Your Bathing Order
           </h1>
         </div>
 
         {/* Checkout splits */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start text-left">
-          
           {/* LEFT: Guest Credentials details */}
-          <form onSubmit={handleTriggerCheckout} className="lg:col-span-7 space-y-8">
-            
+          <form
+            onSubmit={handleTriggerCheckout}
+            className="lg:col-span-7 space-y-8"
+          >
             {/* GUEST DETAILS */}
             <div className="space-y-4">
               <h2 className="font-serif-playfair text-2xl text-brand-black tracking-wide font-medium">
                 1. Guest Patron Details
               </h2>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium">
@@ -245,7 +272,7 @@ export default function CheckoutView({
                     type="text"
                     name="state"
                     required
-                    value={formData.state || ''}
+                    value={formData.state || ""}
                     onChange={handleInputChange}
                     placeholder="e.g. Illinois"
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
@@ -275,7 +302,7 @@ export default function CheckoutView({
                   </label>
                   <textarea
                     name="notes"
-                    value={formData.notes || ''}
+                    value={formData.notes || ""}
                     onChange={handleInputChange}
                     rows={2}
                     placeholder="e.g. Please use green silk ribbons if possible or double check scent notes..."
@@ -288,7 +315,9 @@ export default function CheckoutView({
 
             {/* Alerts Selection */}
             <div className="bg-[#FAF7F2] border border-brand-beige/40 p-4 rounded-2xl flex items-center justify-between">
-              <span className="text-xs text-brand-black/80 font-normal">Send real-time packaging snapshots to my WhatsApp</span>
+              <span className="text-xs text-brand-black/80 font-normal">
+                Send real-time packaging snapshots to my WhatsApp
+              </span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -309,12 +338,10 @@ export default function CheckoutView({
             >
               Secure Order & Initiate Razorpay Payment
             </button>
-
           </form>
 
           {/* RIGHT: High-end order summaries */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
-            
             <div className="bg-[#FAF7F2] border border-brand-beige/20 rounded-3xl p-6 sm:p-8 space-y-6">
               <h3 className="font-serif-playfair text-2xl text-brand-black font-semibold">
                 Order Summary
@@ -323,9 +350,17 @@ export default function CheckoutView({
               {/* Items in summary list */}
               <div className="space-y-4 max-h-76 overflow-y-auto pr-2 divide-y divide-brand-beige/10">
                 {cart.map((item, idx) => (
-                  <div key={idx} className="flex gap-4 pt-4 first:pt-0 items-start">
+                  <div
+                    key={idx}
+                    className="flex gap-4 pt-4 first:pt-0 items-start"
+                  >
                     <div className="w-14 aspect-square rounded-lg overflow-hidden bg-brand-ivory shrink-0 border border-brand-gold/10">
-                      <img src={item.product.images[0]} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                      <img
+                        src={item.product.imageUrl}
+                        alt={item.product.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="flex-grow text-xs space-y-0.5">
                       <h4 className="font-serif-playfair text-[14px] text-brand-black tracking-wide font-medium leading-tight">
@@ -341,8 +376,13 @@ export default function CheckoutView({
                       {/* Wax-seal message preview inside order summary */}
                       {item.isGift && (
                         <div className="mt-1.5 p-2 bg-[#FCFAF5] border border-dashed border-red-800/10 rounded-md text-[9px] text-red-900 leading-normal">
-                          <span className="font-serif-cormorant italic font-bold">Wax-seal scroll included: </span>
-                          <span className="text-brand-black/75">&ldquo;{item.giftNote || 'Heartfelt Greetings'}&rdquo;</span>
+                          <span className="font-serif-cormorant italic font-bold">
+                            Wax-seal scroll included:{" "}
+                          </span>
+                          <span className="text-brand-black/75">
+                            &ldquo;{item.giftNote || "Heartfelt Greetings"}
+                            &rdquo;
+                          </span>
                         </div>
                       )}
                     </div>
@@ -352,7 +392,9 @@ export default function CheckoutView({
 
               {/* Promo Coupon Module */}
               <div className="pt-4 border-t border-brand-beige/20 space-y-2">
-                <span className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 font-medium">Have an Event Promo?</span>
+                <span className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 font-medium">
+                  Have an Event Promo?
+                </span>
                 <div className="flex space-x-2">
                   <input
                     type="text"
@@ -368,11 +410,15 @@ export default function CheckoutView({
                     className="bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black px-4 py-2 rounded-xl text-[10px] tracking-widest uppercase font-bold transition-all cursor-pointer"
                     id="coupon-apply-btn"
                   >
-                     Apply
+                    Apply
                   </button>
                 </div>
                 {message && (
-                  <p className={`text-[10px] font-sans-inter font-medium ${message.startsWith('Err') ? 'text-red-600' : 'text-emerald-700'}`}>{message}</p>
+                  <p
+                    className={`text-[10px] font-sans-inter font-medium ${message.startsWith("Err") ? "text-red-600" : "text-emerald-700"}`}
+                  >
+                    {message}
+                  </p>
                 )}
               </div>
 
@@ -380,27 +426,37 @@ export default function CheckoutView({
               <div className="border-t border-brand-beige/20 pt-4 text-xs space-y-2.5">
                 <div className="flex justify-between text-brand-black/60">
                   <span>Subtotal Cured</span>
-                  <span className="font-serif-cormorant text-sm text-brand-black font-semibold">₹{subtotal.toFixed(2)}</span>
+                  <span className="font-serif-cormorant text-sm text-brand-black font-semibold">
+                    ₹{subtotal.toFixed(2)}
+                  </span>
                 </div>
 
                 {discount > 0 && (
                   <div className="flex justify-between text-emerald-700 font-medium">
                     <span>Discount (20% Off)</span>
-                    <span className="font-serif-cormorant text-sm">-₹{discount.toFixed(2)}</span>
+                    <span className="font-serif-cormorant text-sm">
+                      -₹{discount.toFixed(2)}
+                    </span>
                   </div>
                 )}
 
                 <div className="flex justify-between text-brand-black/60">
                   <span>Ribbon Wrapping & Shipping</span>
                   {isFreeShipping ? (
-                    <span className="text-emerald-700 font-medium font-sans-poppins text-[10px]">FREE</span>
+                    <span className="text-emerald-700 font-medium font-sans-poppins text-[10px]">
+                      FREE
+                    </span>
                   ) : (
-                    <span className="font-serif-cormorant text-sm text-brand-black font-semibold">₹9.50</span>
+                    <span className="font-serif-cormorant text-sm text-brand-black font-semibold">
+                      ₹9.50
+                    </span>
                   )}
                 </div>
 
                 <div className="flex justify-between items-end pt-3 border-t border-brand-beige/10 font-sans-poppins">
-                  <span className="font-serif-playfair text-base text-brand-black font-semibold">Total Order Value</span>
+                  <span className="font-serif-playfair text-base text-brand-black font-semibold">
+                    Total Order Value
+                  </span>
                   <span className="font-serif-cormorant text-2xl text-brand-gold font-extrabold">
                     ₹{(grandTotal - discount).toFixed(2)}
                   </span>
@@ -410,13 +466,13 @@ export default function CheckoutView({
               {/* Secure terms */}
               <div className="flex items-center space-x-2 text-[10px] text-brand-black/45 justify-center leading-normal">
                 <ShieldCheck className="h-4 w-4 text-brand-gold shrink-0" />
-                <span>Encrypted secure guest transaction &bull; Razorpay 3-D Secure Ready</span>
+                <span>
+                  Encrypted secure guest transaction &bull; Razorpay 3-D Secure
+                  Ready
+                </span>
               </div>
-
             </div>
-
           </div>
-
         </div>
       </div>
 
@@ -424,16 +480,21 @@ export default function CheckoutView({
       {isRazorpayModalOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-brand-black/80 backdrop-blur-xs" />
-          
+
           <div className="relative w-full max-w-md bg-brand-black border border-brand-gold/30 rounded-3xl p-6 shadow-2xl space-y-6 text-brand-cream animate-zoom-in text-left">
-            
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-brand-cream/15">
               <div className="flex items-center space-x-2">
-                <div className="h-5 w-5 bg-brand-gold text-brand-black rounded-lg flex items-center justify-center font-bold text-[10px]">R</div>
+                <div className="h-5 w-5 bg-brand-gold text-brand-black rounded-lg flex items-center justify-center font-bold text-[10px]">
+                  R
+                </div>
                 <div>
-                  <h4 className="text-xs uppercase tracking-[0.2em] font-sans-poppins text-brand-cream/65">Razorpay Secured Gateway</h4>
-                  <span className="text-[10px] text-brand-gold">Lavish Lathers Concierge</span>
+                  <h4 className="text-xs uppercase tracking-[0.2em] font-sans-poppins text-brand-cream/65">
+                    Razorpay Secured Gateway
+                  </h4>
+                  <span className="text-[10px] text-brand-gold">
+                    Lavish Lathers Concierge
+                  </span>
                 </div>
               </div>
               <span className="font-serif-cormorant italic text-lg text-brand-gold font-bold">
@@ -442,7 +503,7 @@ export default function CheckoutView({
             </div>
 
             {/* Linking screen */}
-            {paymentStep === 'linking' && (
+            {paymentStep === "linking" && (
               <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
                 <Loader2 className="h-8 w-8 text-brand-gold animate-spin" />
                 <p className="text-xs text-brand-cream/70 font-sans-poppins uppercase tracking-widest">
@@ -452,75 +513,114 @@ export default function CheckoutView({
             )}
 
             {/* Options Selection Choice Screen */}
-            {paymentStep === 'choice' && (
+            {paymentStep === "choice" && (
               <div className="space-y-5 animate-fade-in">
-                <span className="text-[10px] uppercase tracking-widest font-sans-poppins text-brand-cream/50">Select Preferred Method</span>
+                <span className="text-[10px] uppercase tracking-widest font-sans-poppins text-brand-cream/50">
+                  Select Preferred Method
+                </span>
 
                 {/* Methods choices grids */}
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
-                    onClick={() => setSelectedMethod('card')}
+                    onClick={() => setSelectedMethod("card")}
                     className={`p-3 rounded-xl border text-center transition-all ${
-                      selectedMethod === 'card' 
-                        ? 'bg-brand-gold text-brand-black border-transparent' 
-                        : 'bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold'
+                      selectedMethod === "card"
+                        ? "bg-brand-gold text-brand-black border-transparent"
+                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
                     }`}
                   >
                     <CreditCard className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">Card</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">
+                      Card
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setSelectedMethod('upi')}
+                    onClick={() => setSelectedMethod("upi")}
                     className={`p-3 rounded-xl border text-center transition-all ${
-                      selectedMethod === 'upi' 
-                        ? 'bg-brand-gold text-brand-black border-transparent' 
-                        : 'bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold'
+                      selectedMethod === "upi"
+                        ? "bg-brand-gold text-brand-black border-transparent"
+                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
                     }`}
                   >
                     <Sparkles className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">UPI / GPay</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">
+                      UPI / GPay
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setSelectedMethod('netbank')}
+                    onClick={() => setSelectedMethod("netbank")}
                     className={`p-3 rounded-xl border text-center transition-all ${
-                      selectedMethod === 'netbank' 
-                        ? 'bg-brand-gold text-brand-black border-transparent' 
-                        : 'bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold'
+                      selectedMethod === "netbank"
+                        ? "bg-brand-gold text-brand-black border-transparent"
+                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
                     }`}
                   >
                     <ChevronRight className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">Netbank</span>
+                    <span className="text-[10px] uppercase font-bold tracking-widest font-sans-poppins">
+                      Netbank
+                    </span>
                   </button>
                 </div>
 
                 {/* Selected form mock details */}
                 <div className="bg-[#141414] p-4 rounded-xl space-y-3 font-sans-inter text-xs text-brand-cream/75">
-                  {selectedMethod === 'card' && (
+                  {selectedMethod === "card" && (
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45">Patron Mock Card credentials</p>
-                      <input type="text" placeholder="Card Number" value="4111 2222 3333 4444" disabled className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono" />
+                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45">
+                        Patron Mock Card credentials
+                      </p>
+                      <input
+                        type="text"
+                        placeholder="Card Number"
+                        value="4111 2222 3333 4444"
+                        disabled
+                        className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono"
+                      />
                       <div className="grid grid-cols-2 gap-2">
-                        <input type="text" placeholder="Expiry" value="12/29" disabled className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center" />
-                        <input type="password" placeholder="CVV" value="999" disabled className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center" />
+                        <input
+                          type="text"
+                          placeholder="Expiry"
+                          value="12/29"
+                          disabled
+                          className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center"
+                        />
+                        <input
+                          type="password"
+                          placeholder="CVV"
+                          value="999"
+                          disabled
+                          className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center"
+                        />
                       </div>
                     </div>
                   )}
 
-                  {selectedMethod === 'upi' && (
+                  {selectedMethod === "upi" && (
                     <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45">UPI ID Reference</p>
-                      <input type="text" placeholder="UPI ID" value="patron@okaxis" disabled className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono" />
+                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45">
+                        UPI ID Reference
+                      </p>
+                      <input
+                        type="text"
+                        placeholder="UPI ID"
+                        value="patron@okaxis"
+                        disabled
+                        className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono"
+                      />
                     </div>
                   )}
 
-                  {selectedMethod === 'netbank' && (
+                  {selectedMethod === "netbank" && (
                     <div className="space-y-1">
-                      <p>Corporate accounts pre-authorized: State Bank of Mysore / Royal ICICI.</p>
+                      <p>
+                        Corporate accounts pre-authorized: State Bank of Mysore
+                        / Royal ICICI.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -541,12 +641,11 @@ export default function CheckoutView({
                     Authorize Payment
                   </button>
                 </div>
-
               </div>
             )}
 
             {/* Processing and feedback line */}
-            {paymentStep === 'processing' && (
+            {paymentStep === "processing" && (
               <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
                 <Loader2 className="h-8 w-8 text-brand-gold animate-spin" />
                 <p className="text-xs text-brand-cream/80 font-sans-poppins uppercase tracking-widest">
@@ -556,20 +655,20 @@ export default function CheckoutView({
             )}
 
             {/* Success Feedback */}
-            {paymentStep === 'success' && (
+            {paymentStep === "success" && (
               <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
                 <CheckCircle2 className="h-10 w-10 text-emerald-400 scale-110 transition-transform duration-500" />
                 <p className="text-xs text-emerald-300 font-sans-poppins uppercase tracking-widest font-bold">
                   Transaction Verified Successfully!
                 </p>
-                <p className="text-[10px] text-brand-cream/45">Generating your bespoke wax-seal scroll ID...</p>
+                <p className="text-[10px] text-brand-cream/45">
+                  Generating your bespoke wax-seal scroll ID...
+                </p>
               </div>
             )}
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

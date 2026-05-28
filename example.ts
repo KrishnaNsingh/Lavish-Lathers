@@ -51,7 +51,7 @@ async function startServer() {
     }
     
     // Attach custom reviews if any exist
-    const pReviews = customReviews[product.id] || [];
+    const pReviews = customReviews[product._id] || [];
     res.json({ ...product, customReviews: pReviews });
   });
 
@@ -78,10 +78,10 @@ async function startServer() {
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     };
 
-    if (!customReviews[targetProduct.id]) {
-      customReviews[targetProduct.id] = [];
+    if (!customReviews[targetproduct._id]) {
+      customReviews[targetproduct._id] = [];
     }
-    customReviews[targetProduct.id].unshift(newReview);
+    customReviews[targetproduct._id].unshift(newReview);
 
     // Update product rating average dynamically
     const allReviewsCount = targetProduct.reviewsCount + 1;
@@ -133,7 +133,7 @@ async function startServer() {
 
     // Verify stock and update stock values
     for (const item of items as CartItem[]) {
-      const dbProd = siteProducts.find(p => p.id === item.product.id);
+      const dbProd = siteProducts.find(p => p.id === item.product._id);
       if (dbProd) {
         if (dbProd.stock < item.quantity) {
            res.status(400).json({ error: `Product '${dbProd.name}' is out of stock. Available: ${dbProd.stock}` });
@@ -144,7 +144,7 @@ async function startServer() {
 
     // Deduct inventory
     for (const item of items as CartItem[]) {
-      const dbProd = siteProducts.find(p => p.id === item.product.id);
+      const dbProd = siteProducts.find(p => p.id === item.product._id);
       if (dbProd) {
         dbProd.stock -= item.quantity;
       }

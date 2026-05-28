@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, CartItem, Order } from '../types';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { Product, CartItem, Order } from "../types";
 
 interface AppContextType {
   cart: CartItem[];
@@ -12,7 +12,7 @@ interface AppContextType {
     isGift: boolean,
     giftNote?: string,
     giftRecipient?: string,
-    quantity?: number
+    quantity?: number,
   ) => void;
   removeFromCart: (index: number) => void;
   updateCartQty: (index: number, newQty: number) => void;
@@ -21,7 +21,7 @@ interface AppContextType {
   setConfirmedOrder: (order: Order | null) => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
-  
+
   // Admin Authentication State
   adminToken: string | null;
   isAdminAuthenticated: boolean;
@@ -35,15 +35,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
-  const [filterCategory, setFilterCategory] = useState<string>('All');
+  const [filterCategory, setFilterCategory] = useState<string>("All");
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [adminToken, setAdminToken] = useState<string | null>(localStorage.getItem('lavish_lathers_admin_token'));
+  const [adminToken, setAdminToken] = useState<string | null>(
+    localStorage.getItem("lavish_lathers_admin_token"),
+  );
 
   // Load cart & wishlist from localStorage on mounting
   useEffect(() => {
     try {
-      const cachedCart = localStorage.getItem('lavish_lathers_cart');
-      const cachedWishlist = localStorage.getItem('lavish_lathers_wishlist');
+      const cachedCart = localStorage.getItem("lavish_lathers_cart");
+      const cachedWishlist = localStorage.getItem("lavish_lathers_wishlist");
       if (cachedCart) {
         setCart(JSON.parse(cachedCart));
       }
@@ -57,12 +59,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const updateCartState = (newCart: CartItem[]) => {
     setCart(newCart);
-    localStorage.setItem('lavish_lathers_cart', JSON.stringify(newCart));
+    localStorage.setItem("lavish_lathers_cart", JSON.stringify(newCart));
   };
 
   const updateWishlistState = (newWishlist: string[]) => {
     setWishlist(newWishlist);
-    localStorage.setItem('lavish_lathers_wishlist', JSON.stringify(newWishlist));
+    localStorage.setItem(
+      "lavish_lathers_wishlist",
+      JSON.stringify(newWishlist),
+    );
   };
 
   const addToCart = (
@@ -70,10 +75,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     isGift: boolean,
     giftNote?: string,
     giftRecipient?: string,
-    quantity = 1
+    quantity = 1,
   ) => {
     const existingIdx = cart.findIndex(
-      (it) => it.product.id === product.id && it.isGift === isGift && it.giftRecipient === giftRecipient
+      (it) =>
+        it.product._id === product._id &&
+        it.isGift === isGift &&
+        it.giftRecipient === giftRecipient,
     );
 
     let updated = [...cart];
@@ -85,7 +93,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         quantity,
         isGift,
         giftNote,
-        giftRecipient
+        giftRecipient,
       });
     }
 
@@ -108,7 +116,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const toggleWishlist = (id: string) => {
     let updated: string[];
     if (wishlist.includes(id)) {
-      updated = wishlist.filter(item => item !== id);
+      updated = wishlist.filter((item) => item !== id);
     } else {
       updated = [...wishlist, id];
     }
@@ -122,12 +130,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Admin authentication handlers
   const adminLogin = (token: string) => {
     setAdminToken(token);
-    localStorage.setItem('lavish_lathers_admin_token', token);
+    localStorage.setItem("lavish_lathers_admin_token", token);
   };
 
   const adminLogout = () => {
     setAdminToken(null);
-    localStorage.removeItem('lavish_lathers_admin_token');
+    localStorage.removeItem("lavish_lathers_admin_token");
   };
 
   const isAdminAuthenticated = !!adminToken;
@@ -151,7 +159,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         adminToken,
         isAdminAuthenticated,
         adminLogin,
-        adminLogout
+        adminLogout,
       }}
     >
       {children}
@@ -162,7 +170,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 export function useApp() {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("useApp must be used within an AppProvider");
   }
   return context;
 }
