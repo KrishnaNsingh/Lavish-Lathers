@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
-  Star,
   Plus,
   Minus,
   CheckCircle,
@@ -72,7 +71,8 @@ export default function ProductDetailPage() {
           .filter(
             (p) =>
               p._id !== id &&
-              (p.category === data.category || p.artistryType === data.artistryType),
+              (p.category === data.category ||
+                p.artistryType === data.artistryType),
           )
           .slice(0, 4);
 
@@ -91,61 +91,61 @@ export default function ProductDetailPage() {
     fetchProductData();
   }, [id]);
 
-  const handleReviewSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reviewName || !reviewText) {
-      alert("Please provide both your name and review remarks.");
-      return;
-    }
+  // const handleReviewSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!reviewName || !reviewText) {
+  //     alert("Please provide both your name and review remarks.");
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(`/api/products/${id}/review`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          reviewerName: reviewName,
-          rating: reviewRating,
-          comment: reviewText,
-        }),
-      });
+  //   try {
+  //     const response = await fetch(`/api/products/${id}/review`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         reviewerName: reviewName,
+  //         rating: reviewRating,
+  //         comment: reviewText,
+  //       }),
+  //     });
 
-      if (response.ok) {
-        const updatedProductWithReview = await response.json();
-        setProduct(updatedProductWithReview);
+  //     if (response.ok) {
+  //       const updatedProductWithReview = await response.json();
+  //       setProduct(updatedProductWithReview);
 
-        // Also add to local placeholder array for instant list visual updates
-        const newRev = {
-          id: `rev-local-${Date.now()}`,
-          name: reviewName,
-          rating: reviewRating,
-          text: reviewText,
-          date: new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-        };
-        setLocalReviews([newRev, ...localReviews]);
-        setReviewName("");
-        setReviewText("");
-        setSubmitSuccess(
-          "Thank you! Your verified patron review has been loaded live onto the product records.",
-        );
-        setTimeout(() => {
-          setSubmitSuccess("");
-        }, 5000);
-      } else {
-        alert(
-          "We were unable to submit your review to the boutique logs. Please try again.",
-        );
-      }
-    } catch (err) {
-      console.error("Error submitting product review:", err);
-      alert("Error submitting review. Check your network console.");
-    }
-  };
+  //       // Also add to local placeholder array for instant list visual updates
+  //       const newRev = {
+  //         id: `rev-local-${Date.now()}`,
+  //         name: reviewName,
+  //         rating: reviewRating,
+  //         text: reviewText,
+  //         date: new Date().toLocaleDateString("en-US", {
+  //           year: "numeric",
+  //           month: "long",
+  //           day: "numeric",
+  //         }),
+  //       };
+  //       setLocalReviews([newRev, ...localReviews]);
+  //       setReviewName("");
+  //       setReviewText("");
+  //       setSubmitSuccess(
+  //         "Thank you! Your verified patron review has been loaded live onto the product records.",
+  //       );
+  //       setTimeout(() => {
+  //         setSubmitSuccess("");
+  //       }, 5000);
+  //     } else {
+  //       alert(
+  //         "We were unable to submit your review to the boutique logs. Please try again.",
+  //       );
+  //     }
+  //   } catch (err) {
+  //     console.error("Error submitting product review:", err);
+  //     alert("Error submitting review. Check your network console.");
+  //   }
+  // };
 
   const handleIncrement = () => {
     if (!product) return;
@@ -232,25 +232,13 @@ export default function ProductDetailPage() {
 
             {/* Thumbnails list */}
             <div className="flex items-center space-x-4 pl-2">
-              {product.imageUrl.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImage(img)}
-                  className={`w-20 aspect-square rounded-2xl overflow-hidden bg-brand-ivory border-2 transition-all cursor-pointer ${
-                    activeImage === img
-                      ? "border-brand-gold scale-105"
-                      : "border-brand-beige/40 opacity-70 hover:opacity-100"
-                  }`}
-                  id={`img-thumb-${idx}`}
-                >
-                  <img
-                    src={img}
-                    alt="Product closeup"
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
+              <button className="w-20 aspect-square rounded-2xl overflow-hidden bg-brand-ivory border-2 border-brand-gold">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </button>
             </div>
           </div>
 
@@ -490,154 +478,9 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
+
             {/* LIVE VERIFIED REVIEWS SECTION */}
-            <div className="pt-8 border-t border-brand-beige/20 space-y-6">
-              <h3 className="font-serif-playfair text-2xl text-brand-black tracking-wide font-medium">
-                Patron Reviews &amp; Reflections
-              </h3>
-
-              {/* Leave Review Form */}
-              <form
-                onSubmit={handleReviewSubmit}
-                className="bg-[#FAF7F2] border border-brand-beige/30 p-6 rounded-2xl text-left space-y-4"
-              >
-                <span className="text-[9px] uppercase tracking-widest font-sans-poppins text-brand-gold font-bold">
-                  Patron Portal &bull; Share your bathing impressions
-                </span>
-
-                {submitSuccess && (
-                  <p className="text-[11px] font-sans-inter text-emerald-700 bg-emerald-50 border border-emerald-200 p-2.5 rounded-xl">
-                    {submitSuccess}
-                  </p>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 mb-1">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Lady Genevieve"
-                      value={reviewName}
-                      onChange={(e) => setReviewName(e.target.value)}
-                      className="w-full text-xs px-3 py-2.5 rounded-lg border border-brand-beige/40 bg-brand-cream text-brand-black focus:outline-none focus:border-brand-gold"
-                      id="review-name"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 mb-1 font-bold">
-                      Rating Star Selection
-                    </label>
-                    <select
-                      value={reviewRating}
-                      onChange={(e) => setReviewRating(Number(e.target.value))}
-                      className="w-full text-xs px-3 py-2.5 rounded-lg border border-brand-beige/40 bg-brand-cream text-brand-black focus:outline-none focus:border-brand-gold font-sans-poppins"
-                      id="review-rating-select"
-                    >
-                      <option value={5}>⭐⭐⭐⭐⭐ (5 Stars)</option>
-                      <option value={4}>⭐⭐⭐⭐ (4 Stars)</option>
-                      <option value={3}>⭐⭐⭐ (3 Stars)</option>
-                      <option value={2}>⭐⭐ (2 Stars)</option>
-                      <option value={1}>⭐ (1 Star)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 mb-1">
-                    Review Remarks
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Describe the scent notes, lather quality, or gifting feedback..."
-                    value={reviewText}
-                    onChange={(e) => setReviewText(e.target.value)}
-                    className="w-full text-xs px-3 py-2.5 rounded-lg border border-brand-beige/40 bg-brand-cream text-brand-black focus:outline-none focus:border-brand-gold resize-none"
-                    id="review-text"
-                  />
-                </div>
-
-                <div className="flex justify-end font-sans-poppins">
-                  <button
-                    type="submit"
-                    className="py-2 px-5 bg-brand-black text-brand-cream hover:bg-brand-gold hover:text-brand-black rounded-full text-[10px] uppercase font-bold tracking-widest transition-colors duration-300 pointer-events-auto cursor-pointer"
-                    id="review-submit-btn"
-                  >
-                    Submit Verified Review
-                  </button>
-                </div>
-              </form>
-
-              {/* Reviews lists */}
-              {/* <div className="space-y-4">
-                {product.reviews &&
-                  product.reviews.length === 0 &&
-                  localReviews.length === 0 && (
-                    <p className="text-xs text-brand-black/40 italic">
-                      Be the first verified patron to write a review for this
-                      hand-cured block.
-                    </p>
-                  )} */}
-
-                {/* Local Custom Reviews */}
-                {/* {localReviews.map((rev) => (
-                  <div
-                    key={rev.id}
-                    className="border-b border-brand-beige/10 pb-4 space-y-1 bg-brand-pink/15 p-4 rounded-xl"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-serif-playfair text-sm text-brand-black font-semibold">
-                        {rev.name}
-                      </span>
-                      <span className="text-[9px] text-brand-black/50 font-sans-poppins">
-                        {rev.date}
-                      </span>
-                    </div>
-                    <div className="flex text-brand-gold">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-2.5 w-2.5 ${i < rev.rating ? "fill-current" : "opacity-25"}`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-xs text-brand-black/80 font-sans-inter leading-relaxed">
-                      {rev.text}
-                    </p>
-                  </div>
-                ))} */}
-
-                {/* API Product Reviews rendering */}
-                {/* {product.reviews?.map((reviewer, idx) => (
-                  <div
-                    key={idx}
-                    className="border-b border-brand-beige/12 pb-4 space-y-1 text-left"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-serif-playfair text-sm text-brand-black font-semibold">
-                        {reviewer.reviewerName}
-                      </span>
-                      <span className="text-[9px] text-brand-black/50 font-sans-poppins">
-                        {reviewer.date || "Verified Patron"}
-                      </span>
-                    </div>
-                    <div className="flex text-brand-gold">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-2.5 w-2.5 ${i < reviewer.rating ? "fill-current" : "opacity-25"}`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-xs text-brand-black/75 font-sans-inter leading-relaxed">
-                      {reviewer.comment}
-                    </p>
-                  </div>
-                ))} */}
-              {/* </div> */}
-            </div>
+            
           </div>
         </div>
 
@@ -665,7 +508,7 @@ export default function ProductDetailPage() {
                 >
                   <div className="aspect-square overflow-hidden rounded-xl bg-brand-ivory mb-3">
                     <img
-                      src={p.imageUrl[0]}
+                      src={p.imageUrl}
                       alt={p.name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

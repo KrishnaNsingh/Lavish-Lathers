@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, CartItem, Order } from "../types";
+import { productApi } from "../api/productApi";
 
 interface AppContextType {
+  products: Product[];
+  productsLoading: boolean;
+  fetchProducts: () => Promise<void>;
   cart: CartItem[];
   wishlist: string[];
   confirmedOrder: Order | null;
@@ -40,6 +44,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [adminToken, setAdminToken] = useState<string | null>(
     localStorage.getItem("lavish_lathers_admin_token"),
   );
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   // Load cart & wishlist from localStorage on mounting
   useEffect(() => {
@@ -55,6 +61,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error("Local storage decoding issue:", err);
     }
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setProductsLoading(true);
+
+      const data = await productApi.getProducts();
+
+      setProducts(data);
+    } catch (error) {
+      console.error("Failed fetching products:", error);
+    } finally {
+      setProductsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
   const updateCartState = (newCart: CartItem[]) => {
@@ -143,6 +167,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        products,
+        productsLoading,
+        fetchProducts,
         cart,
         wishlist,
         confirmedOrder,

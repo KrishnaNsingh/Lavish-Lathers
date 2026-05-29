@@ -8,6 +8,8 @@ import { productApi } from "../api/productApi";
 export default function Shop() {
   const navigate = useNavigate();
   const {
+    products,
+    productsLoading,
     wishlist,
     toggleWishlist,
     addToCart,
@@ -15,8 +17,8 @@ export default function Shop() {
     setFilterCategory,
   } = useApp();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "default">(
     "default",
@@ -25,23 +27,23 @@ export default function Shop() {
     boolean | null
   >(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
 
-    const fetchProducts = async () => {
-      try {
-        const data = await productApi.getProducts();
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const data = await productApi.getProducts();
 
-        setProducts(data);
-      } catch (err) {
-        console.error("Failed fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setProducts(data);
+  //     } catch (err) {
+  //       console.error("Failed fetching products:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProducts();
-  }, []);
+  //   fetchProducts();
+  // }, []);
 
   const categories = useMemo(() => {
     const cats = new Set(products.map((p) => p.category));
@@ -81,16 +83,17 @@ export default function Shop() {
     }
 
     return result;
-
-    return result;
   }, [products, filterCategory, searchQuery, sortBy, activeCollectibleFilter]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-brand-cream text-brand-black flex items-center justify-center font-sans-poppins text-xs uppercase tracking-[0.25em] text-brand-gold">
-        Opening Botanical Apothecary...
-      </div>
-    );
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen bg-brand-cream text-brand-black flex items-center justify-center font-sans-poppins text-xs uppercase tracking-[0.25em] text-brand-gold">
+  //       Opening Botanical Apothecary...
+  //     </div>
+  //   );
+  // }
+  if (productsLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
