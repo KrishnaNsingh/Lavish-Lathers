@@ -13,16 +13,16 @@ export default function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Input states
-  const [idInput, setIdInput] = useState('');
+  const [registryId, setRegistryId] = useState('');
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [details, setDetails] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
+  const [detailedDescription, setDetailedDescription] = useState('');
   const [price, setPrice] = useState(1);
-  const [category, setCategory] = useState('Face Curio');
-  const [typeInput, setTypeInput] = useState<'skincare' | 'souvenir'>('skincare');
+  const [category, setCategory] = useState<'Herbal Soaps' | 'Essential Oils' | 'Gift Boxes' | 'Souvenirs'>('Herbal Soaps');
+  const [artistryType, setArtistryType] = useState<'Skincare formulation' | 'Keepsake Souvenir'>('Skincare formulation');
   const [stock, setStock] = useState(10);
-  const [isBestSeller, setIsBestSeller] = useState(false);
-  const [isCollectible, setIsCollectible] = useState(false);
+  const [featured, setFeatured] = useState(false);
+  const [souvenir, setSouvenir] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
 
   const fetchProducts = async () => {
@@ -44,33 +44,33 @@ export default function AdminProducts() {
 
   const openAddForm = () => {
     setEditingProduct(null);
-    setIdInput(`prod-${Date.now()}`);
+    setRegistryId(`prod-${Date.now()}`);
     setName('');
-    setDescription('');
-    setDetails('');
-    setPrice(15.00);
+    setShortDescription('');
+    setDetailedDescription('');
+    setPrice(299);
     setCategory('Herbal Soaps');
-    setTypeInput('skincare');
+    setArtistryType('Skincare formulation');
     setStock(15);
-    setIsBestSeller(false);
-    setIsCollectible(false);
+    setFeatured(false);
+    setSouvenir(false);
     setImageUrl('https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80');
     setIsFormOpen(true);
   };
 
   const openEditForm = (prod: Product) => {
     setEditingProduct(prod);
-    setIdInput(prod.id);
+    setRegistryId(prod.registryId);
     setName(prod.name);
-    setDescription(prod.description);
-    setDetails(prod.details || '');
+    setShortDescription(prod.shortDescription);
+    setDetailedDescription(prod.detailedDescription || '');
     setPrice(prod.price);
     setCategory(prod.category);
-    setTypeInput(prod.type);
+    setArtistryType(prod.artistryType);
     setStock(prod.stock);
-    setIsBestSeller(prod.isBestSeller || false);
-    setIsCollectible(prod.isCollectible || false);
-    setImageUrl(prod.images[0] || '');
+    setFeatured(prod.featured || false);
+    setSouvenir(prod.souvenir || false);
+    setImageUrl(prod.imageUrl || '');
     setIsFormOpen(true);
   };
 
@@ -89,28 +89,30 @@ export default function AdminProducts() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !description || !idInput || !imageUrl) {
-      alert("Please key in core product parameters (Name, Image, Details).");
+    if (!name || !shortDescription || !registryId || !imageUrl) {
+      alert("Please key in core product parameters (Name, Image, Short Description).");
       return;
     }
 
-    const payload: any = {
-      id: idInput,
+    // Explicitly types and maps options matching your core structures
+    const payload = {
+      registryId,
       name,
-      description,
-      details,
+      shortDescription,
+      detailedDescription,
       price: Number(price),
       category,
-      type: typeInput,
+      artistryType,
       stock: Number(stock),
-      isBestSeller,
-      isCollectible,
-      images: [imageUrl]
+      featured,
+      souvenir,
+      imageUrl,
+      customMessageAvailable: souvenir, // Auto-flags customization rules for custom gift items
     };
 
     try {
       if (editingProduct) {
-        await productApi.editProduct(idInput, payload);
+        await productApi.editProduct(editingProduct._id, payload);
       } else {
         await productApi.addProduct(payload);
       }
@@ -118,7 +120,7 @@ export default function AdminProducts() {
       fetchProducts();
     } catch (err) {
       console.error("Product submission failed:", err);
-      alert("Bespoke product registration failed. Try checking types.");
+      alert("Bespoke product registration failed. Try checking API configurations.");
     }
   };
 
@@ -153,7 +155,7 @@ export default function AdminProducts() {
             <p className="text-xs text-brand-cream/55">No curated botanical items on record.</p>
           </div>
         ) : (
-          /* Desktop & Table layouts of registries list */
+          /* Registries Table Layout */
           <div className="bg-[#141211] border border-brand-cream/10 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs divide-y divide-brand-cream/5">
@@ -169,16 +171,16 @@ export default function AdminProducts() {
                 </thead>
                 <tbody className="divide-y divide-brand-cream/5 text-brand-cream/80">
                   {products.map((p) => (
-                    <tr key={p.id} className="hover:bg-brand-cream/5 transition-colors">
+                    <tr key={p._id} className="hover:bg-brand-cream/5 transition-colors">
                       
                       {/* Image + Title Column */}
                       <td className="px-6 py-4 flex items-center space-x-4">
                         <div className="w-12 aspect-square rounded-lg overflow-hidden bg-[#242221] shrink-0">
-                          <img src={p.images[0] || ''} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                          <img src={p.imageUrl} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                         </div>
                         <div className="space-y-0.5">
                           <h4 className="font-serif-playfair text-sm text-brand-cream font-medium line-clamp-1">{p.name}</h4>
-                          <span className="font-mono text-[9px] text-brand-cream/35">{p.id}</span>
+                          <span className="font-mono text-[9px] text-brand-cream/35">{p.registryId}</span>
                         </div>
                       </td>
 
@@ -201,12 +203,12 @@ export default function AdminProducts() {
                         )}
                       </td>
 
-                      {/* Badges isBestSeller, isCollectible */}
+                      {/* Badges configured against structural types */}
                       <td className="px-6 py-4 space-x-1.5 font-sans-poppins text-[9px]">
-                        {p.isBestSeller && (
+                        {p.featured && (
                           <span className="bg-brand-gold/15 text-brand-gold px-2 py-0.5 rounded-md uppercase font-semibold">Bestseller</span>
                         )}
-                        {p.isCollectible && (
+                        {p.souvenir && (
                           <span className="bg-brand-cream/20 text-brand-cream px-2 py-0.5 rounded-md uppercase font-semibold">Keepsake</span>
                         )}
                       </td>
@@ -222,7 +224,7 @@ export default function AdminProducts() {
                             <Edit3 className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(p.id)}
+                            onClick={() => handleDelete(p._id)}
                             className="p-2 bg-red-950/20 hover:bg-red-950/60 text-red-400 rounded-lg transition-colors cursor-pointer"
                             title="Delete Item"
                           >
@@ -269,8 +271,8 @@ export default function AdminProducts() {
                       type="text"
                       required
                       placeholder="e.g. soap-marigold-absolute"
-                      value={idInput}
-                      onChange={(e) => setIdInput(e.target.value)}
+                      value={registryId}
+                      onChange={(e) => setRegistryId(e.target.value)}
                       disabled={!!editingProduct}
                       className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold disabled:opacity-40"
                     />
@@ -294,7 +296,7 @@ export default function AdminProducts() {
                       type="number"
                       required
                       min={1}
-                      placeholder="e.g. 19.50"
+                      placeholder="e.g. 299"
                       value={price}
                       onChange={(e) => setPrice(Number(e.target.value))}
                       className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold font-mono"
@@ -318,7 +320,7 @@ export default function AdminProducts() {
                     <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">Curation Registry Category</label>
                     <select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      onChange={(e) => setCategory(e.target.value as any)}
                       className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream focus:border-brand-gold focus:outline-none"
                     >
                       <option value="Herbal Soaps">Herbal Soaps</option>
@@ -331,12 +333,12 @@ export default function AdminProducts() {
                   <div>
                     <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">Artistry Type Mode</label>
                     <select
-                      value={typeInput}
-                      onChange={(e: any) => setTypeInput(e.target.value)}
+                      value={artistryType}
+                      onChange={(e) => setArtistryType(e.target.value as any)}
                       className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream focus:border-brand-gold focus:outline-none"
                     >
-                      <option value="skincare">Skincare formulation</option>
-                      <option value="souvenir">Keepsake Souvenir</option>
+                      <option value="Skincare formulation">Skincare formulation</option>
+                      <option value="Keepsake Souvenir">Keepsake Souvenir</option>
                     </select>
                   </div>
                 </div>
@@ -360,8 +362,8 @@ export default function AdminProducts() {
                     required
                     maxLength={200}
                     placeholder="A concise, high-end description summarizing key ingredients."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={shortDescription}
+                    onChange={(e) => setShortDescription(e.target.value)}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold"
                   />
                 </div>
@@ -371,8 +373,8 @@ export default function AdminProducts() {
                   <textarea
                     rows={3}
                     placeholder="A complete, beautiful paragraph about botanical weights, cedar chambers, and absolute extracts."
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
+                    value={detailedDescription}
+                    onChange={(e) => setDetailedDescription(e.target.value)}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
                   />
                 </div>
@@ -381,8 +383,8 @@ export default function AdminProducts() {
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={isBestSeller}
-                      onChange={(e) => setIsBestSeller(e.target.checked)}
+                      checked={featured}
+                      onChange={(e) => setFeatured(e.target.checked)}
                       className="accent-brand-gold"
                     />
                     <span>Highlight as Atelier Bestseller</span>
@@ -391,8 +393,8 @@ export default function AdminProducts() {
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={isCollectible}
-                      onChange={(e) => setIsCollectible(e.target.checked)}
+                      checked={souvenir}
+                      onChange={(e) => setSouvenir(e.target.checked)}
                       className="accent-brand-gold"
                     />
                     <span>Flag as Premium Keepsake Souvenir</span>

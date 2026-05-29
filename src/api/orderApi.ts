@@ -1,15 +1,11 @@
 import { apiClient } from './apiClient';
-import { Order, CartItem, CheckoutDetails } from '../types';
+import { Order, CartItem, CheckoutDetails, CreateOrderPayload } from '../types';
 
 export const orderApi = {
   // Create client order
-  createOrder: async (orderData: {
-    items: CartItem[];
-    shippingDetails: CheckoutDetails;
-    subtotal: number;
-    shipping: number;
-    total: number;
-  }): Promise<{ success: boolean; message: string; order: Order }> => {
+  createOrder: async (
+  orderData: CreateOrderPayload
+): Promise<{ success: boolean; message: string; order: Order }> => {
     return apiClient<{ success: boolean; message: string; order: Order }>('/orders', {
       method: 'POST',
       body: JSON.stringify(orderData),

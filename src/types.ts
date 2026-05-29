@@ -39,6 +39,29 @@ export interface Product {
 
   updatedAt?: string;
 }
+export interface CreateOrderPayload {
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    instructions?: string;
+  };
+
+  items: OrderItem[];
+
+  pricing: {
+    subtotal: number;
+    shipping: number;
+    total: number;
+  };
+}
 
 export interface Review {
   id: string;

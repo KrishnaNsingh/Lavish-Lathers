@@ -1,30 +1,33 @@
-import { apiClient } from './apiClient';
-import { Product, Review } from '../types';
+import { apiClient } from "./apiClient";
+import { Product, Review } from "../types";
 
 export const productApi = {
   // Get all products, optionally filtered by category, bestseller status, or collectibles
   getProducts: async (filters?: {
     category?: string;
-    isBestSeller?: boolean;
-    isCollectible?: boolean;
+    featured?: boolean;
+    souvenir?: boolean;
   }): Promise<Product[]> => {
     const queryParts: string[] = [];
-    if (filters?.category && filters.category !== 'All') {
+    if (filters?.category && filters.category !== "All") {
       queryParts.push(`category=${encodeURIComponent(filters.category)}`);
     }
-    if (filters?.isBestSeller) {
-      queryParts.push(`isBestSeller=true`);
+    if (filters?.featured) {
+      queryParts.push(`featured=true`);
     }
-    if (filters?.isCollectible) {
-      queryParts.push(`isCollectible=true`);
+
+    if (filters?.souvenir) {
+      queryParts.push(`souvenir=true`);
     }
-    
-    const queryStr = queryParts.length ? `?${queryParts.join('&')}` : '';
+
+    const queryStr = queryParts.length ? `?${queryParts.join("&")}` : "";
     return apiClient<Product[]>(`/products${queryStr}`);
   },
 
   // Get a single product by ID (attaches custom reviews dynamically)
-  getProductById: async (id: string): Promise<Product & { customReviews?: Review[] }> => {
+  getProductById: async (
+    id: string,
+  ): Promise<Product & { customReviews?: Review[] }> => {
     return apiClient<Product & { customReviews?: Review[] }>(`/products/${id}`);
   },
 
@@ -40,25 +43,38 @@ export const productApi = {
   // },
 
   // ADMIN ONLY: Add a new artisan product
-  addProduct: async (product: Omit<Product, 'reviewsCount' | 'rating'>): Promise<{ message: string; product: Product }> => {
+  addProduct: async (
+    product: Omit<Product, '_id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<{ message: string; product: Product }> => {
     return apiClient<{ message: string; product: Product }>(`/admin/products`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(product),
     });
   },
 
   // ADMIN ONLY: Edit an existing product
-  editProduct: async (id: string, product: Partial<Product>): Promise<{ message: string; product: Product }> => {
-    return apiClient<{ message: string; product: Product }>(`/admin/products/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(product),
-    });
+  editProduct: async (
+    id: string,
+    product: Partial<Product>,
+  ): Promise<{ message: string; product: Product }> => {
+    return apiClient<{ message: string; product: Product }>(
+      `/admin/products/${id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(product),
+      },
+    );
   },
 
   // ADMIN ONLY: Delete a product from inventory
-  deleteProduct: async (id: string): Promise<{ success: boolean; id: string }> => {
-    return apiClient<{ success: boolean; id: string }>(`/admin/products/${id}`, {
-      method: 'DELETE',
-    });
-  }
+  deleteProduct: async (
+    id: string,
+  ): Promise<{ success: boolean; id: string }> => {
+    return apiClient<{ success: boolean; id: string }>(
+      `/admin/products/${id}`,
+      {
+        method: "DELETE",
+      },
+    );
+  },
 };
