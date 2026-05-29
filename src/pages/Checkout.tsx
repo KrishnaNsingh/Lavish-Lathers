@@ -14,14 +14,14 @@ import { useApp } from "../context/AppContext";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { cart, setCart, setConfirmedOrder } = useApp();
+  const { cart, clearCart, setConfirmedOrder } = useApp();
 
   const subtotal = cart.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0,
   );
-  const isFreeShipping = subtotal >= 75;
-  const shippingCharge = isFreeShipping ? 0 : 9.5;
+  const isFreeShipping = subtotal >= 6000;
+  const shippingCharge = isFreeShipping ? 0 : 299;
   const grandTotal = subtotal + shippingCharge;
 
   // Form Fields
@@ -42,14 +42,7 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState(0);
   const [message, setMessage] = useState("");
 
-  // Payment Simulation states
-  const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
-  const [paymentStep, setPaymentStep] = useState<
-    "idle" | "linking" | "choice" | "processing" | "success"
-  >("idle");
-  const [selectedMethod, setSelectedMethod] = useState<
-    "upi" | "card" | "netbank"
-  >("card");
+ 
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -92,7 +85,7 @@ export default function CheckoutPage() {
           },
 
           body: JSON.stringify({
-            total: 999,
+            total: grandTotal - discount,
           }),
         },
       );
@@ -136,30 +129,43 @@ export default function CheckoutPage() {
                 razorpay_signature: response.razorpay_signature,
 
                 customer: {
-                  name: "Krishna",
-                  email: "test@gmail.com",
-
-                  phone: "9999999999",
+                  name: formData.fullName,
+                  email: formData.email,
+                  phone: formData.phone,
                 },
 
                 shippingAddress: {
-                  street: "Street 1",
-
-                  city: "Bhopal",
-
-                  state: "MP",
-
-                  postalCode: "462001",
-
-                  instructions: "",
+                  street: formData.address,
+                  city: formData.city,
+                  state: formData.state,
+                  postalCode: formData.zipCode,
+                  instructions: formData.notes,
                 },
 
-                items: [],
+                items: cart.map((item) => ({
+                  productId: item.product._id,
+
+                  registryId: item.product.registryId,
+
+                  name: item.product.name,
+
+                  price: item.product.price,
+
+                  quantity: item.quantity,
+
+                  isGift: item.isGift,
+
+                  giftNote: item.giftNote,
+
+                  giftRecipient: item.giftRecipient,
+                })),
 
                 pricing: {
-                  subtotal: 999,
-                  shipping: 0,
-                  total: 999,
+                  subtotal,
+
+                  shipping: shippingCharge,
+
+                  total: grandTotal - discount,
                 },
               }),
             },
@@ -168,9 +174,11 @@ export default function CheckoutPage() {
           const data = await verifyResponse.json();
 
           if (data.success) {
-            alert("Payment Successful!");
-
+            setConfirmedOrder(data.order);
+            clearCart();
+            navigate("/order-confirmation");
             console.log(data);
+
           } else {
             alert("Payment Verification Failed");
           }
@@ -207,59 +215,8 @@ export default function CheckoutPage() {
       );
       return;
     }
-
-    // Open the premium Razorpay visual gateway mockup
-    setIsRazorpayModalOpen(true);
-    setPaymentStep("linking");
-    setTimeout(() => {
-      setPaymentStep("choice");
-    }, 1800);
   };
-
-  const handleSimulatePaymentProcess = () => {
-    setPaymentStep("processing");
-    setTimeout(() => {
-      setPaymentStep("success");
-      setTimeout(async () => {
-        // Post the real order details to Express server database
-        try {
-          const finalTotal = grandTotal - discount;
-          const orderPayload = {
-            items: cart,
-            shippingDetails: formData,
-            subtotal: subtotal - discount,
-            shipping: shippingCharge,
-            total: finalTotal,
-          };
-
-          const response = await fetch("/api/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderPayload),
-          });
-
-          if (!response.ok) {
-            const errData = await response.json();
-            throw new Error(errData.error || "Order post failed");
-          }
-
-          const responseData = await response.json();
-          setIsRazorpayModalOpen(false);
-
-          // Update context state
-          setConfirmedOrder(responseData.order as Order);
-          setCart([]);
-          localStorage.setItem("lavish_lathers_cart", JSON.stringify([]));
-
-          navigate("/order-confirmation");
-        } catch (error: any) {
-          alert(`Order Curing Issue: ${error.message}. Please restore values.`);
-          setIsRazorpayModalOpen(false);
-        }
-      }, 1500);
-    }, 2000);
-  };
-
+  
   return (
     <div className="bg-brand-cream py-32 min-h-screen text-brand-black font-sans-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -598,200 +555,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-
-      {/* RAZORPAY GATEWAY MODAL OVERLAY */}
-      {isRazorpayModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden flex items-center justify-center p-4 font-sans-poppins">
-          <div className="absolute inset-0 bg-brand-black/80 backdrop-blur-xs" />
-
-          <div className="relative w-full max-w-md bg-brand-black border border-brand-gold/30 rounded-3xl p-6 shadow-2xl space-y-6 text-brand-cream animate-zoom-in text-left">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-brand-cream/15 font-sans-poppins">
-              <div className="flex items-center space-x-2">
-                <div className="h-5 w-5 bg-brand-gold text-brand-black rounded-lg flex items-center justify-center font-bold text-[10px]">
-                  R
-                </div>
-                <div>
-                  <h4 className="text-xs uppercase tracking-[0.2em] text-brand-cream/65 font-bold">
-                    Razorpay Secured Gateway
-                  </h4>
-                  <span className="text-[10px] text-brand-gold">
-                    Lavish Lathers Concierge
-                  </span>
-                </div>
-              </div>
-              <span className="font-serif-cormorant italic text-lg text-brand-gold font-bold">
-                ₹{grandTotal - discount}
-              </span>
-            </div>
-
-            {/* Linking screen */}
-            {paymentStep === "linking" && (
-              <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in">
-                <Loader2 className="h-8 w-8 text-brand-gold animate-spin" />
-                <p className="text-xs text-brand-cream/70 uppercase tracking-widest font-bold">
-                  Establishing secure handshake...
-                </p>
-              </div>
-            )}
-
-            {/* Options Selection Choice Screen */}
-            {paymentStep === "choice" && (
-              <div className="space-y-5 animate-fade-in font-sans-poppins">
-                <span className="text-[10px] uppercase tracking-widest text-brand-cream/50 font-bold">
-                  Select Preferred Method
-                </span>
-
-                {/* Methods choices grids */}
-                <div className="grid grid-cols-3 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod("card")}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
-                      selectedMethod === "card"
-                        ? "bg-brand-gold text-brand-black border-transparent font-bold"
-                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
-                    }`}
-                  >
-                    <CreditCard className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase tracking-widest">
-                      Card
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod("upi")}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
-                      selectedMethod === "upi"
-                        ? "bg-brand-gold text-brand-black border-transparent font-bold"
-                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
-                    }`}
-                  >
-                    <Sparkles className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase tracking-widest">
-                      UPI / GPAY
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod("netbank")}
-                    className={`p-3 rounded-xl border text-center transition-all cursor-pointer ${
-                      selectedMethod === "netbank"
-                        ? "bg-brand-gold text-brand-black border-transparent font-bold"
-                        : "bg-brand-black border-brand-cream/20 text-brand-cream hover:border-brand-gold"
-                    }`}
-                  >
-                    <ChevronRight className="h-4.5 w-4.5 mx-auto mb-1" />
-                    <span className="text-[10px] uppercase tracking-widest">
-                      Netbank
-                    </span>
-                  </button>
-                </div>
-
-                {/* Selected form mock details */}
-                <div className="bg-[#141414] p-4 rounded-xl space-y-3 font-sans-inter text-xs text-brand-cream/75 text-left">
-                  {selectedMethod === "card" && (
-                    <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45 font-sans-poppins font-bold">
-                        Patron Mock Card credentials
-                      </p>
-                      <input
-                        type="text"
-                        placeholder="Card Number"
-                        defaultValue="4111 2222 3333 4444"
-                        disabled
-                        className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono"
-                      />
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          placeholder="Expiry"
-                          defaultValue="12/29"
-                          disabled
-                          className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center"
-                        />
-                        <input
-                          type="password"
-                          placeholder="CVV"
-                          defaultValue="999"
-                          disabled
-                          className="bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono text-center"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedMethod === "upi" && (
-                    <div className="space-y-2">
-                      <p className="text-[10px] uppercase tracking-widest text-brand-cream/45 font-sans-poppins font-bold">
-                        UPI ID Reference
-                      </p>
-                      <input
-                        type="text"
-                        placeholder="UPI ID"
-                        defaultValue="patron@okaxis"
-                        disabled
-                        className="w-full bg-brand-black/60 border border-brand-cream/15 p-2 rounded-lg text-brand-gold font-mono"
-                      />
-                    </div>
-                  )}
-
-                  {selectedMethod === "netbank" && (
-                    <div className="space-y-1">
-                      <p>
-                        Corporate accounts pre-authorized: State Bank of Mysore
-                        / Royal ICICI.
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2.5 font-sans-poppins text-[10px]">
-                  <button
-                    type="button"
-                    onClick={() => setIsRazorpayModalOpen(false)}
-                    className="flex-1 py-3 bg-transparent border border-brand-cream/20 text-brand-cream hover:border-red-400 hover:text-red-400 rounded-xl transition-all tracking-widest font-bold uppercase cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSimulatePaymentProcess}
-                    className="flex-1 py-3 bg-brand-gold hover:bg-brand-cream text-brand-black rounded-xl transition-all tracking-widest font-bold uppercase cursor-pointer"
-                  >
-                    Authorize Payment
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Processing and feedback line */}
-            {paymentStep === "processing" && (
-              <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in select-none">
-                <Loader2 className="h-8 w-8 text-brand-gold animate-spin" />
-                <p className="text-xs text-brand-cream/80 uppercase tracking-widest font-bold">
-                  Processing transaction &amp; securing inventory slots...
-                </p>
-              </div>
-            )}
-
-            {/* Success Feedback */}
-            {paymentStep === "success" && (
-              <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fade-in select-none">
-                <CheckCircle2 className="h-10 w-10 text-emerald-400 scale-110 transition-transform duration-500" />
-                <p className="text-xs text-emerald-300 uppercase tracking-widest font-bold font-sans-poppins">
-                  Transaction Verified Successfully!
-                </p>
-                <p className="text-[10px] text-brand-cream/45 font-sans-poppins">
-                  Generating your bespoke wax-seal scroll ID...
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

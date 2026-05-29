@@ -68,21 +68,63 @@ export interface CheckoutDetails {
   notes?: string;
 }
 
+export interface OrderItem {
+  productId: string;
+  registryId: string;
+
+  name: string;
+
+  price: number;
+
+  quantity: number;
+
+  isGift?: boolean;
+
+  giftNote?: string;
+
+  giftRecipient?: string;
+}
+
 export interface Order {
-  id: string;
-  items: CartItem[];
-  shippingDetails: CheckoutDetails;
-  subtotal: number;
-  shipping: number;
-  total: number;
-  date: string;
-  paymentId: string;
-  paymentStatus: 'pending' | 'completed' | 'failed';
-  status: 'processing' | 'shipped' | 'delivered';
+  _id: string;
+
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+
+  shippingAddress: {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    instructions?: string;
+  };
+
+  items: OrderItem[];
+
+  pricing: {
+    subtotal: number;
+    shipping: number;
+    total: number;
+  };
+
+  paymentStatus:
+    | "pending"
+    | "paid"
+    | "failed";
+
+  orderStatus:
+    | "processing"
+    | "shipped"
+    | "delivered";
+
+  createdAt: string;
 }
 
 export interface ContactMessage {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   phone?: string;

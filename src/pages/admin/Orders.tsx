@@ -33,8 +33,8 @@ export default function AdminOrders() {
       const res = await orderApi.updateOrderStatus(id, newStatus);
       if (res.success) {
         // Update in layout state
-        setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
-        if (selectedOrder?.id === id) {
+        setOrders(prev => prev.map(o => o._id === id ? { ...o, status: newStatus } : o));
+        if (selectedOrder?._id === id) {
           setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
         }
       }
@@ -91,7 +91,7 @@ export default function AdminOrders() {
                   <tbody className="divide-y divide-brand-cream/5 text-brand-cream/75">
                     {orders.map((o) => (
                       <tr 
-                        key={o.id} 
+                        key={o._id} 
                         className={`hover:bg-brand-cream/5 transition-colors cursor-pointer ${selectedOrder?.id === o.id ? 'bg-brand-cream/5 border-l-2 border-brand-gold' : ''}`}
                         onClick={() => setSelectedOrder(o)}
                       >

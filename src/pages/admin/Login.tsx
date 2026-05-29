@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ShieldAlert, LogIn, Lock, Mail } from 'lucide-react';
-import { authApi } from '../../api/authApi';
-import { useApp } from '../../context/AppContext';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ShieldAlert, LogIn, Lock, Mail } from "lucide-react";
+import { authApi } from "../../api/authApi";
+import { useApp } from "../../context/AppContext";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { adminLogin, isAdminAuthenticated } = useApp();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Redirect if already authenticated
@@ -32,11 +32,13 @@ export default function AdminLogin() {
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const response = await authApi.login(email, password);
-      if (response.success && response.token) {
+
+      // Check if token exists directly (or if your API returns data inside a nested property)
+      if (response && response.token) {
         adminLogin(response.token);
         navigate(from, { replace: true });
       } else {
@@ -52,22 +54,25 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-[#0F0E0D] text-brand-cream flex flex-col justify-center items-center py-20 px-4 select-none relative">
-      
       {/* Golden flare backlight */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-md w-full relative z-10 space-y-8 animate-fade-in text-center">
-        
         {/* Brand Header */}
         <div className="space-y-2">
-          <span className="text-[9px] uppercase tracking-[0.45em] font-sans-poppins font-bold text-brand-gold block">Secured Vault API</span>
-          <h1 className="font-serif-playfair text-3xl font-medium tracking-wide">Lavish Lathers Console</h1>
-          <p className="text-xs text-brand-cream/55 font-light font-sans-inter">Please verify your identities to curate batch logs.</p>
+          <span className="text-[9px] uppercase tracking-[0.45em] font-sans-poppins font-bold text-brand-gold block">
+            Secured Vault API
+          </span>
+          <h1 className="font-serif-playfair text-3xl font-medium tracking-wide">
+            Lavish Lathers Console
+          </h1>
+          <p className="text-xs text-brand-cream/55 font-light font-sans-inter">
+            Please verify your identities to curate batch logs.
+          </p>
         </div>
 
         {/* Credentials Form Box */}
         <div className="bg-[#141312] border border-brand-cream/10 p-8 rounded-[2.5rem] shadow-2xl space-y-6">
-          
           {error && (
             <div className="p-3 bg-red-950/40 border border-red-800/40 text-red-300 text-xs rounded-xl flex items-center space-x-2 text-left animate-shake">
               <ShieldAlert className="h-4 w-4 text-red-400 shrink-0" />
@@ -75,11 +80,15 @@ export default function AdminLogin() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-left font-sans-inter">
-            
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 text-left font-sans-inter"
+          >
             {/* Email input */}
             <div className="space-y-1.5">
-              <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold">Consul User Email</label>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold">
+                Consul User Email
+              </label>
               <div className="relative">
                 <input
                   type="email"
@@ -96,7 +105,9 @@ export default function AdminLogin() {
 
             {/* Password input */}
             <div className="space-y-1.5">
-              <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold">Secure Passphrase</label>
+              <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold">
+                Secure Passphrase
+              </label>
               <div className="relative">
                 <input
                   type="password"
@@ -113,8 +124,12 @@ export default function AdminLogin() {
 
             {/* Helper block */}
             <div className="text-[10px] text-brand-cream/45 bg-[#0F0E0D] p-3 rounded-lg border border-brand-cream/5 leading-relaxed text-center font-sans-poppins">
-              Demo access credentials:<br />
-              <strong className="text-brand-gold select-all">admin@lavishlathers.com</strong> / <strong className="text-brand-gold select-all">adminpassword</strong>
+              Demo access credentials:
+              <br />
+              <strong className="text-brand-gold select-all">
+                admin@lavishlathers.com
+              </strong>{" "}
+              / <strong className="text-brand-gold select-all">admin123</strong>
             </div>
 
             {/* Submit btn */}
@@ -133,21 +148,18 @@ export default function AdminLogin() {
                 </>
               )}
             </button>
-
           </form>
-
         </div>
 
         {/* Back link */}
         <div>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="text-[10px] uppercase tracking-widest text-brand-cream/45 hover:text-brand-gold transition-colors font-sans-poppins cursor-pointer"
           >
             ← Return to public apothecary
           </button>
         </div>
-
       </div>
     </div>
   );
