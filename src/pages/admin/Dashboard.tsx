@@ -12,7 +12,24 @@ export default function AdminDashboard() {
     const fetchStatusValues = async () => {
       try {
         const responseData = await authApi.getDashboardStats();
-        setStats(responseData);
+        
+        // 🛠️ FRONTEND INTERCEPT: Transforming backend keys to match UI needs
+        const transformedData = {
+          totalSales: responseData?.totalRevenue || 0, // Maps backend totalRevenue -> totalSales
+          totalOrders: responseData?.totalOrders || 0,  
+          productsCount: responseData?.totalProducts || 0, // Maps backend totalProducts -> productsCount
+          messagesCount: responseData?.messagesCount || 0, // Graceful fallback
+          
+          // Fallback structure so the .entries loop doesn't crash on undefined
+          salesByCategory: responseData?.salesByCategory || {
+            "Herbal Soaps": 0,
+            "Essential Oils": 0,
+            "Gift Boxes": 0,
+            "Souvenirs": 0
+          }
+        };
+
+        setStats(transformedData);
       } catch (err) {
         console.error("Dashboard stats retrieval error:", err);
       } finally {
