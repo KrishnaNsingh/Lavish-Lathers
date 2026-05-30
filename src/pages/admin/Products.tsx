@@ -79,7 +79,8 @@ export default function AdminProducts() {
     try {
       const res = await productApi.deleteProduct(id);
       if (res.success) {
-        fetchProducts();
+        // Optimize local UI state directly
+        setProducts((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (err) {
       console.error("Failed to delete admin product:", err);
@@ -94,7 +95,6 @@ export default function AdminProducts() {
       return;
     }
 
-    // Explicitly types and maps options matching your core structures
     const payload = {
       registryId,
       name,
@@ -107,17 +107,24 @@ export default function AdminProducts() {
       featured,
       souvenir,
       imageUrl,
-      customMessageAvailable: souvenir, // Auto-flags customization rules for custom gift items
+      customMessageAvailable: souvenir,
+      ingredients: editingProduct?.ingredients || [],
+      benefits: editingProduct?.benefits || []
     };
 
     try {
       if (editingProduct) {
-        await productApi.editProduct(editingProduct._id, payload);
+        const res = await productApi.editProduct(editingProduct._id, payload);
+        // Clean dynamic UI update mapping
+        setProducts((prev) =>
+          prev.map((p) => (p._id === editingProduct._id ? res.product : p))
+        );
       } else {
-        await productApi.addProduct(payload);
+        const res = await productApi.addProduct(payload);
+        // Append newly created database product record directly
+        setProducts((prev) => [res.product, ...prev]);
       }
       setIsFormOpen(false);
-      fetchProducts();
     } catch (err) {
       console.error("Product submission failed:", err);
       alert("Bespoke product registration failed. Try checking API configurations.");
@@ -203,7 +210,7 @@ export default function AdminProducts() {
                         )}
                       </td>
 
-                      {/* Badges configured against structural types */}
+                      {/* Badges */}
                       <td className="px-6 py-4 space-x-1.5 font-sans-poppins text-[9px]">
                         {p.featured && (
                           <span className="bg-brand-gold/15 text-brand-gold px-2 py-0.5 rounded-md uppercase font-semibold">Bestseller</span>
