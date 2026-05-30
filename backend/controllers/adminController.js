@@ -122,7 +122,35 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
 
+    const order =
+      await Order.findByIdAndUpdate(
+        req.params.id,
+        {
+          orderStatus: status,
+        },
+        {
+          new: true,
+        }
+      );
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+
+    res.json(order);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   getAllOrders,
@@ -131,4 +159,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  updateOrderStatus,
 };

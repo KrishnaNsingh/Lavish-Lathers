@@ -140,9 +140,10 @@ export interface Order {
     | "failed";
 
   orderStatus:
-    | "processing"
-    | "shipped"
-    | "delivered";
+  | "pending"
+  | "packaging"
+  | "shipped"
+  | "delivered";
 
   createdAt: string;
 }

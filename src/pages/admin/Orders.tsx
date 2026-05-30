@@ -38,14 +38,16 @@ export default function AdminOrders() {
 
   const handleStatusChange = async (
     id: string,
-    newStatus: "processing" | "shipped" | "delivered",
+    newStatus: "pending" | "packaging" | "shipped" | "delivered",
   ) => {
     try {
       const res = await orderApi.updateOrderStatus(id, newStatus);
       if (res.success) {
         // Update in layout state
         setOrders((prev) =>
-          prev.map((o) => (o._id === id ? { ...o, orderStatus: newStatus } : o)),
+          prev.map((o) =>
+            o._id === id ? { ...o, orderStatus: newStatus } : o,
+          ),
         );
         if (selectedOrder?._id === id) {
           setSelectedOrder((prev) =>
@@ -124,7 +126,7 @@ export default function AdminOrders() {
                       <th className="px-5 py-4 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-brand-cream/5 text-brand-cream/75">
+                  <tbody className="divide-y divide-brand-cream/5 text-brand-cream/77">
                     {orders.map((o) => (
                       <tr
                         key={o._id}
@@ -178,16 +180,27 @@ export default function AdminOrders() {
                             >
                               <Eye className="h-4 w-4" />
                             </button>
+
+                            {/* 🛠️ WIRED SELECT COMPONENT */}
                             <select
                               value={o.orderStatus}
-                              onChange={(e) =>
-                                handleStatusChange(o._id, e.target.value as any)
-                              }
+                              onChange={async (e) => {
+                                // Calls api, runs UI state mutation map, then forces state reload
+                                await handleStatusChange(
+                                  o._id,
+                                  e.target.value as any,
+                                );
+                                await fetchOrders();
+                              }}
                               className="bg-[#1F1E1D] border border-brand-cream/15 text-brand-cream/80 px-2 py-1.5 rounded-lg text-[9px] font-sans-poppins uppercase focus:outline-none focus:border-brand-gold cursor-pointer"
                             >
-                              <option value="processing">Pack</option>
-                              <option value="shipped">Ship</option>
-                              <option value="delivered">Arrived</option>
+                              <option value="pending">Pending</option>
+
+                              <option value="packaging">Packaging</option>
+
+                              <option value="shipped">Shipped</option>
+
+                              <option value="delivered">Delivered</option>
                             </select>
                           </div>
                         </td>
@@ -198,10 +211,9 @@ export default function AdminOrders() {
               </div>
             </div>
 
-            {/* RIGHT SIDEBAR DETAILS: Open only when a specific order is selected */}
+            {/* RIGHT SIDEBAR DETAILS */}
             {selectedOrder && (
               <div className="lg:col-span-5 bg-[#141211] border border-brand-cream/15 p-6 rounded-[2rem] space-y-6 text-xs text-brand-cream/90 animate-zoom-in">
-                {/* Header detail */}
                 <div className="flex items-center justify-between border-b border-brand-cream/10 pb-4 font-sans-poppins">
                   <div className="space-y-0.5">
                     <span className="text-[10px] uppercase tracking-widest text-brand-gold font-bold">
@@ -219,9 +231,7 @@ export default function AdminOrders() {
                   </button>
                 </div>
 
-                {/* Sub details: dispatch addresses, phone numbers, client emails */}
                 <div className="space-y-4">
-                  {/* Address box */}
                   <div className="space-y-1.5">
                     <span className="text-[9px] uppercase tracking-widest text-brand-cream/45 block font-bold font-sans-poppins">
                       Gifting Dispatch Address
@@ -236,13 +246,11 @@ export default function AdminOrders() {
                         {selectedOrder.shippingAddress.street},<br />
                         {selectedOrder.shippingAddress.city},{" "}
                         {selectedOrder.shippingAddress.state || ""}{" "}
-                        {selectedOrder.shippingAddress.postalCode},{" "}
-                        {/* {selectedOrder.shippingAddress.country} */}
+                        {selectedOrder.shippingAddress.postalCode}
                       </p>
                     </div>
                   </div>
 
-                  {/* Packaged elements item list */}
                   <div className="space-y-2">
                     <span className="text-[9px] uppercase tracking-widest text-brand-cream/45 block font-bold font-sans-poppins">
                       Itemized Formulations Package
@@ -254,25 +262,14 @@ export default function AdminOrders() {
                           key={index}
                           className="flex gap-3 pt-2.5 first:pt-0 items-start"
                         >
-                          <div className="w-10 aspect-square rounded bg-[#242221] overflow-hidden shrink-0">
-                            {/* <img
-                              src={item.product?.images?.[0]}
-                              referrerPolicy="no-referrer"
-                              alt=""
-                              className="w-full h-full object-cover"
-                            /> */}
-                          </div>
                           <div className="flex-grow text-left space-y-0.5">
                             <h5 className="font-serif-playfair text-[13px] leading-tight text-brand-cream font-medium line-clamp-1">
-                              {/* {item.product?.name} (x{item.quantity}) */}
-                               {item.name} (x{item.quantity})
+                              {item.name} (x{item.quantity})
                             </h5>
                             <span className="text-[10px] text-brand-cream/45">
-                              {/* {item.product?.category} */}
                               Registry: {item.registryId}
                             </span>
 
-                            {/* Scroll detail wax seal */}
                             {item.isGift && (
                               <div className="mt-1.5 p-2 bg-[#211210] border border-red-900/30 text-[9px] text-red-300 rounded-md leading-normal select-all">
                                 <strong className="text-brand-gold uppercase tracking-wider block mb-0.5 font-sans-poppins text-[8px]">
@@ -287,7 +284,6 @@ export default function AdminOrders() {
                     </div>
                   </div>
 
-                  {/* Transaction info values lines */}
                   <div className="border-t border-brand-cream/5 pt-4 text-xs space-y-2 font-sans-inter">
                     <div className="flex justify-between text-brand-cream/65">
                       <span>Gross Cured Subtotal</span>

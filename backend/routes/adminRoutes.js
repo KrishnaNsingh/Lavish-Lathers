@@ -7,6 +7,7 @@ const { getAllOrders,
     createProduct,
     updateProduct,
     deleteProduct,
+    updateOrderStatus,
   } = require("../controllers/adminController");
 
 const { protectAdmin } = require("../middleware/authMiddleware");
@@ -34,6 +35,12 @@ router.delete(
   "/products/:id",
   protectAdmin,
   deleteProduct
+);
+
+router.put(
+  "/orders/:id/status",
+  protectAdmin,
+  updateOrderStatus
 );
 
 module.exports = router;

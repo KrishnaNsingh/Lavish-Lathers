@@ -25,7 +25,7 @@ export const orderApi = {
   // ADMIN ONLY: Update shipping status
   updateOrderStatus: async (
     id: string,
-    status: 'processing' | 'shipped' | 'delivered'
+    status: 'pending' | 'packaging' | 'shipped' | 'delivered'
   ): Promise<{ success: boolean; order: Order }> => {
     return apiClient<{ success: boolean; order: Order }>(`/admin/orders/${id}/status`, {
       method: 'PUT',
