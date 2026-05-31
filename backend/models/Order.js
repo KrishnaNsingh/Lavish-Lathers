@@ -23,6 +23,8 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
         },
 
+        registryId: String,
+
         name: String,
 
         quantity: Number,
@@ -30,6 +32,15 @@ const orderSchema = new mongoose.Schema(
         price: Number,
 
         imageUrl: String,
+
+        isGift: {
+          type: Boolean,
+          default: false,
+        },
+
+        giftNote: String,
+
+        giftRecipient: String,
 
         customMessage: String,
       },
@@ -56,12 +67,17 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       enum: ["pending", "packaging", "shipped", "delivered"],
-      default: "processing",
+      default: "pending",
     },
   },
   {
     timestamps: true,
   },
 );
+
+// Add index on paymentStatus for dashboard sales aggregates
+orderSchema.index({ "payment.paymentStatus": 1 });
+// Add index on createdAt for sorting logs
+orderSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("Order", orderSchema);

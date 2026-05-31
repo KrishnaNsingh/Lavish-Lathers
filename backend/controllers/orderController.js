@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 
 const createRazorpayOrder = async (req, res) => {
   try {
-    const { total } = req.body;
+    const { total, customer, shippingAddress, items, pricing } = req.body;
 
     const options = {
       amount: total * 100,
@@ -22,9 +22,21 @@ const createRazorpayOrder = async (req, res) => {
       receipt: "receipt_" + Date.now(),
     };
 
-    const order = await razorpay.orders.create(options);
+    const razorpayOrder = await razorpay.orders.create(options);
 
-    res.json(order);
+    // Save pending order details in database prior to payment popup opening
+    await Order.create({
+      customer,
+      shippingAddress,
+      items,
+      pricing,
+      payment: {
+        razorpayOrderId: razorpayOrder.id,
+        paymentStatus: "pending",
+      },
+    });
+
+    res.json(razorpayOrder);
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -64,44 +76,44 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
     }
 
     // STEP 3
-    // Save final order
+    // Find and update the existing order
+    let order = await Order.findOne({ "payment.razorpayOrderId": razorpay_order_id });
 
-    const order = await Order.create({
-      customer,
-
-      shippingAddress,
-
-      items,
-
-      pricing,
-
-      payment: {
-        razorpayOrderId: razorpay_order_id,
-
-        razorpayPaymentId: razorpay_payment_id,
-
-        razorpaySignature: razorpay_signature,
-
-        paymentStatus: "paid",
-      },
-    });
+    if (order) {
+      order.payment.razorpayPaymentId = razorpay_payment_id;
+      order.payment.razorpaySignature = razorpay_signature;
+      order.payment.paymentStatus = "paid";
+      await order.save();
+    } else {
+      // Fallback if order wasn't saved beforehand
+      order = await Order.create({
+        customer,
+        shippingAddress,
+        items,
+        pricing,
+        payment: {
+          razorpayOrderId: razorpay_order_id,
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature,
+          paymentStatus: "paid",
+        },
+      });
+    }
 
     try {
       await sendCustomerOrderEmail(order);
-
       await sendAdminOrderEmail(order);
-
       console.log("Order emails sent successfully");
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
     }
+
     // STEP 4
     // Return success
 
     res.status(201).json({
       success: true,
       message: "Payment verified & order created",
-
       order,
     });
   } catch (error) {

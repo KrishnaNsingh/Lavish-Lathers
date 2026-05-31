@@ -46,12 +46,12 @@ export default function OrderConfirmationView({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-beige/25 pb-4">
             <div>
               <span className="text-[10px] uppercase tracking-widest text-brand-black/45 block mb-0.5">Order Reference ID</span>
-              <span className="font-mono text-sm text-brand-black font-bold tracking-wider">{order.id}</span>
+              <span className="font-mono text-sm text-brand-black font-bold tracking-wider">{order._id}</span>
             </div>
 
             <div>
               <span className="text-[10px] uppercase tracking-widest text-brand-black/45 block mb-0.5">Transaction Reference ID</span>
-              <span className="font-mono text-xs text-brand-black/65">{order.paymentId}</span>
+              <span className="font-mono text-xs text-brand-black/65">{order.payment?.razorpayPaymentId || "N/A"}</span>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ export default function OrderConfirmationView({
           <div className="flex items-start space-x-3 bg-brand-pink/40 border border-brand-beige/20 p-4 rounded-2xl">
             <Calendar className="h-5 w-5 text-brand-gold shrink-0 mt-0.5" />
             <div className="text-xs space-y-1">
-              <span className="font-sans-poppins font-semibold uppercase tracking-wider text-[10px] text-brand-black">Estimated Dispatch & Delivery Date</span>
+              <span className="font-sans-poppins font-semibold uppercase tracking-wider text-[10px] text-brand-black">Estimated Dispatch &amp; Delivery Date</span>
               <p className="text-brand-black/75">
                 Being small-batch products, your selections will undergo secondary curation checks and ship out within 48 hours. Estimated to cuddle your doorstep in <strong>4-7 business days</strong>.
               </p>
@@ -85,7 +85,7 @@ export default function OrderConfirmationView({
 
                     <div className="text-xs space-y-1">
                       <p className="font-sans-poppins font-medium uppercase text-[9px] tracking-wider text-brand-gold">
-                        Attached Scroll for: {giftItem.giftRecipient || 'My Recipient'} &bull; {giftItem.product.name}
+                        Attached Scroll for: {giftItem.giftRecipient || 'My Recipient'} &bull; {giftItem.name}
                       </p>
                       <p className="font-serif-cormorant italic text-sm text-brand-black/85 leading-relaxed bg-brand-cream p-2 rounded-lg border border-brand-beige/20">
                         &ldquo;{giftItem.giftNote || 'No message provided'}&rdquo;
@@ -106,19 +106,19 @@ export default function OrderConfirmationView({
           <div className="border-t border-brand-beige/20 pt-4 text-xs space-y-2">
              <div className="flex justify-between text-brand-black/60">
                 <span>Guest Email Contact</span>
-                <span className="font-semibold text-brand-black">{order.shippingDetails.email}</span>
+                <span className="font-semibold text-brand-black">{order.customer.email}</span>
              </div>
              <div className="flex justify-between text-brand-black/60">
                 <span>Contact Phone</span>
-                <span className="font-semibold text-brand-black">{order.shippingDetails.phone}</span>
+                <span className="font-semibold text-brand-black">{order.customer.phone}</span>
              </div>
              <div className="flex justify-between text-brand-black/60">
                 <span>Dispatched Address</span>
-                <span className="font-semibold text-brand-black text-right max-w-[220px] truncate">{order.shippingDetails.address}, {order.shippingDetails.city}</span>
+                <span className="font-semibold text-brand-black text-right max-w-[220px] truncate">{order.shippingAddress.street}, {order.shippingAddress.city}</span>
              </div>
              <div className="flex justify-between text-brand-black/90 pt-2 border-t border-brand-beige/10 font-sans-poppins font-semibold">
                 <span>Final Clearance Total</span>
-                <span className="text-brand-gold font-bold">₹{order.total.toFixed(2)}</span>
+                <span className="text-brand-gold font-bold">₹{order.pricing.total.toFixed(2)}</span>
              </div>
           </div>
 
@@ -136,7 +136,7 @@ export default function OrderConfirmationView({
 
           <button
             onClick={() => {
-              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + order.id + " to request silk ribbon design selections!");
+              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + order._id + " to request silk ribbon design selections!");
             }}
             className="w-full sm:w-auto py-4 px-8 bg-transparent hover:bg-brand-pink border border-brand-black/20 text-brand-black rounded-full font-sans-poppins text-xs font-bold uppercase tracking-widest transition-colors duration-300 flex items-center justify-center space-x-2 focus:outline-none"
             id="order-whatsapp-assist"

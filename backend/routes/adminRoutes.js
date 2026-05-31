@@ -5,11 +5,14 @@ const router = express.Router();
 const {
   getAllOrders,
   getDashboardStats,
+  updateOrderStatus,
+} = require("../controllers/adminController");
+
+const {
   createProduct,
   updateProduct,
   deleteProduct,
-  updateOrderStatus,
-} = require("../controllers/adminController");
+} = require("../controllers/productController");
 
 const { sendAdminOrderEmail } = require("../services/emailService");
 
@@ -26,7 +29,7 @@ router.delete("/products/:id", protectAdmin, deleteProduct);
 
 router.put("/orders/:id/status", protectAdmin, updateOrderStatus);
 
-router.get("/test-email", async (req, res) => {
+router.get("/test-email", protectAdmin, async (req, res) => {
   try {
     await sendAdminOrderEmail({
       customer: {

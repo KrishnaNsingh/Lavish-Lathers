@@ -38,6 +38,16 @@ export interface Product {
   createdAt?: string;
 
   updatedAt?: string;
+
+  // Legacy/optional properties for compatibility with views
+  id?: string;
+  isBestSeller?: boolean;
+  rating?: number;
+  reviewsCount?: number;
+  type?: string;
+  isCollectible?: boolean;
+  description?: string;
+  images?: string[];
 }
 
 export interface CreateOrderPayload {
@@ -128,16 +138,21 @@ export interface Order {
 
   items: OrderItem[];
 
+  payment?: {
+    razorpayOrderId?: string;
+    razorpayPaymentId?: string;
+    razorpaySignature?: string;
+    paymentStatus: "pending" | "paid" | "failed";
+  };
+
+  // Kept for backward compatibility
+  paymentStatus?: "pending" | "paid" | "failed";
+
   pricing: {
     subtotal: number;
     shipping: number;
     total: number;
   };
-
-  paymentStatus:
-    | "pending"
-    | "paid"
-    | "failed";
 
   orderStatus:
   | "pending"

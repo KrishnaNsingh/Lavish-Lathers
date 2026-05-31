@@ -8,11 +8,11 @@ const getProducts = async (req, res) => {
       filter.category = req.query.category;
     }
 
-    if (req.query.isBestSeller === "true") {
+    if (req.query.isBestSeller === "true" || req.query.featured === "true") {
       filter.featured = true;
     }
 
-    if (req.query.isCollectible === "true") {
+    if (req.query.isCollectible === "true" || req.query.souvenir === "true") {
       filter.souvenir = true;
     }
 
@@ -111,6 +111,8 @@ const deleteProduct = async (req, res) => {
     await product.deleteOne();
 
     res.json({
+      success: true,
+      id: req.params.id,
       message: "Product deleted",
     });
   } catch (error) {

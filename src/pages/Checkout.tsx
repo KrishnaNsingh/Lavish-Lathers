@@ -86,6 +86,33 @@ export default function CheckoutPage() {
 
           body: JSON.stringify({
             total: grandTotal - discount,
+            customer: {
+              name: formData.fullName,
+              email: formData.email,
+              phone: formData.phone,
+            },
+            shippingAddress: {
+              street: formData.address,
+              city: formData.city,
+              state: formData.state,
+              postalCode: formData.zipCode,
+              instructions: formData.notes,
+            },
+            items: cart.map((item) => ({
+              productId: item.product._id,
+              registryId: item.product.registryId,
+              name: item.product.name,
+              price: item.product.price,
+              quantity: item.quantity,
+              isGift: item.isGift,
+              giftNote: item.giftNote,
+              giftRecipient: item.giftRecipient,
+            })),
+            pricing: {
+              subtotal,
+              shipping: shippingCharge,
+              total: grandTotal - discount,
+            },
           }),
         },
       );
@@ -527,8 +554,8 @@ export default function CheckoutPage() {
                       FREE
                     </span>
                   ) : (
-                    <span className="font-serif-cormorant text-sm text-brand-black font-semibold font-serif-cormorant">
-                      ₹9.50
+                    <span className="font-serif-cormorant text-sm text-brand-black font-semibold">
+                      ₹{shippingCharge}
                     </span>
                   )}
                 </div>

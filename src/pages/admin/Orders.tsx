@@ -195,7 +195,6 @@ export default function AdminOrders() {
                                   o._id,
                                   e.target.value as any,
                                 );
-                                await fetchOrders();
                               }}
                               className="bg-[#1F1E1D] border border-brand-cream/15 text-brand-cream/80 px-2 py-1.5 rounded-lg text-[9px] font-sans-poppins uppercase focus:outline-none focus:border-brand-gold cursor-pointer"
                             >

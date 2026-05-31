@@ -61,12 +61,12 @@ export default function OrderConfirmation() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-beige/25 pb-4">
             <div>
               <span className="text-[10px] uppercase tracking-widest text-brand-black/45 block mb-0.5 font-bold">Order Reference ID</span>
-              <span className="font-mono text-sm text-brand-black font-bold tracking-wider">{confirmedOrder.id}</span>
+              <span className="font-mono text-sm text-brand-black font-bold tracking-wider">{confirmedOrder._id}</span>
             </div>
 
             <div>
               <span className="text-[10px] uppercase tracking-widest text-brand-black/45 block mb-0.5 font-bold">Transaction Reference ID</span>
-              <span className="font-mono text-xs text-brand-black/65">{confirmedOrder.paymentId}</span>
+              <span className="font-mono text-xs text-brand-black/65">{confirmedOrder.payment?.razorpayPaymentId || "N/A"}</span>
             </div>
           </div>
 
@@ -100,7 +100,7 @@ export default function OrderConfirmation() {
 
                     <div className="text-xs space-y-1 text-left">
                       <p className="font-sans-poppins font-medium uppercase text-[9px] tracking-wider text-brand-gold">
-                        Attached Scroll for: {giftItem.giftRecipient || 'My Recipient'} &bull; {giftItem.product.name}
+                        Attached Scroll for: {giftItem.giftRecipient || 'My Recipient'} &bull; {giftItem.name}
                       </p>
                       <p className="font-serif-cormorant italic text-sm text-brand-black/85 leading-relaxed bg-brand-cream p-2 rounded-lg border border-brand-beige/20 font-serif-cormorant">
                         &ldquo;{giftItem.giftNote || 'No message provided'}&rdquo;
@@ -121,19 +121,19 @@ export default function OrderConfirmation() {
           <div className="border-t border-brand-beige/20 pt-4 text-xs space-y-2">
              <div className="flex justify-between text-brand-black/60">
                 <span>Guest Email Contact</span>
-                <span className="font-semibold text-brand-black">{confirmedOrder.shippingDetails.email}</span>
+                <span className="font-semibold text-brand-black">{confirmedOrder.customer.email}</span>
              </div>
              <div className="flex justify-between text-brand-black/60">
                 <span>Contact Phone</span>
-                <span className="font-semibold text-brand-black">{confirmedOrder.shippingDetails.phone}</span>
+                <span className="font-semibold text-brand-black">{confirmedOrder.customer.phone}</span>
              </div>
              <div className="flex justify-between text-brand-black/60">
                 <span>Dispatched Address</span>
-                <span className="font-semibold text-brand-black text-right max-w-[220px] truncate">{confirmedOrder.shippingDetails.address}, {confirmedOrder.shippingDetails.city}</span>
+                <span className="font-semibold text-brand-black text-right max-w-[220px] truncate">{confirmedOrder.shippingAddress.street}, {confirmedOrder.shippingAddress.city}</span>
              </div>
              <div className="flex justify-between text-brand-black/90 pt-2 border-t border-brand-beige/10 font-sans-poppins font-semibold">
                 <span>Final Clearance Total</span>
-                <span className="text-brand-gold font-bold font-serif-cormorant">₹{confirmedOrder.total}</span>
+                <span className="text-brand-gold font-bold font-serif-cormorant">₹{confirmedOrder.pricing.total}</span>
              </div>
           </div>
 
@@ -151,7 +151,7 @@ export default function OrderConfirmation() {
 
           <button
             onClick={() => {
-              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + confirmedOrder.id + " to request silk ribbon design selections!");
+              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + confirmedOrder._id + " to request silk ribbon design selections!");
             }}
             className="w-full sm:w-auto py-4 px-8 bg-transparent hover:bg-brand-pink border border-brand-black/20 text-brand-black rounded-full font-sans-poppins text-xs font-bold uppercase tracking-widest transition-colors duration-300 flex items-center justify-center space-x-2 focus:outline-none cursor-pointer"
             id="order-whatsapp-assist"

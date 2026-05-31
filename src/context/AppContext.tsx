@@ -108,17 +108,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         it.giftRecipient === giftRecipient,
     );
 
-    let updated = [...cart];
+    let updated: CartItem[];
     if (existingIdx > -1) {
-      updated[existingIdx].quantity += quantity;
+      updated = cart.map((item, idx) =>
+        idx === existingIdx
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
+      );
     } else {
-      updated.push({
-        product,
-        quantity,
-        isGift,
-        giftNote,
-        giftRecipient,
-      });
+      updated = [
+        ...cart,
+        {
+          product,
+          quantity,
+          isGift,
+          giftNote,
+          giftRecipient,
+        },
+      ];
     }
 
     updateCartState(updated);

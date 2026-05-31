@@ -196,7 +196,7 @@ export default function ProductDetailsModal({
               <div className="flex items-center space-x-2 text-brand-gold text-[10px] font-semibold tracking-widest uppercase font-sans-poppins mb-2">
                 <Leaf className="h-3.5 w-3.5" />
                 <span>
-                  {product.artistryType === "souvenir"
+                  {product.artistryType === "Keepsake Souvenir"
                     ? "Premium Keepsake Souvenir"
                     : "Natural Botanical Facial Care"}
                 </span>
