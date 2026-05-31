@@ -2,6 +2,13 @@ require("dotenv").config();
 
 const app = require("./app");
 const connectDB = require("./config/db");
+const webhookRoutes = require("./routes/webhookRoutes");
+
+
+app.use(
+  "/api/webhooks",
+  webhookRoutes
+);
 
 connectDB();
 

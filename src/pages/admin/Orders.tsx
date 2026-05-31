@@ -61,24 +61,29 @@ export default function AdminOrders() {
     }
   };
 
-  const statusTags: Record<
-    string,
-    { bg: string; text: string; label: string }
-  > = {
-    processing: {
+  const statusTags = {
+    pending: {
+      bg: "bg-red-950/40 border-red-800/40",
+      text: "text-red-400",
+      label: "Pending",
+    },
+
+    packaging: {
       bg: "bg-amber-950/40 border-amber-800/40",
       text: "text-amber-400",
       label: "Curing/Packaging",
     },
+
     shipped: {
       bg: "bg-blue-950/40 border-blue-800/40",
       text: "text-blue-400",
-      label: "Dispatched via UPS",
+      label: "Dispatched",
     },
+
     delivered: {
       bg: "bg-emerald-950/40 border-emerald-800/40",
       text: "text-emerald-400",
-      label: "Patron Unboxed",
+      label: "Delivered",
     },
   };
 

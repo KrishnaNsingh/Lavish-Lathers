@@ -13,14 +13,14 @@ export default function AdminDashboard() {
       try {
         const responseData = await authApi.getDashboardStats();
         
-        // 🛠️ FRONTEND INTERCEPT: Transforming backend keys to match UI needs
+        // 🛠️ FRONTEND INTERCEPT: Properly maps backend metrics to your UI properties
         const transformedData = {
-          totalSales: responseData?.totalRevenue || 0, // Maps backend totalRevenue -> totalSales
-          totalOrders: responseData?.totalOrders || 0,  
-          productsCount: responseData?.totalProducts || 0, // Maps backend totalProducts -> productsCount
-          messagesCount: responseData?.messagesCount || 0, // Graceful fallback
+          totalSales: responseData?.totalRevenue || 0,     // Maps totalRevenue -> totalSales
+          productsCount: responseData?.totalProducts || 0,  // Maps totalProducts -> productsCount
+          pendingOrders: responseData?.totalOrders || 0,    // ⚡ FIXED: Maps totalOrders -> pendingOrders card!
+          messagesCount: responseData?.messagesCount || 0,  // Graceful fallback safeguard
           
-          // Fallback structure so the .entries loop doesn't crash on undefined
+          // Fallback structure so the progress bars render cleanly
           salesByCategory: responseData?.salesByCategory || {
             "Herbal Soaps": 0,
             "Essential Oils": 0,
@@ -81,9 +81,9 @@ export default function AdminDashboard() {
               <Activity className="h-5 w-5 text-brand-gold" />
             </div>
             <div>
-              <span className="text-[10px] text-brand-gold uppercase tracking-[0.2em] font-sans-poppins font-medium block">Cleared Orders</span>
+              <span className="text-[10px] text-brand-gold uppercase tracking-[0.2em] font-sans-poppins font-medium block">Total Orders</span>
               <h3 className="font-serif-playfair text-3xl font-bold font-semibold text-brand-cream mt-1">
-                {stats?.totalOrders || 0}
+                {stats?.pendingOrders || 0}
               </h3>
             </div>
             <span className="text-[9px] text-brand-cream/45 font-sans-inter font-light">
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* Categories bento and support links list splits */}
+        {/* Categories bento layout split */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* LEFT: Category curve breakdown list */}

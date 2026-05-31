@@ -2,6 +2,11 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Order = require("../models/Order");
 
+const {
+  sendCustomerOrderEmail,
+  sendAdminOrderEmail,
+} = require("../services/emailService");
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -81,6 +86,15 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
       },
     });
 
+    try {
+      await sendCustomerOrderEmail(order);
+
+      await sendAdminOrderEmail(order);
+
+      console.log("Order emails sent successfully");
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+    }
     // STEP 4
     // Return success
 
