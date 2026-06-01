@@ -77,7 +77,9 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
 
     // STEP 3
     // Find and update the existing order
-    let order = await Order.findOne({ "payment.razorpayOrderId": razorpay_order_id });
+    let order = await Order.findOne({
+      "payment.razorpayOrderId": razorpay_order_id,
+    });
 
     if (order) {
       order.payment.razorpayPaymentId = razorpay_payment_id;
@@ -102,20 +104,21 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
 
     try {
       await sendCustomerOrderEmail(order);
+
       await sendAdminOrderEmail(order);
+
       console.log("Order emails sent successfully");
     } catch (emailError) {
       console.error("Email sending failed:", emailError);
     }
 
-    // STEP 4
-    // Return success
-
     res.status(201).json({
       success: true,
       message: "Payment verified & order created",
+
       order,
     });
+    
   } catch (error) {
     res.status(500).json({
       success: false,

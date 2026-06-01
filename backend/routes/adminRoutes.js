@@ -18,6 +18,8 @@ const { sendAdminOrderEmail } = require("../services/emailService");
 
 const { protectAdmin } = require("../middleware/authMiddleware");
 
+const { exportOrdersExcel } = require("../controllers/adminController");
+
 router.get("/orders", protectAdmin, getAllOrders);
 router.get("/stats", protectAdmin, getDashboardStats);
 
@@ -29,30 +31,32 @@ router.delete("/products/:id", protectAdmin, deleteProduct);
 
 router.put("/orders/:id/status", protectAdmin, updateOrderStatus);
 
-router.get("/test-email", protectAdmin, async (req, res) => {
-  try {
-    await sendAdminOrderEmail({
-      customer: {
-        name: "Krishna",
-        email: "test@gmail.com",
-        phone: "9999999999",
-      },
+router.get("/orders/export", exportOrdersExcel);
 
-      pricing: {
-        total: 598,
-      },
+// router.get("/test-email", protectAdmin, async (req, res) => {
+//   try {
+//     await sendAdminOrderEmail({
+//       customer: {
+//         name: "Krishna",
+//         email: "test@gmail.com",
+//         phone: "9999999999",
+//       },
 
-      orderStatus: "pending",
+//       pricing: {
+//         total: 598,
+//       },
 
-      createdAt: new Date(),
-    });
+//       orderStatus: "pending",
 
-    res.send("Email sent");
-  } catch (error) {
-    console.error(error);
+//       createdAt: new Date(),
+//     });
 
-    res.status(500).send(error.message);
-  }
-});
+//     res.send("Email sent");
+//   } catch (error) {
+//     console.error(error);
+
+//     res.status(500).send(error.message);
+//   }
+// });
 
 module.exports = router;
