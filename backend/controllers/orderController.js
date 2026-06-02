@@ -1,7 +1,7 @@
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Order = require("../models/Order");
-
+const { appendOrderToSheet } = require("../services/orderSheetService");
 const {
   sendCustomerOrderEmail,
   sendAdminOrderEmail,
@@ -101,6 +101,10 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
         },
       });
     }
+
+    console.log("Before Google Sheet");
+    await appendOrderToSheet(order);
+    console.log("After Google Sheet");
 
     try {
       await sendCustomerOrderEmail(order);

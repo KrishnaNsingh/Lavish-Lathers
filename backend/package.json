@@ -17,6 +17,7 @@
     "dotenv": "^17.4.2",
     "exceljs": "^4.4.0",
     "express": "^5.2.1",
+    "googleapis": "^173.0.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.2",
     "razorpay": "^2.9.6",

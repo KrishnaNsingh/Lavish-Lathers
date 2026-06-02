@@ -6,3 +6,4 @@ coverage/
 *.log
 .env*
 !.env.example
+backend/config/google-service-account.json
