@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 const {
   sendCustomerOrderEmail,
   sendAdminOrderEmail,
+  sendPaymentFailedEmail,
 } = require("../services/emailService");
 
 const razorpayWebhook = async (req, res) => {
@@ -42,6 +43,42 @@ const razorpayWebhook = async (req, res) => {
           console.log("Webhook email notifications dispatched successfully");
         } catch (emailError) {
           console.error("Webhook email notification failure:", emailError);
+        }
+      }
+    }
+    
+    if (payload.event === "payment.failed") {
+      const paymentEntity =
+        payload.payload.payment.entity;
+
+      const razorpayOrderId =
+        paymentEntity.order_id;
+
+      const order =
+        await Order.findOne({
+          "payment.razorpayOrderId":
+            razorpayOrderId,
+        });
+
+      if (order) {
+        order.payment.paymentStatus =
+          "failed";
+
+        await order.save();
+
+        try {
+          await sendPaymentFailedEmail(
+            order
+          );
+
+          console.log(
+            "Payment failure email sent"
+          );
+        } catch (emailError) {
+          console.error(
+            "Payment failure email error:",
+            emailError
+          );
         }
       }
     }
