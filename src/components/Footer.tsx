@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Leaf, Sparkles, Send, Heart } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
@@ -186,31 +187,23 @@ export default function Footer() {
         {/* BOTTOM SECTION FOOTER */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans-poppins text-brand-cream/45 font-light uppercase tracking-wider">
           <div className="flex flex-wrap items-center gap-1.5 justify-center sm:justify-start">
-            <span>
+            <span className="text-neutral-300">
               &copy; 2026 Lavish Lathers Boutique. All Rights Reserved.
             </span>
-            <span>|</span>
-            <button
-              onClick={() =>
-                alert(
-                  "Lavish Lathers respects privacy. We do not sell or trade guest checkout details.",
-                )
-              }
-              className="hover:text-brand-cream transition-colors cursor-pointer"
+            <span className="text-neutral-600">|</span>
+            <Link
+              to="/privacy-policy"
+              className="text-neutral-400 hover:text-[#C5A059] transition-colors cursor-pointer font-sans-poppins font-medium tracking-wide normal-case"
             >
               Privacy Policy
-            </button>
-            <span>|</span>
-            <button
-              onClick={() =>
-                alert(
-                  "Terms: Formulas require unhurried delivery conditions. Returns accepted within 15 days of unboxing.",
-                )
-              }
-              className="hover:text-brand-cream transition-colors cursor-pointer"
+            </Link>
+            <span className="text-neutral-600">|</span>
+            <Link
+              to="/terms-conditions"
+              className="text-neutral-400 hover:text-[#C5A059] transition-colors cursor-pointer font-sans-poppins font-medium tracking-wide normal-case"
             >
-              Terms & Condition
-            </button>
+              Terms &amp; Conditions
+            </Link>
           </div>
 
           <div className="flex items-center space-x-1">
