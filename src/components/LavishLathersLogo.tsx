@@ -12,89 +12,97 @@ export default function LavishLathersLogo({
   return (
     <svg
       viewBox="0 0 1000 1000"
-      className={`${className} transition-transform duration-500 hover:rotate-3`}
+      className={`${className} transition-transform duration-500 hover:scale-102`}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Optional deep coal background matching image2 */}
+      {/* Background Mask */}
       {showBackground && (
-        <circle cx="500" cy="500" r="480" fill="#0B0B0B" />
+        <circle cx="500" cy="500" r="500" fill="#000000" />
       )}
       
-      {/* Perfect golden crescent/orbit outline, thinner on top-right, thicker on bottom-left */}
+      <defs>
+        {/* Precise Premium Metallic Gold Gradient matching the image tones */}
+        <linearGradient id="luxuryGoldGradient" x1="10%" y1="90%" x2="90%" y2="10%">
+          <stop offset="0%" stopColor="#9C7A3C" />
+          <stop offset="20%" stopColor="#EADAA2" />
+          <stop offset="45%" stopColor="#DECA87" />
+          <stop offset="60%" stopColor="#AA8643" />
+          <stop offset="80%" stopColor="#F5E7B7" />
+          <stop offset="100%" stopColor="#A48041" />
+        </linearGradient>
+
+        {/* Text specific gradient for maximum clarity */}
+        <linearGradient id="luxuryTextGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#EADAA2" />
+          <stop offset="50%" stopColor="#F5E7B7" />
+          <stop offset="100%" stopColor="#DECA87" />
+        </linearGradient>
+
+        {/* Crescent Masking configuration to create the asymmetric luxury ring sweep */}
+        <mask id="crescentMask">
+          <circle cx="500" cy="500" r="460" fill="#FFFFFF" />
+          <circle cx="540" cy="480" r="455" fill="#000000" />
+        </mask>
+      </defs>
+
+      {/* 🌙 The Crescent Outer Sweep Ring */}
       <circle 
         cx="500" 
         cy="500" 
-        r="440" 
-        stroke="url(#goldLogoGradient)" 
-        strokeWidth="11" 
-        className="opacity-95"
-      />
-      
-      {/* Golden inner highlight loop */}
-      <circle 
-        cx="508" 
-        cy="492" 
-        r="444" 
-        stroke="url(#goldLogoGradientHighlight)" 
-        strokeWidth="4" 
-        className="opacity-70"
+        r="460" 
+        stroke="url(#luxuryGoldGradient)" 
+        strokeWidth="38" 
+        mask="url(#crescentMask)"
       />
 
-      {/* Gold brand text 'Lavish Lathers' */}
+      {/* Thin elegant balancing accent outer ring trace */}
+      <circle 
+        cx="500" 
+        cy="500" 
+        r="460" 
+        stroke="url(#luxuryGoldGradient)" 
+        strokeWidth="2" 
+        className="opacity-60"
+      />
+
+      {/* ✒️ Perfectly Aligned Brand Typography */}
       <text
         x="500"
-        y="535"
+        y="528"
         textAnchor="middle"
-        fill="url(#goldLogoTextGradient)"
-        className="font-serif-playfair"
+        fill="url(#luxuryTextGradient)"
         style={{
-          fontFamily: "'Cormorant Garamond', 'Playfair Display', 'Didot', Georgia, serif",
-          fontSize: "115px",
-          letterSpacing: "0.04em",
-          fontWeight: "300"
+          fontFamily: "'Playfair Display', 'Cormorant Garamond', 'Didot', Georgia, serif",
+          fontSize: "128px",
+          letterSpacing: "0.01em",
+          fontWeight: "400"
         }}
       >
         Lavish Lathers
       </text>
 
-      {/* Elegant Four-pointed Star Sparkle in bottom right matching image2 */}
-      <g transform="translate(780, 740) scale(1.1)">
-        {/* Star glow */}
-        <circle cx="0" cy="0" r="20" fill="url(#goldLogoTextGradient)" className="opacity-10 blur-xs" />
-        {/* Star path */}
-        <path
-          d="M 0 -80 Q 0 0 80 0 Q 0 0 0 80 Q 0 0 -80 0 Q 0 0 0 -80 Z"
-          fill="url(#goldLogoGradient)"
-        />
-        {/* Little accent sparks */}
-        <circle cx="-15" cy="-25" r="4" fill="#FFFFFF" className="opacity-80" />
-        <circle cx="20" cy="20" r="3.5" fill="url(#goldLogoGradient)" className="opacity-90" />
-        <circle cx="0" cy="0" r="6" fill="#FFFFFF" />
-      </g>
-
-      {/* Embedded Definitions & Metallic Gradients */}
-      <defs>
-        <radialGradient id="goldLogoGradient" cx="30%" cy="70%" r="80%" fx="30%" fy="70%">
-          <stop offset="0%" stopColor="#FFF9D2" />
-          <stop offset="35%" stopColor="#D4AF37" />
-          <stop offset="70%" stopColor="#A8811A" />
-          <stop offset="100%" stopColor="#6E4F06" />
-        </radialGradient>
+      {/* ✨ Razor-Thin Elegant Luxury Star Sparkle (Bottom Right) */}
+      <g transform="translate(810, 770)">
+        {/* Subtle background glow */}
+        <circle cx="0" cy="0" r="40" fill="url(#luxuryTextGradient)" opacity="0.08" filter="blur(8px)" />
         
-        <linearGradient id="goldLogoGradientHighlight" x1="0%" y1="100%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.8" />
-          <stop offset="40%" stopColor="#D4AF37" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#0B0B0B" stopOpacity="0" />
-        </linearGradient>
-
-        <linearGradient id="goldLogoTextGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FFF9EB" />
-          <stop offset="40%" stopColor="#E6C15C" />
-          <stop offset="80%" stopColor="#C49B2D" />
-          <stop offset="100%" stopColor="#A37C18" />
-        </linearGradient>
-      </defs>
+        {/* Horizontal Sharp Flare */}
+        <path d="M -90 0 Q 0 0 0 -3 Q 0 0 90 0 Q 0 0 0 3 Q 0 0 -90 0 Z" fill="url(#luxuryGoldGradient)" />
+        {/* Vertical Sharp Flare */}
+        <path d="M 0 -90 Q 0 0 3 0 Q 0 0 0 90 Q 0 0 -3 0 Q 0 0 0 -90 Z" fill="url(#luxuryGoldGradient)" />
+        
+        {/* Diagonal Accent Flares */}
+        <path d="M -30 -30 Q 0 0 0 -1 Q 0 0 30 30 Q 0 0 -1 0 Q 0 0 -30 -30 Z" fill="url(#luxuryGoldGradient)" opacity="0.7" />
+        <path d="M 30 -30 Q 0 0 1 0 Q 0 0 -30 30 Q 0 0 0 -1 Q 0 0 30 -30 Z" fill="url(#luxuryGoldGradient)" opacity="0.7" />
+        
+        {/* Tiny ambient side sparkles matching the layout image */}
+        <circle cx="45" cy="-35" r="3" fill="#EADAA2" opacity="0.8" />
+        <circle cx="-50" cy="40" r="2.5" fill="#FAF7F2" opacity="0.6" />
+        
+        {/* Bright Center Core */}
+        <circle cx="0" cy="0" r="5" fill="#FFFFFF" />
+      </g>
     </svg>
   );
 }

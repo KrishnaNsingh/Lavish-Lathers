@@ -46,7 +46,7 @@ export default function AboutPage() {
           <div className="md:col-span-6">
             <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl border border-brand-beige/20 relative group">
               <img
-                src="https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&q=80&w=800"
+                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780560107/359007946961d42f3e5cc8ccedc8a0b3_eja1w3.jpg"
                 alt="Preparing soap ingredients in wooden vats"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -82,7 +82,7 @@ export default function AboutPage() {
           <div className="md:col-span-6 order-last md:order-first">
             <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl border border-brand-beige/20 relative group">
               <img
-                src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=800"
+                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780559577/fb75614f0d50ab12e57367fb6aa465e2_ybw3d1.jpg"
                 alt="Finishing luxurious souvenir orders"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -132,7 +132,7 @@ export default function AboutPage() {
             </p>
             <div className="pt-2 flex justify-center space-x-3 text-[10px] text-brand-gold uppercase tracking-widest font-sans-poppins font-semibold">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>Cured with love in Oregon, USA</span>
+              <span>Cured with love in Goa, INDIA</span>
             </div>
           </div>
         </div>
