@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   ShieldCheck,
-  CheckCircle2,
   Loader2,
-  Sparkles,
-  CreditCard,
-  ChevronRight,
 } from "lucide-react";
 import { CheckoutDetails, Order } from "../types";
 import { useApp } from "../context/AppContext";
@@ -33,7 +29,7 @@ export default function CheckoutPage() {
     city: "",
     state: "",
     zipCode: "",
-    country: "United States",
+    country: "India", // Default updated to match regional parameters
     notes: "",
   });
 
@@ -41,8 +37,8 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [message, setMessage] = useState("");
-
- 
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Partial<CheckoutDetails>>({});
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -58,6 +54,11 @@ export default function CheckoutPage() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clean error states dynamically upon typing adjustments
+    if (validationErrors[name as keyof CheckoutDetails]) {
+      setValidationErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const applyCoupon = () => {
@@ -70,20 +71,57 @@ export default function CheckoutPage() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  const handleRazorpayPayment = async () => {
-    try {
-      // STEP 1
-      // Create Razorpay order
+  // 🛡️ Safe Client-Side Form Evaluation Rules for Indian Localizations
+  const validateFormPayload = (): boolean => {
+    const errors: Partial<CheckoutDetails> = {};
 
+    if (formData.fullName.trim().length < 3) {
+      errors.fullName = "Please enter your official full name (minimum 3 characters).";
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      errors.email = "Please input a valid email address configuration.";
+    }
+
+    // 10-Digit Mobile Constraint Logic (Strips optional prefix variables)
+    const rawDigits = formData.phone.replace(/\D/g, "");
+    const cleanPhone = rawDigits.startsWith("91") && rawDigits.length === 12 ? rawDigits.slice(2) : rawDigits;
+    const indianPhoneRegex = /^[6-9]\d{9}$/;
+    if (!indianPhoneRegex.test(cleanPhone)) {
+      errors.phone = "Please enter a standard 10-digit Indian mobile number.";
+    }
+
+    if (formData.address.trim().length < 8) {
+      errors.address = "Please detail your full flat/building number and street coordinates.";
+    }
+
+    if (!formData.city.trim()) errors.city = "City parameter is required.";
+    if (!formData.state.trim()) errors.state = "State or Territory specification is required.";
+
+    // Indian PIN Code 6-digit structure verify rule
+    const pinCodeRegex = /^[1-9][0-9]{5}$/;
+    if (!pinCodeRegex.test(formData.zipCode.trim())) {
+      errors.zipCode = "Please provide a valid 6-digit PIN code (e.g., 400001).";
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleRazorpayPayment = async () => {
+    if (!validateFormPayload()) return;
+    setIsProcessing(true);
+
+    try {
+      // STEP 1: Initialize Razorpay order mapping values against core server
       const response = await fetch(
         "http://localhost:5000/api/orders/create-razorpay-order",
         {
           method: "POST",
-
           headers: {
             "Content-Type": "application/json",
           },
-
           body: JSON.stringify({
             total: grandTotal - discount,
             customer: {
@@ -117,140 +155,119 @@ export default function CheckoutPage() {
         },
       );
 
+      if (!response.ok) {
+        throw new Error("Failed to compile transactional variables with backend route.");
+      }
+
       const order = await response.json();
 
-      // STEP 2
-      // Razorpay options
-
+      // STEP 2: Configure initialization options block for Razorpay
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-
         amount: order.amount,
-
         currency: order.currency,
-
         name: "Lavish Lathers",
-
-        description: "Luxury Herbal Products",
-
+        description: "Luxury Herbal Products Portfolio Acquisition",
         order_id: order.id,
-
         handler: async function (response: any) {
-          // STEP 3
-          // Verify payment
-
-          const verifyResponse = await fetch(
-            "http://localhost:5000/api/orders/verify-payment",
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type": "application/json",
+          // STEP 3: Dispatch tracking tokens forward to your signature verification path
+          try {
+            const verifyResponse = await fetch(
+              "http://localhost:5000/api/orders/verify-payment",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  customer: {
+                    name: formData.fullName,
+                    email: formData.email,
+                    phone: formData.phone,
+                  },
+                  shippingAddress: {
+                    street: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    postalCode: formData.zipCode,
+                    instructions: formData.notes,
+                  },
+                  items: cart.map((item) => ({
+                    productId: item.product._id,
+                    registryId: item.product.registryId,
+                    name: item.product.name,
+                    price: item.product.price,
+                    quantity: item.quantity,
+                    isGift: item.isGift,
+                    giftNote: item.giftNote,
+                    giftRecipient: item.giftRecipient,
+                  })),
+                  pricing: {
+                    subtotal,
+                    shipping: shippingCharge,
+                    total: grandTotal - discount,
+                  },
+                }),
               },
+            );
 
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
+            const data = await verifyResponse.json();
 
-                razorpay_payment_id: response.razorpay_payment_id,
-
-                razorpay_signature: response.razorpay_signature,
-
-                customer: {
-                  name: formData.fullName,
-                  email: formData.email,
-                  phone: formData.phone,
-                },
-
-                shippingAddress: {
-                  street: formData.address,
-                  city: formData.city,
-                  state: formData.state,
-                  postalCode: formData.zipCode,
-                  instructions: formData.notes,
-                },
-
-                items: cart.map((item) => ({
-                  productId: item.product._id,
-
-                  registryId: item.product.registryId,
-
-                  name: item.product.name,
-
-                  price: item.product.price,
-
-                  quantity: item.quantity,
-
-                  isGift: item.isGift,
-
-                  giftNote: item.giftNote,
-
-                  giftRecipient: item.giftRecipient,
-                })),
-
-                pricing: {
-                  subtotal,
-
-                  shipping: shippingCharge,
-
-                  total: grandTotal - discount,
-                },
-              }),
-            },
-          );
-
-          const data = await verifyResponse.json();
-
-          if (data.success) {
-            setConfirmedOrder(data.order);
-            clearCart();
-            navigate("/order-confirmation");
-            console.log(data);
-
-          } else {
-            alert("Payment Verification Failed");
+            if (data.success) {
+              setConfirmedOrder(data.order);
+              clearCart();
+              navigate("/order-confirmation");
+            } else {
+              alert("Payment Verification Failed. Cryptographic signature check rejected.");
+            }
+          } catch (verifyErr) {
+            console.error("Verification processing script exception:", verifyErr);
+            alert("Error establishing connection with validation servers.");
+          } finally {
+            setIsProcessing(false);
           }
         },
-
+        prefill: {
+          name: formData.fullName,
+          email: formData.email,
+          contact: formData.phone,
+        },
         theme: {
           color: "#0B0B0B",
         },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+          }
+        }
       };
 
-      // STEP 4
-      // Open Razorpay popup
-
-      const razor = new window.Razorpay(options);
-
+      // STEP 4: Call active popup layout window
+      const razor = new (window as any).Razorpay(options);
       razor.open();
     } catch (error) {
       console.error(error);
+      alert("Encountered initialization error building client transaction pipeline.");
+      setIsProcessing(false);
     }
   };
 
-  const handleTriggerCheckout = (e: React.FormEvent) => {
+  const handleTriggerCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.address ||
-      !formData.city ||
-      !formData.zipCode
-    ) {
-      alert(
-        "Please provide all required guest credentials and shipping fields.",
-      );
-      return;
-    }
+    handleRazorpayPayment();
   };
-  
+
   return (
     <div className="bg-brand-cream py-32 min-h-screen text-brand-black font-sans-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Back navigation */}
         <button
           onClick={() => navigate("/shop")}
-          className="group flex items-center space-x-2 text-xs uppercase tracking-widest font-sans-poppins font-bold hover:text-brand-gold transition-colors focus:outline-none mb-8 text-left cursor-pointer"
+          disabled={isProcessing}
+          className="group flex items-center space-x-2 text-xs uppercase tracking-widest font-sans-poppins font-bold hover:text-brand-gold transition-colors focus:outline-none mb-8 text-left cursor-pointer disabled:opacity-40"
           id="checkout-back-btn"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
@@ -267,12 +284,13 @@ export default function CheckoutPage() {
           </h1>
         </div>
 
-        {/* Checkout splits */}
+        {/* Checkout layout columns wrapper */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start text-left">
-          {/* LEFT: Guest Credentials details */}
+          {/* LEFT: Guest Credentials input elements */}
           <form
-            onSubmit={handleTriggerCheckout}
+            onSubmit={handleTriggerCheckoutSubmit}
             className="lg:col-span-7 space-y-8"
+            noValidate
           >
             {/* GUEST DETAILS */}
             <div className="space-y-4">
@@ -282,7 +300,7 @@ export default function CheckoutPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
                     Patron Full Name *
                   </label>
                   <input
@@ -291,15 +309,16 @@ export default function CheckoutPage() {
                     required
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    placeholder="e.g. Adrienne Vance"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
+                    placeholder="e.g. Krishna Narayan Singh"
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.fullName ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-fullname"
                   />
+                  {validationErrors.fullName && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.fullName}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
-                    Phone Contact (for WhatsApp Concierge) *
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
+                    Phone Contact (for WhatsApp Updates) *
                   </label>
                   <input
                     type="tel"
@@ -307,14 +326,15 @@ export default function CheckoutPage() {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="e.g. +1 (555) 0199"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
+                    placeholder="e.g. 98765 43210"
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.phone ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-phone"
                   />
+                  {validationErrors.phone && <p className="text-red-500 text-[10px] mt-1延 font-medium">{validationErrors.phone}</p>}
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
                     Recipient Dispatch Email *
                   </label>
                   <input
@@ -323,15 +343,16 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="e.g. adrienne@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
+                    placeholder="e.g. krishna@lavishlathers.com"
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.email ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-email"
                   />
+                  {validationErrors.email && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.email}</p>}
                 </div>
               </div>
             </div>
 
-            {/* SHIPPING ADDRESS */}
+            {/* SHIPPING ADDRESS SECTION */}
             <div className="space-y-4">
               <h2 className="font-serif-playfair text-2xl text-brand-black tracking-wide font-medium">
                 2. Gifting Dispatch Address
@@ -339,8 +360,8 @@ export default function CheckoutPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-3">
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
-                    Street Address &amp; Apartment *
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
+                    Flat, Street Address &amp; Apartment *
                   </label>
                   <input
                     type="text"
@@ -348,14 +369,15 @@ export default function CheckoutPage() {
                     required
                     value={formData.address}
                     onChange={handleInputChange}
-                    placeholder="e.g. 742 Evergreen Terrace, Suite 10"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
+                    placeholder="e.g. Flat 304, Royal Crest Apartments, near Lotus Temple"
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.address ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-address"
                   />
+                  {validationErrors.address && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.address}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
                     City *
                   </label>
                   <input
@@ -364,15 +386,16 @@ export default function CheckoutPage() {
                     required
                     value={formData.city}
                     onChange={handleInputChange}
-                    placeholder="e.g. Springfield"
+                    placeholder="e.g. Mumbai"
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
                     id="checkout-city"
                   />
+                  {validationErrors.city && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.city}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
-                    State / Region *
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
+                    State / Territory *
                   </label>
                   <input
                     type="text"
@@ -380,30 +403,33 @@ export default function CheckoutPage() {
                     required
                     value={formData.state || ""}
                     onChange={handleInputChange}
-                    placeholder="e.g. Illinois"
+                    placeholder="e.g. Maharashtra"
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
                     id="checkout-state"
                   />
+                  {validationErrors.state && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.state}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
-                    Zip Code / Postal Code *
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
+                    6-Digit PIN Code *
                   </label>
                   <input
                     type="text"
                     name="zipCode"
+                    maxLength={6}
                     required
                     value={formData.zipCode}
                     onChange={handleInputChange}
-                    placeholder="e.g. 62704"
-                    className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
+                    placeholder="e.g. 400001"
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.zipCode ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all font-mono`}
                     id="checkout-zip"
                   />
+                  {validationErrors.zipCode && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.zipCode}</p>}
                 </div>
 
                 <div className="sm:col-span-3">
-                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-medium font-bold">
+                  <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
                     Instructions for Artisan Packaging Scroll (Optional)
                   </label>
                   <textarea
@@ -419,10 +445,10 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Alerts Selection */}
+            {/* Alerts Toggle Layout selection */}
             <div className="bg-[#FAF7F2] border border-brand-beige/40 p-4 rounded-2xl flex items-center justify-between">
               <span className="text-xs text-brand-black/80 font-normal">
-                Send real-time packaging snapshots to my WhatsApp
+                Send email of order confirmation and disparch update
               </span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -436,25 +462,31 @@ export default function CheckoutPage() {
               </label>
             </div>
 
-            {/* BUTTON PROCEED */}
+            {/* SUBMIT TRIGGERS PROCEED BUTTON */}
             <button
-              type="button"
-              onClick={handleRazorpayPayment}
-              className="w-full py-4 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-brand-black/15 focus:outline-none cursor-pointer"
+              type="submit"
+              disabled={isProcessing}
+              className="w-full py-4 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-xl shadow-brand-black/15 focus:outline-none flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
               id="submit-checkout-btn"
             >
-              Secure Order &amp; Initiate Razorpay Payment
+              {isProcessing ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Contacting Gateway Chambers...</span>
+                </>
+              ) : (
+                <span>Secure Order &amp; Initiate Razorpay Payment</span>
+              )}
             </button>
           </form>
 
-          {/* RIGHT: High-end order summaries */}
+          {/* RIGHT: High-end order side details summaries panel */}
           <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
             <div className="bg-[#FAF7F2] border border-brand-beige/20 rounded-3xl p-6 sm:p-8 space-y-6">
               <h3 className="font-serif-playfair text-2xl text-brand-black font-semibold">
                 Order Summary
               </h3>
 
-              {/* Items in summary list */}
               <div className="space-y-4 max-h-76 overflow-y-auto pr-2 divide-y divide-brand-beige/10">
                 {cart.map((item, idx) => (
                   <div
@@ -475,20 +507,18 @@ export default function CheckoutPage() {
                       </h4>
                       <div className="flex justify-between items-center text-[10px] text-brand-black/45">
                         <span>{item.product.category}</span>
-                        <span className="font-serif-cormorant text-xs text-brand-black font-semibold font-serif-cormorant">
+                        <span className="font-serif-cormorant text-xs text-brand-black font-semibold">
                           ₹{item.product.price * item.quantity}
                         </span>
                       </div>
 
-                      {/* Wax-seal message preview inside order summary */}
                       {item.isGift && (
                         <div className="mt-1.5 p-2 bg-[#FCFAF5] border border-dashed border-red-800/10 rounded-md text-[9px] text-red-900 leading-normal">
-                          <span className="font-serif-cormorant italic font-bold font-serif-cormorant">
+                          <span className="font-serif-cormorant italic font-bold">
                             Wax-seal scroll included:{" "}
                           </span>
                           <span className="text-brand-black/75">
-                            &ldquo;{item.giftNote || "Heartfelt Greetings"}
-                            &rdquo;
+                            &ldquo;{item.giftNote || "Heartfelt Greetings"}&rdquo;
                           </span>
                         </div>
                       )}
@@ -529,11 +559,11 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Subtotal lines */}
+              {/* Cost ledger block lines */}
               <div className="border-t border-brand-beige/20 pt-4 text-xs space-y-2.5">
                 <div className="flex justify-between text-brand-black/60">
                   <span>Subtotal Cured</span>
-                  <span className="font-serif-cormorant text-sm text-brand-black font-semibold font-serif-cormorant">
+                  <span className="font-serif-cormorant text-sm text-brand-black font-semibold">
                     ₹{subtotal}
                   </span>
                 </div>
@@ -541,7 +571,7 @@ export default function CheckoutPage() {
                 {discount > 0 && (
                   <div className="flex justify-between text-emerald-700 font-medium">
                     <span>Discount (20% Off)</span>
-                    <span className="font-serif-cormorant text-sm font-serif-cormorant">
+                    <span className="font-serif-cormorant text-sm">
                       -₹{discount}
                     </span>
                   </div>
@@ -564,7 +594,7 @@ export default function CheckoutPage() {
                   <span className="font-serif-playfair text-base text-brand-black font-semibold">
                     Total Order Value
                   </span>
-                  <span className="font-serif-cormorant text-2xl text-brand-gold font-extrabold font-serif-cormorant">
+                  <span className="font-serif-cormorant text-2xl text-brand-gold font-extrabold">
                     ₹{grandTotal - discount}
                   </span>
                 </div>
@@ -574,8 +604,7 @@ export default function CheckoutPage() {
               <div className="flex items-center space-x-2 text-[10px] text-brand-black/45 justify-center leading-normal">
                 <ShieldCheck className="h-4 w-4 text-brand-gold shrink-0" />
                 <span>
-                  Encrypted secure guest transaction &bull; Razorpay 3-D Secure
-                  Ready
+                  Encrypted secure guest transaction &bull; Razorpay 3-D Secure Ready
                 </span>
               </div>
             </div>

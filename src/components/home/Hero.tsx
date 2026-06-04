@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Star, Check, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 export default function Hero() {
@@ -10,39 +10,26 @@ export default function Hero() {
 
   const slides = [
     {
-      id: 'travel-luxuries',
-      topText: 'L I T T L E',
-      mainText: 'LUXURIES',
-      accentText: '— TO GO —',
-      subText: 'YOUR DAILY RITUALS IN PERFECT TRAVEL SIZES.',
-      buttonText: 'EXPLORE NOW',
+      id: 'minimal-luxury-canvas',
+      isFullBleed: true, // Specific flag for the background image style
+      topText: 'A T E L I E R',
+      mainText: 'PURE ESSENCE',
+      accentText: '— RESPLENDENT SKIN —',
+      subText: 'UNCOMPROMISED BOTANICAL PURITY CURED FOR DISCRIMINATING PATRONS.',
+      buttonText: 'SHOP THE COLLECTION',
       category: 'Gift Boxes',
-      bgGradient: 'from-[#0A1C3E] via-[#0E2C5A] to-[#0A1C3E]',
       textColor: 'text-brand-cream',
       goldText: 'text-[#D4AF37]',
-      imageUrl: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&q=80&w=850',
-      imageAlt: 'Luxury boutique leather vanity setup with gold vials',
-    },
-    {
-      id: 'hair-masque',
-      topText: 'T A K E   Y O U R',
-      mainText: 'TIME',
-      accentText: '— HAIR RITUALS —',
-      subText: 'HAIR REPAIR MASQUE JAPAPATTI & BRAHMI.',
-      buttonText: 'EXPLORE NOW',
-      category: 'Essential Oils',
-      bgGradient: 'from-[#1C2016] via-[#2A3122] to-[#1C2016]',
-      textColor: 'text-brand-cream',
-      goldText: 'text-[#E6C15C]',
-      imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=850',
-      imageAlt: 'Ayurvedic botanical hair scalp treatment session',
+      imageUrl: 'https://res.cloudinary.com/dzowyrkcg/image/upload/v1780561928/Gemini_Generated_Image_l4edk5l4edk5l4ed_s60kir.png',
+      imageAlt: 'Luxury artistic lifestyle background layout',
     },
     {
       id: 'cured-saponification',
-      topText: 'C U R E D   F O R',
+      isFullBleed: false,
+      topText: 'C U R E D  F O R',
       mainText: '6 WEEKS',
       accentText: '— BOTANICAL BARS —',
-      subText: 'RICH NATURAL BOTANICAL GLYCERIN & Kashmiri SAFFRON.',
+      subText: 'RICH NATURAL BOTANICAL GLYCERIN & KASHMIRI SAFFRON.',
       buttonText: 'EXPLORE NOW',
       category: 'Herbal Soaps',
       bgGradient: 'from-[#2F1713] via-[#43231E] to-[#2F1713]',
@@ -50,6 +37,21 @@ export default function Hero() {
       goldText: 'text-[#D4AF37]',
       imageUrl: 'https://images.unsplash.com/photo-1607006342411-92447c05b579?auto=format&fit=crop&q=80&w=850',
       imageAlt: 'Classic cedar soap blocks with golden leaf labels',
+    },
+    {
+      id: 'brand-heritage-showcase',
+      isBrandLogoCentric: true, // Flags center alignment with the custom brand asset
+      topText: 'T H E  L U X E  A Y U R V E D A',
+      mainText: 'HERITAGE',
+      accentText: '— LAVISH LATHERS —',
+      subText: 'ANCIENT ALCHEMY JOINED WITH SIX-WEEK COLD SAPONIFICATION CHAMBER CRAFT.',
+      buttonText: 'DISCOVER OUR STORY',
+      category: 'Essential Oils',
+      bgGradient: 'from-[#0C0B0A] via-[#171514] to-[#0C0B0A]',
+      textColor: 'text-brand-cream',
+      goldText: 'text-[#E6C15C]',
+      imageUrl: 'https://res.cloudinary.com/dzowyrkcg/image/upload/v1780560403/WhatsApp_Image_2026-06-04_at_13.35.43_hlpdxl.jpg',
+      imageAlt: 'Lavish Lathers Circular Brand Emblem',
     }
   ];
 
@@ -77,77 +79,124 @@ export default function Hero() {
   return (
     <div className="bg-[#FAF7F2] text-brand-black">
 
-      {/* --- MODULE 1: FOREST ESSENTIALS CAROUSEL HERO SECTION --- */}
+      {/* --- MODULE 1: REWORKED LUXURY CAROUSEL HERO SECTION --- */}
       <section className="relative overflow-hidden w-full h-screen transition-all duration-700 ease-in-out">
         
         {/* Render Carousel Slides */}
         {slides.map((slide, idx) => {
           const isActive = idx === activeSlide;
+          
           return (
             <div
               key={slide.id}
-              className={`absolute inset-0 w-full h-full bg-gradient-to-r ${slide.bgGradient} transition-all duration-1000 ease-in-out flex items-center ${
+              className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex items-center ${
+                slide.isFullBleed ? 'bg-black' : `bg-gradient-to-r ${slide.bgGradient}`
+              } ${
                 isActive ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-98 pointer-events-none'
               }`}
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full flex flex-col justify-center relative">
-                
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full pt-32 sm:pt-40 lg:pt-28">
-                  
-                  {/* Left alignment - Majestic Text styling */}
-                  <div className="lg:col-span-6 flex flex-col justify-center text-center lg:text-left space-y-6 pt-4 sm:pt-0">
-                    
-                    {/* Minimal Category indicator */}
-                    <div className="inline-flex justify-center lg:justify-start items-center space-x-2 text-[10px] uppercase tracking-[0.35em] text-[#FAF7F2]/60 font-sans-poppins font-medium">
-                      <span>Luxe Ayurveda Formulation</span>
-                      <span>&bull;</span>
-                      <span className={slide.goldText}>100% Organic</span>
-                    </div>
-
-                    {/* Highly-aligned typography block */}
-                    <div className="space-y-3">
-                      <span className="block text-xs sm:text-sm tracking-[0.5em] font-sans-poppins uppercase text-brand-cream/80 leading-none">
-                        {slide.topText}
-                      </span>
-                      <h1 className="font-serif-playfair text-4xl sm:text-5xl lg:text-7xl font-light tracking-[0.06em] uppercase text-brand-cream leading-none">
-                        {slide.mainText}
-                      </h1>
-                      <span className={`block text-xs sm:text-sm font-sans-poppins tracking-[0.35em] uppercase font-bold ${slide.goldText}`}>
-                        {slide.accentText}
-                      </span>
-                      <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-brand-cream/70 font-light font-sans-poppins max-w-md mx-auto lg:mx-0 pt-2 leading-relaxed">
-                        {slide.subText}
-                      </p>
-                    </div>
-
-                    {/* Gold Button alignment */}
-                    <div className="pt-2 font-sans-poppins">
-                      <button
-                        onClick={() => handleExplore(slide.category)}
-                        className="py-3 px-8 bg-[#D4AF37] hover:bg-[#FAF7F2] hover:text-brand-black text-brand-black text-[11px] font-bold uppercase tracking-[0.3em] rounded-none transition-all duration-300 shadow-xl border border-[#D4AF37] hover:scale-[1.02] cursor-pointer"
-                        id={`explore-slide-${slide.id}`}
-                      >
-                        {slide.buttonText}
-                      </button>
-                    </div>
-
-                  </div>
-
-                  {/* Right alignment - Luxury setup picture */}
-                  <div className="lg:col-span-6 hidden lg:flex justify-end p-2 h-full items-center">
-                    <div className="relative aspect-[4/3] w-full max-w-lg rounded-none overflow-hidden shadow-2xl border border-brand-gold/25 group bg-black">
-                      <img
-                        src={slide.imageUrl}
-                        alt={slide.imageAlt}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
-                      />
-                      {/* Rich ambient gold overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                    </div>
-                  </div>
-
+              {/* Full-bleed Graphic Slide Option Background Layer */}
+              {slide.isFullBleed && (
+                <div className="absolute inset-0 w-full h-full z-0">
+                  <img 
+                    src={slide.imageUrl} 
+                    alt={slide.imageAlt}
+                    className="w-full h-full object-cover opacity-60 transition-transform duration-[6000s] ease-linear scale-100 group-hover:scale-105"
+                  />
+                  {/* Rich premium ambient dimming veil overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/80" />
                 </div>
+              )}
+
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full flex flex-col justify-center relative z-10">
+                
+                {/* Condition 1: Handle Brand Logo Centric Layout Slide */}
+                {slide.isBrandLogoCentric ? (
+                  <div className="flex flex-col lg:flex-row items-center justify-center gap-12 pt-24 w-full">
+                    <div className="w-40 h-40 sm:w-52 sm:h-52 md:w-64 md:h-64 aspect-square rounded-full overflow-hidden border border-brand-gold/30 shadow-2xl shrink-0 bg-black">
+                      <img 
+                        src={slide.imageUrl} 
+                        alt={slide.imageAlt} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-center text-center lg:text-left space-y-6 max-w-xl">
+                      <div className="inline-flex justify-center lg:justify-start items-center space-x-2 text-[10px] uppercase tracking-[0.35em] text-[#FAF7F2]/60 font-sans-poppins font-medium">
+                        <span>Luxe Ayurveda Formulation</span>
+                        <span>&bull;</span>
+                        <span className={slide.goldText}>100% Organic</span>
+                      </div>
+                      <div className="space-y-3">
+                        <span className="block text-xs sm:text-sm tracking-[0.5em] font-sans-poppins uppercase text-brand-cream/80 leading-none">{slide.topText}</span>
+                        <h1 className="font-serif-playfair text-4xl sm:text-5xl lg:text-6xl font-light tracking-[0.06em] uppercase text-brand-cream leading-none">{slide.mainText}</h1>
+                        <span className={`block text-xs sm:text-sm font-sans-poppins tracking-[0.35em] uppercase font-bold ${slide.goldText}`}>{slide.accentText}</span>
+                        <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-brand-cream/70 font-light font-sans-poppins pt-2 leading-relaxed">{slide.subText}</p>
+                      </div>
+                      <div className="pt-2 font-sans-poppins">
+                        <button
+                          onClick={() => handleExplore(slide.category)}
+                          className="py-3 px-8 bg-[#D4AF37] hover:bg-[#FAF7F2] hover:text-brand-black text-brand-black text-[11px] font-bold uppercase tracking-[0.3em] rounded-none transition-all duration-300 shadow-xl border border-[#D4AF37] hover:scale-[1.02] cursor-pointer"
+                        >
+                          {slide.buttonText}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* Condition 2: Regular Left-Aligned & Full Bleed Layout Grid Structure */
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full pt-32 sm:pt-40 lg:pt-28">
+                    
+                    {/* Left Typography Column Block */}
+                    <div className={`flex flex-col justify-center space-y-6 pt-4 sm:pt-0 ${slide.isFullBleed ? 'lg:col-span-8 text-center lg:text-left' : 'lg:col-span-6 text-center lg:text-left'}`}>
+                      <div className="inline-flex justify-center lg:justify-start items-center space-x-2 text-[10px] uppercase tracking-[0.35em] text-[#FAF7F2]/60 font-sans-poppins font-medium">
+                        <span>Luxe Ayurveda Formulation</span>
+                        <span>&bull;</span>
+                        <span className={slide.goldText}>100% Organic</span>
+                      </div>
+
+                      <div className="space-y-3">
+                        <span className="block text-xs sm:text-sm tracking-[0.5em] font-sans-poppins uppercase text-brand-cream/80 leading-none">
+                          {slide.topText}
+                        </span>
+                        <h1 className="font-serif-playfair text-4xl sm:text-5xl lg:text-7xl font-light tracking-[0.06em] uppercase text-brand-cream leading-none">
+                          {slide.mainText}
+                        </h1>
+                        <span className={`block text-xs sm:text-sm font-sans-poppins tracking-[0.35em] uppercase font-bold ${slide.goldText}`}>
+                          {slide.accentText}
+                        </span>
+                        <p className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-brand-cream/70 font-light font-sans-poppins max-w-lg mx-auto lg:mx-0 pt-2 leading-relaxed">
+                          {slide.subText}
+                        </p>
+                      </div>
+
+                      <div className="pt-2 font-sans-poppins">
+                        <button
+                          onClick={() => handleExplore(slide.category)}
+                          className="py-3 px-8 bg-[#D4AF37] hover:bg-[#FAF7F2] hover:text-brand-black text-brand-black text-[11px] font-bold uppercase tracking-[0.3em] rounded-none transition-all duration-300 shadow-xl border border-[#D4AF37] hover:scale-[1.02] cursor-pointer"
+                          id={`explore-slide-${slide.id}`}
+                        >
+                          {slide.buttonText}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Right Split Block Preview Image (Omitted for minimal full bleed background styles) */}
+                    {!slide.isFullBleed && (
+                      <div className="lg:col-span-6 hidden lg:flex justify-end p-2 h-full items-center">
+                        <div className="relative aspect-[4/3] w-full max-w-lg rounded-none overflow-hidden shadow-2xl border border-brand-gold/25 group bg-black">
+                          <img
+                            src={slide.imageUrl}
+                            alt={slide.imageAlt}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                )}
 
               </div>
             </div>
@@ -182,7 +231,6 @@ export default function Hero() {
                className="group flex flex-col focus:outline-none cursor-pointer"
                id={`bullet-slide-${idx}`}
             >
-              {/* Progress Bar line style */}
               <div className="h-[2px] w-12 bg-brand-cream/35 transition-all relative overflow-hidden group-hover:bg-brand-cream/65">
                 <div 
                   className={`absolute top-0 left-0 h-full bg-[#D4AF37] transition-all duration-500 ${
@@ -393,7 +441,6 @@ export default function Hero() {
             {/* Right side portrait photography representation */}
             <div className="lg:col-span-6 relative flex justify-center">
               <div className="aspect-[3/4] w-full max-w-sm rounded-[3rem] overflow-hidden shadow-2xl border-8 border-[#FAF7F2] relative group">
-                {/* Picture of model holding soap / relaxing */}
                 <img
                   src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=800"
                   alt="Aesthetic skincare routine"
@@ -409,7 +456,7 @@ export default function Hero() {
                   <h4 className="font-serif-playfair text-sm text-[#FAF7F2] font-semibold mt-0.5">
                     Hand-harvested in Oregon cottages
                   </h4>
-                  <p className="text-[10.5px] text-[#FAF7F2]/75 font-sans-inter mt-1 leading-normal font-light font-sans-inter">
+                  <p className="text-[10.5px] text-[#FAF7F2]/75 mt-1 leading-normal font-light font-sans-inter">
                     Every botanical element has been traced from standard local organic petals to your customized ribbon box.
                   </p>
                 </div>
