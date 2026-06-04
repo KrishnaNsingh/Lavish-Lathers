@@ -404,7 +404,7 @@ export default function Hero({ setCurrentPage, setFilterCategory }: HeroProps) {
               <div className="aspect-[3/4] w-full max-w-sm rounded-[3rem] overflow-hidden shadow-2xl border-8 border-[#FAF7F2] relative group">
                 {/* Picture of model holding soap / relaxing */}
                 <img
-                  src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=800"
+                  src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780566679/c0aa348810b0849898263bdd5ef961c0_aqmopi.jpg"
                   alt="Aesthetic skincare routine"
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
