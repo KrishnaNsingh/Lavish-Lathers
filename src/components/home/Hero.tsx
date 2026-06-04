@@ -91,13 +91,14 @@ export default function Hero() {
 
           // Condition checks to configure global text theme parameters per slide asset
           const isDarkSlide = slide.id === "brand-heritage-showcase";
-          const hasImageBackground = slide.isFullBleed || slide.id === "cured-saponification";
+          const hasImageBackground =
+            slide.isFullBleed || slide.id === "cured-saponification";
 
           return (
             <div
               key={slide.id}
               className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex items-center ${
-                isDarkSlide 
+                isDarkSlide
                   ? "bg-[#0C0B0A]" // Elegant deep charcoal background for the logo slide
                   : "bg-[#FFFDF9]" // Crisp, bright warm luxury ivory background for product slides
               } ${
@@ -132,7 +133,7 @@ export default function Hero() {
                         className="w-full h-full object-cover rounded-full"
                       />
                     </div>
-                    
+
                     {/* 💡 TEXT VISIBILITY FIX (DARK SLIDE): Swapped out dark text for high-contrast radiant text fields */}
                     <div className="flex flex-col justify-center text-center lg:text-left space-y-5 max-w-xl text-[#FFFDF9]">
                       <span className="text-[10px] sm:text-[11px] tracking-[0.4em] text-[#C5A059] font-medium uppercase block font-sans-poppins">
@@ -164,9 +165,7 @@ export default function Hero() {
                 ) : (
                   /* Condition 2: Full Bleed Background Canvas Grids */
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full pt-16">
-                    <div
-                      className="flex flex-col justify-center space-y-5 lg:col-span-8 text-center lg:text-left"
-                    >
+                    <div className="flex flex-col justify-center space-y-5 lg:col-span-8 text-center lg:text-left">
                       {/* 💡 TEXT VISIBILITY FIX (LIGHT SLIDES): Styled texts with high-contrast rich Charcoal colors to keep them beautifully sharp against the images */}
                       <span className="text-[10px] sm:text-[11px] tracking-[0.4em] text-[#8C6D3A] font-semibold uppercase block font-sans-poppins">
                         {slide.topText}
@@ -490,15 +489,19 @@ export default function Hero() {
                   className="w-full h-full object-cover grayscale-[8%] contrast-[102%]"
                 />
 
-                {/* Framed Label Overlay Block */}
-                <div className="absolute bottom-6 left-6 right-6 bg-white/95 border border-[#EAE3D2] p-5 text-left shadow-xs">
-                  <span className="text-[9px] text-[#C5A059] tracking-[0.25em] font-medium uppercase block font-sans-poppins">
+                {/* 
+      ✨ TEXT BACKGROUND REMOVAL FIX: 
+      Completely stripped background properties to let the portrait text layer rest natively on the canvas.
+      Reconfigured the core typography colors to high-contrast variables for absolute visibility.
+    */}
+                <div className="absolute bottom-8 left-10 right-10 text-left pointer-events-none">
+                  <span className="text-[9px] text-[#C5A059] tracking-[0.25em] font-semibold uppercase block font-sans-poppins">
                     100% ORGANIC INGREDIENT MATRICES
                   </span>
-                  <h4 className="font-serif-playfair text-base text-[#1A1A1A] font-normal mt-1 italic tracking-wide">
+                  <h4 className="font-serif-playfair text-base text-[#dfdddd] font-medium mt-1 italic tracking-wide">
                     Artisanal Batch Integrity
                   </h4>
-                  <p className="text-[11px] text-neutral-400 font-light mt-1.5 leading-relaxed font-sans-inter">
+                  <p className="text-[11px] text-neutral-100 font-light mt-2 leading-relaxed font-sans-inter">
                     From our hand-molded specialty curations to our classical
                     square blocks, every single shape variation contains the
                     same uncompromised herbal core designed to keep your skin
