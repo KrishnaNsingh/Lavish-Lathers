@@ -1,37 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { Send, MessageCircle, Instagram, Mail, MapPin, Clock, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Send,
+  MessageCircle,
+  Instagram,
+  Mail,
+  MapPin,
+  Clock,
+  ShieldCheck,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function ContactPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState('Standard Inquiry');
-  const [message, setMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [subject, setSubject] = useState("Standard Inquiry");
+  const [message, setMessage] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [ticketId, setTicketId] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [ticketId, setTicketId] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const validateIndianPhone = (inputPhone: string) => {
+    const rawDigits = inputPhone.replace(/\D/g, "");
+    const cleanPhone =
+      rawDigits.startsWith("91") && rawDigits.length === 12
+        ? rawDigits.slice(2)
+        : rawDigits;
+    const indianPhoneRegex = /^[6-9]\d{9}$/;
+    return indianPhoneRegex.test(cleanPhone);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPhoneError("");
+
     if (!name || !email || !message) {
       alert("Please provide name, email address, and messages.");
+      return;
+    }
+
+    if (phone && !validateIndianPhone(phone)) {
+      setPhoneError(
+        "Please enter a valid 10-digit Indian mobile number (e.g., 9876543210).",
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
+      const response = await fetch("/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, phone, message: `[Subject: ${subject}] - ${message}` })
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          message: `[Subject: ${subject}] - ${message}`,
+        }),
       });
 
       if (!response.ok) throw new Error("Contact ticket post failed");
@@ -39,15 +73,15 @@ export default function ContactPage() {
       const responseData = await response.json();
       setTicketId(responseData.ticketId);
       setFeedback(responseData.message);
-      
-      // Clear states
-      setName('');
-      setEmail('');
-      setPhone('');
-      setMessage('');
 
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
     } catch (err) {
-      alert("Issue submitting support ticket. Our server will receive it shortly.");
+      alert(
+        "Issue submitting support ticket. Our server will receive it shortly.",
+      );
     } finally {
       setLoading(false);
     }
@@ -56,49 +90,59 @@ export default function ContactPage() {
   return (
     <div className="bg-[#FAF7F2] py-32 text-brand-black text-left font-sans-inter">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* HEADER */}
         <div className="text-left space-y-3 mb-12 border-b border-brand-beige/20 pb-6">
           <span className="text-[10px] uppercase tracking-[0.4em] font-sans-poppins font-semibold text-brand-gold">
-             Atelier Concierge &amp; Help Desk
+            Atelier Concierge &amp; Help Desk
           </span>
           <h1 className="font-serif-playfair text-3xl sm:text-4xl lg:text-5xl text-brand-black tracking-wide font-light font-semibold">
-             Speak with our Soapmakers
+            Speak with our Soapmakers
           </h1>
           <p className="font-sans-inter text-xs text-brand-black/55 max-w-xl font-light leading-relaxed">
-             Need bespoke wedding labels, custom ribbon configurations, or wholesale orders? Log a secure ticket or slide into our WhatsApp concierge channel.
+            Need bespoke wedding labels, custom ribbon configurations, or
+            wholesale orders? Log a secure ticket or slide into our WhatsApp
+            concierge channel.
           </p>
         </div>
 
         {/* CONTORTS GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
           {/* LEFT: Complete Guest Message Form */}
           <div className="lg:col-span-7 bg-brand-cream border border-brand-beige/25 p-8 rounded-[2.5rem] shadow-sm">
-            
             {feedback ? (
               <div className="py-12 px-6 text-center space-y-6 animate-fade-in">
-                <CheckCircle2 className="h-12 w-12 text-brand-gold mx-auto" strokeWidth={1.5} />
-                <h3 className="font-serif-playfair text-2xl text-brand-black font-semibold font-semibold">Message Logged!</h3>
+                <CheckCircle2
+                  className="h-12 w-12 text-brand-gold mx-auto"
+                  strokeWidth={1.5}
+                />
+                <h3 className="font-serif-playfair text-2xl text-brand-black font-semibold font-semibold">
+                  Message Logged!
+                </h3>
                 <p className="text-xs text-brand-black/70 leading-relaxed font-sans-inter font-light">
                   {feedback}
                 </p>
                 <div className="bg-[#FAF7F2] border border-brand-beige/20 p-4 rounded-2xl w-fit mx-auto font-sans-poppins">
-                   <span className="text-[9px] uppercase tracking-widest text-brand-black/45 block mb-0.5">Your Secure Ticket ID</span>
-                   <span className="font-mono text-xs text-brand-black font-semibold">{ticketId}</span>
+                  <span className="text-[9px] uppercase tracking-widest text-brand-black/45 block mb-0.5">
+                    Your Secure Ticket ID
+                  </span>
+                  <span className="font-mono text-xs text-brand-black font-semibold">
+                    {ticketId}
+                  </span>
                 </div>
                 <button
-                  onClick={() => setFeedback('')}
+                  onClick={() => setFeedback("")}
                   className="py-3 px-6 bg-brand-black hover:bg-brand-gold hover:text-brand-black text-brand-cream font-sans-poppins tracking-widest text-[10px] uppercase font-bold rounded-full transition-colors cursor-pointer"
                   id="logcheck-reset"
                 >
-                   Submit Another Request
+                  Submit Another Request
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <span className="text-[9px] uppercase tracking-widest font-sans-poppins text-brand-gold font-bold">Patron Form &bull; Guaranteed response within 12 hours</span>
+                  <span className="text-[9px] uppercase tracking-widest font-sans-poppins text-brand-gold font-bold">
+                    Patron Form &bull; Guaranteed response within 12 hours
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -109,7 +153,7 @@ export default function ContactPage() {
                     <input
                       type="text"
                       required
-                      placeholder="e.g. Clarissa Westbrook"
+                      placeholder="e.g. Type your name here"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
@@ -124,7 +168,7 @@ export default function ContactPage() {
                     <input
                       type="email"
                       required
-                      placeholder="e.g. clarissa@example.com"
+                      placeholder="e.g. example@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
@@ -138,12 +182,17 @@ export default function ContactPage() {
                     </label>
                     <input
                       type="tel"
-                      placeholder="e.g. (555) 012-3456"
+                      placeholder="e.g. 98765 43210"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
                       id="contact-phone"
                     />
+                    {phoneError && (
+                      <p className="text-red-600 text-[10px] mt-1 font-medium font-sans-inter">
+                        {phoneError}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -157,9 +206,15 @@ export default function ContactPage() {
                       id="contact-subject-select"
                     >
                       <option value="Standard Inquiry">Standard Inquiry</option>
-                      <option value="Wedding / Favors Custom Order">Wedding / Favors Custom Order</option>
-                      <option value="Wholesale &amp; Bulk Quoting">Wholesale &amp; Bulk Quoting</option>
-                      <option value="Gifting Concierge Help">Gifting Concierge Help</option>
+                      <option value="Wedding / Festive Custom Order">
+                        Wedding / Festive Custom Order
+                      </option>
+                      <option value="Wholesale &amp; Bulk Corporate Orders">
+                        Wholesale &amp; Bulk Corporate Orders
+                      </option>
+                      <option value="Gifting Concierge Help">
+                        Gifting Concierge Help
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -172,13 +227,15 @@ export default function ContactPage() {
                     rows={4}
                     required
                     maxLength={1000}
-                    placeholder="Provide as much details as possible... e.g. dates of event, item selections, customized waxes needed..."
+                    placeholder="Provide as much details as possible... e.g. dates of event, item selections, customized boxes needed..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all resize-none font-sans-inter"
                     id="contact-message"
                   />
-                  <span className="text-[10px] text-brand-black/40 text-right block mt-1 font-sans-poppins">{1000 - message.length} characters left</span>
+                  <span className="text-[10px] text-brand-black/40 text-right block mt-1 font-sans-poppins">
+                    {1000 - message.length} characters left
+                  </span>
                 </div>
 
                 <button
@@ -188,7 +245,9 @@ export default function ContactPage() {
                   id="contact-submit"
                 >
                   {loading ? (
-                    <span className="animate-spin text-xs">🌀 Logging Ticket...</span>
+                    <span className="animate-spin text-xs">
+                      🌀 Logging Ticket...
+                    </span>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
@@ -198,72 +257,95 @@ export default function ContactPage() {
                 </button>
               </form>
             )}
-
           </div>
 
           {/* RIGHT: High-end support Cards */}
           <div className="lg:col-span-5 space-y-6">
-            
             {/* WHATSAPP CARD */}
             <div className="bg-brand-cream border border-brand-beige/25 rounded-3xl p-6 sm:p-8 space-y-4">
               <div className="flex items-center space-x-3 text-[#128C7E]">
                 <MessageCircle className="h-6 w-6 stroke-[1.8] fill-current" />
-                <h3 className="font-serif-playfair text-xl text-brand-black font-semibold font-semibold">Direct WhatsApp Chat</h3>
+                <h3 className="font-serif-playfair text-xl text-brand-black font-semibold font-semibold">
+                  Direct WhatsApp Chat
+                </h3>
               </div>
               <p className="text-xs text-brand-black/70 leading-relaxed font-light font-sans-inter">
-                 Want instant verification or need to transmit image references of custom souvenir ribbon ribbons? Chat with our digital coordinator instantly via WhatsApp.
+                Want instant verification or need to transmit image references
+                of custom souvenir ribbon ribbons? Chat with our digital
+                coordinator instantly via WhatsApp.
               </p>
-              
+
               <div className="pt-2 font-sans-poppins">
                 <a
-                  href="https://wa.me/918520016964?text=Hi%21%20I%20am%20interested%20in%20obtaining%20custom%20floral%20soap%20wedding%20souvenirs."
+                  href="https://wa.me/918971291063?text=Hi%21%20I%20am%20interested%20in%20obtaining%20custom%20floral%20soap%20wedding%20souvenirs."
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center space-x-2 bg-[#25D366] hover:bg-[#128C7E] text-[#FAF7F2] py-3.5 px-6 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors w-full justify-center shadow"
                   id="wa-concierge-trigger"
                 >
-                   Launch WhatsApp Concierge
+                  Launch WhatsApp Concierge
                 </a>
               </div>
             </div>
 
             {/* DIRECT LABELS AND DIRECTORY */}
             <div className="bg-[#FAF7F2] border border-brand-beige/25 rounded-3xl p-6 sm:p-8 space-y-6">
-              
               <div className="space-y-4 font-sans-inter text-xs text-brand-black/70">
                 <div className="flex items-start space-x-3.5 text-left">
                   <Mail className="h-4.5 w-4.5 text-brand-gold shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">Atelier Email Contacts</h4>
-                    <p className="font-light mt-0.5">patronage@lavishlathers.com</p>
-                    <p className="font-light">wholesale@lavishlathers.com</p>
+                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">
+                      Atelier Email Contacts
+                    </h4>
+                    <p className="font-light mt-0.5">
+                      patronage@lavishlathers.com
+                    </p>
+                    <p className="font-light">
+                      lavishlathersbyesther@gmail.com
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3.5 text-left border-t border-brand-beige/20 pt-4">
                   <Instagram className="h-4.5 w-4.5 text-brand-gold shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">Digital Journal Handle</h4>
-                    <p className="font-light mt-0.5">@LavishLathers.Atelier</p>
-                    <p className="text-[10px] text-brand-gold font-sans-poppins font-bold">Quote us in your unboxings to be featured!</p>
+                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">
+                      Digital Journal Handle
+                    </h4>
+                    <p className="font-light mt-0.5">@lavishlathersbyesther</p>
+                    <p className="text-[10px] text-brand-gold font-sans-poppins font-bold">
+                      Quote us in your unboxings to be featured!
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3.5 text-left border-t border-brand-beige/20 pt-4">
                   <MapPin className="h-4.5 w-4.5 text-brand-gold shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">Cottage Workshop Location</h4>
-                    <span className="font-light block mt-0.5">74 Pine Lattice Way</span>
-                    <span className="font-light">Sisters, Oregon, United States</span>
+                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">
+                      Cottage Workshop Location
+                    </h4>
+                    <span className="font-light block mt-0.5">
+                      Old vaddo Cormona
+                    </span>
+                    <span className="font-light">
+                        Carmona Salcete, South Goa, India
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3.5 text-left border-t border-brand-beige/20 pt-4">
                   <Clock className="h-4.5 w-4.5 text-brand-gold shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">Cottage Concierge Hours</h4>
-                    <p className="font-light mt-0.5">Monday &ndash; Saturday: 10:00 AM &ndash; 6:00 PM EST</p>
-                    <p className="font-light">Sunday: Closed for drying rituals</p>
+                    <h4 className="font-serif-playfair text-sm text-brand-black font-semibold font-semibold">
+                      Cottage Concierge Hours
+                    </h4>
+                    <p className="font-light mt-0.5">
+                      Monday &ndash; Saturday: 10:00 AM &ndash; 6:00 PM IST
+                    </p>
+                    <p className="font-light">
+                      Sunday: Closed for drying rituals
+                    </p>
                   </div>
                 </div>
               </div>
@@ -273,13 +355,9 @@ export default function ContactPage() {
                 <ShieldCheck className="h-4.5 w-4.5 text-brand-gold shrink-0" />
                 <span>Encrypted transmission validated</span>
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </div>
   );

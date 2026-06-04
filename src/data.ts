@@ -48,26 +48,26 @@ export const INSTAGRAM_POSTS = [
 export const TESTIMONIALS = [
   {
     id: "test-1",
-    name: "Clarissa de Medici",
+    name: "Kiranmala Devi",
     rating: 5,
-    text: "The Lavender & Shea Butter soap is heaven in a bar. My dry skin has never felt this plump and glowing. The scent lingers like a high-end French perfume. It is standard routine for my evening baths.",
+    text: "The Lavender & Shea Butter soap is pure luxury. My skin used to feel dry and stripped after baths, but this formulation leaves it incredibly plump and glowing. The calming fragrance lingers elegantly, reminiscent of an evening ritual at a high-end spa. It has become a permanent part of my evening skincare routine.",
     role: "Verified Patron",
-    location: "Sienna, Italy"
+    location: "Udaipur, Rajasthan"
   },
   {
     id: "test-2",
-    name: "Adrienne Vance",
+    name: "Aishwarya Singhania",
     rating: 5,
-    text: "We ordered 80 Hand-Carved Lace Hearts as souvenir favors for our 10-year anniversary celebration. Our clients were emotional over the exquisite detailing and the beautiful ribbon bows. Lavish Lathers is an absolute treasure!",
-    role: "Keepsake Collaborator",
-    location: "Beverly Hills, CA"
+    text: "We ordered 80 Hand-Carved Lace Hearts as souvenir favors for our daughter's pre-wedding Mehendi celebration. Our guests were absolutely charmed by the intricate artisanal detailing, the custom wax-stamping, and the beautiful silk ribbon bows. Lavish Lathers is an absolute treasure for premium gifting!",
+    role: "Festive Collaborator",
+    location: "New Delhi, DL"
   },
   {
     id: "test-3",
-    name: "Sienna Westbrook",
+    name: "Meera Ranganathan",
     rating: 5,
-    text: "The Saffron Cleanser is unparalleled. It brought back a natural translucent glow to my skin that no designer serum could provide. Also, the wooden scroll gift note was printed with pure calligraphic elegance.",
-    role: "Collector & Devotee",
-    location: "London, UK"
+    text: "The Kashmiri Saffron Cleanser is unparalleled. It has completely restored a natural, translucent glow to my skin that even the most expensive designer serums couldn't achieve. Furthermore, the wooden scroll greeting note was delivered with pure calligraphic elegance—a truly royal touch.",
+    role: "Connoisseur & Devotee",
+    location: "Chennai, Tamil Nadu"
   }
 ];

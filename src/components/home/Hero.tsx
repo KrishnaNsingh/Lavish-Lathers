@@ -38,7 +38,7 @@ export default function Hero() {
       textColor: "text-brand-cream",
       goldText: "text-[#D4AF37]",
       imageUrl:
-        "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780565758/herbs_hero_o3uvk4.jpg",
+        "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780560107/359007946961d42f3e5cc8ccedc8a0b3_eja1w3.jpg",
       imageAlt: "Classic cedar soap blocks with golden leaf labels",
     },
     {
@@ -89,17 +89,17 @@ export default function Hero() {
         {slides.map((slide, idx) => {
           const isActive = idx === activeSlide;
 
-          // Explicit condition check to decide if this specific slide uses an image background canvas
-          const hasImageBackground =
-            slide.isFullBleed || slide.id === "cured-saponification";
+          // Condition checks to configure global text theme parameters per slide asset
+          const isDarkSlide = slide.id === "brand-heritage-showcase";
+          const hasImageBackground = slide.isFullBleed || slide.id === "cured-saponification";
 
           return (
             <div
               key={slide.id}
               className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out flex items-center ${
-                hasImageBackground
-                  ? "bg-[#FFFDF9]"
-                  : `bg-gradient-to-r ${slide.bgGradient}`
+                isDarkSlide 
+                  ? "bg-[#0C0B0A]" // Elegant deep charcoal background for the logo slide
+                  : "bg-[#FFFDF9]" // Crisp, bright warm luxury ivory background for product slides
               } ${
                 isActive
                   ? "opacity-100 z-10 scale-100"
@@ -112,53 +112,49 @@ export default function Hero() {
                   <img
                     src={
                       slide.id === "cured-saponification"
-                        ? "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780565758/herbs_hero_o3uvk4.jpg"
+                        ? "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780560107/359007946961d42f3e5cc8ccedc8a0b3_eja1w3.jpg"
                         : slide.imageUrl
                     }
                     alt={slide.imageAlt}
                     className="w-full h-full object-cover opacity-95"
                   />
-                  {/* 
-              ✨ MOBILE FIX: Removed the dark opacity filters entirely. 
-              Replaced with a clean, luxury light ivory gradient mask that smoothly fades to transparent.
-              This guarantees crisp image clarity on mobile while keeping overlay texts perfectly scannable.
-            */}
-                  <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-[#FFFDF9]/95 via-[#FFFDF9]/70 sm:via-[#FFFDF9]/40 to-[#FFFDF9]/20 sm:to-transparent" />
                 </div>
               )}
 
               <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full h-full flex flex-col justify-center relative z-10">
                 {/* Condition 1: Handle Brand Logo Centric Layout Slide */}
                 {slide.isBrandLogoCentric ? (
-                  <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 pt-16 w-full">
-                    <div className="w-44 h-44 sm:w-60 sm:h-60 md:w-72 md:h-72 aspect-square rounded-full overflow-hidden border border-[#C5A059]/40 p-2 bg-[#FFFDF9] shadow-xl shrink-0">
+                  <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 pt-16 w-full">
+                    <div className="w-44 h-44 sm:w-60 sm:h-60 md:w-72 md:h-72 aspect-square rounded-full overflow-hidden border border-[#C5A059]/40 p-2 bg-[#0C0B0A] shadow-xl shrink-0">
                       <img
                         src={slide.imageUrl}
                         alt={slide.imageAlt}
                         className="w-full h-full object-cover rounded-full"
                       />
                     </div>
-                    <div className="flex flex-col justify-center text-center lg:text-left space-y-5 max-w-xl text-[#1A1A1A]">
+                    
+                    {/* 💡 TEXT VISIBILITY FIX (DARK SLIDE): Swapped out dark text for high-contrast radiant text fields */}
+                    <div className="flex flex-col justify-center text-center lg:text-left space-y-5 max-w-xl text-[#FFFDF9]">
                       <span className="text-[10px] sm:text-[11px] tracking-[0.4em] text-[#C5A059] font-medium uppercase block font-sans-poppins">
                         {slide.topText}
                       </span>
                       <div className="space-y-2">
-                        <h2 className="font-serif-playfair text-4xl sm:text-5xl lg:text-6xl font-normal text-[#F9FAFB] italic leading-tight">
+                        <h2 className="font-serif-playfair text-4xl sm:text-5xl lg:text-6xl font-normal text-[#FFFDF9] italic leading-tight">
                           {slide.mainText}
                         </h2>
 
                         <div className="h-[1px] w-16 bg-[#C5A059] mx-auto lg:mx-0 my-3" />
-                        <span className="block text-xs sm:text-sm tracking-[0.3em] font-medium uppercase text-[#8C6D3A] font-sans-poppins">
+                        <span className="block text-xs sm:text-sm tracking-[0.3em] font-medium uppercase text-[#C5A059] font-sans-poppins">
                           {slide.accentText}
                         </span>
-                        <p className="text-xs text-neutral-600 tracking-[0.1em] font-light max-w-md mx-auto lg:mx-0 pt-2 leading-relaxed font-sans-inter normal-case">
+                        <p className="text-xs text-neutral-300 tracking-[0.1em] font-light max-w-md mx-auto lg:mx-0 pt-2 leading-relaxed font-sans-inter normal-case">
                           {slide.subText}
                         </p>
                       </div>
                       <div className="pt-4">
                         <button
                           onClick={() => handleExplore(slide.category)}
-                          className="py-3 px-10 bg-[#1A1A1A] hover:bg-[#C5A059] text-[#FFFDF9] hover:text-[#1A1A1A] text-[11px] font-medium tracking-[0.25em] font-sans-poppins transition-all duration-300 shadow-md uppercase border border-[#1A1A1A] hover:border-[#C5A059] cursor-pointer"
+                          className="py-3 px-10 bg-[#FFFDF9] hover:bg-[#C5A059] text-[#1A1A1A] text-[11px] font-medium tracking-[0.25em] font-sans-poppins transition-all duration-300 shadow-md uppercase border border-[#FFFDF9] hover:border-[#C5A059] cursor-pointer"
                         >
                           {slide.buttonText}
                         </button>
@@ -169,9 +165,10 @@ export default function Hero() {
                   /* Condition 2: Full Bleed Background Canvas Grids */
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full pt-16">
                     <div
-                      className={`flex flex-col justify-center space-y-5 lg:col-span-8 text-center lg:text-left`}
+                      className="flex flex-col justify-center space-y-5 lg:col-span-8 text-center lg:text-left"
                     >
-                      <span className="text-[10px] sm:text-[11px] tracking-[0.4em] text-[#C5A059] font-medium uppercase block font-sans-poppins">
+                      {/* 💡 TEXT VISIBILITY FIX (LIGHT SLIDES): Styled texts with high-contrast rich Charcoal colors to keep them beautifully sharp against the images */}
+                      <span className="text-[10px] sm:text-[11px] tracking-[0.4em] text-[#8C6D3A] font-semibold uppercase block font-sans-poppins">
                         {slide.topText}
                       </span>
                       <div className="space-y-2">
@@ -179,17 +176,17 @@ export default function Hero() {
                           {slide.mainText}
                         </h1>
                         <div className="h-[1px] w-16 bg-[#C5A059] mx-auto lg:mx-0 my-3" />
-                        <span className="block text-xs sm:text-sm tracking-[0.3em] font-medium uppercase text-[#8C6D3A] font-sans-poppins">
+                        <span className="block text-xs sm:text-sm tracking-[0.3em] font-bold uppercase text-[#1A1A1A] font-sans-poppins">
                           {slide.accentText}
                         </span>
-                        <p className="text-xs text-neutral-600 tracking-[0.1em] font-light max-w-lg mx-auto lg:mx-0 pt-2 leading-relaxed font-sans-inter normal-case">
+                        <p className="text-xs text-[#1A1A1A] tracking-[0.1em] font-medium max-w-lg mx-auto lg:mx-0 pt-2 leading-relaxed font-sans-inter normal-case">
                           {slide.subText}
                         </p>
                       </div>
                       <div className="pt-4">
                         <button
                           onClick={() => handleExplore(slide.category)}
-                          className="py-3 px-10 bg-[#1A1A1A] hover:bg-[#C5A059] text-[#FFFDF9] hover:text-[#1A1A1A] text-[11px] font-medium tracking-[0.25em] font-sans-poppins transition-all duration-300 shadow-md uppercase border border-[#1A1A1A] hover:border-[#C5A059] cursor-pointer"
+                          className="py-3 px-10 bg-[#1A1A1A] hover:bg-[#C5A059] text-white hover:text-[#1A1A1A] text-[11px] font-medium tracking-[0.25em] font-sans-poppins transition-all duration-300 shadow-md uppercase border border-[#1A1A1A] hover:border-[#C5A059] cursor-pointer"
                           id={`explore-slide-${slide.id}`}
                         >
                           {slide.buttonText}
@@ -204,22 +201,23 @@ export default function Hero() {
         })}
 
         {/* --- CAROUSEL MANUAL NAVIGATION SYSTEM --- */}
+        {/* --- CAROUSEL MANUAL NAVIGATION SYSTEM --- */}
         <button
           onClick={handlePrev}
-          className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-20 p-2 border border-[#EAE3D2] bg-white/80 hover:bg-[#C5A059] text-[#1A1A1A] hover:text-[#FFFDF9] transition-all cursor-pointer focus:outline-none backdrop-blur-xs shadow-xs"
+          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-transparent text-[#1A1A1A]/60 hover:text-[#C5A059] transition-all cursor-pointer focus:outline-none backdrop-blur-xs rounded-full hover:bg-[#FFFDF9]/10"
           aria-label="Previous slide"
           id="btn-slide-prev"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.5]" />
         </button>
 
         <button
           onClick={handleNext}
-          className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 p-2 border border-[#EAE3D2] bg-white/80 hover:bg-[#C5A059] text-[#1A1A1A] hover:text-[#FFFDF9] transition-all cursor-pointer focus:outline-none backdrop-blur-xs shadow-xs"
+          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 p-3 bg-transparent text-[#1A1A1A]/60 hover:text-[#C5A059] transition-all cursor-pointer focus:outline-none backdrop-blur-xs rounded-full hover:bg-[#FFFDF9]/10"
           aria-label="Next slide"
           id="btn-slide-next"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 stroke-[1.5]" />
         </button>
 
         {/* --- MANUAL CAROUSEL INDEX TICKERS --- */}

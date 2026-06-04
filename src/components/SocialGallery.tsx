@@ -1,23 +1,23 @@
-import React from 'react';
-import { Instagram, Heart, MessageCircle, Sparkles } from 'lucide-react';
-import { INSTAGRAM_POSTS } from '../data';
+import React from "react";
+import { Instagram, Heart, MessageCircle, Sparkles } from "lucide-react";
+import { INSTAGRAM_POSTS } from "../data";
 
 export default function SocialGallery() {
   return (
     <section className="py-20 bg-brand-cream border-t border-brand-beige/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
           <div className="flex items-center justify-center space-x-1.5 text-brand-gold text-xs font-semibold tracking-widest uppercase font-sans-poppins">
             <Instagram className="h-4 w-4" />
-            <span>@LavishLathers.Atelier</span>
+            <span>@lavishlathersbyesther</span>
           </div>
           <h2 className="font-serif-playfair text-3xl sm:text-4xl text-brand-black tracking-tight font-light">
             Sights from our Soapmaking Sanctuary
           </h2>
           <p className="font-sans-inter text-xs text-brand-black/50 font-light pr-2">
-            Follow our digital journal for a daily look inside cold-process pours, floral foraging, and custom packaging wax seals.
+            Follow our digital journal for a daily look inside cold-process
+            pours, floral foraging, and custom packaging wax seals.
           </p>
         </div>
 
@@ -28,7 +28,9 @@ export default function SocialGallery() {
               key={post.id}
               className="group relative aspect-square overflow-hidden rounded-2xl bg-brand-ivory cursor-pointer shadow-xs border border-brand-beige/10"
               onClick={() => {
-                alert(`Instagram caption:\n"${post.caption}"\n\nCome and follow our journey on @LavishLathers.Atelier to receive exclusive coupons!`);
+                alert(
+                  `Instagram caption:\n"${post.caption}"\n\nCome and follow our journey on @LavishLathers.Atelier to receive exclusive coupons!`,
+                );
               }}
               id={`ig-hover-${post.id}`}
             >
@@ -42,7 +44,6 @@ export default function SocialGallery() {
 
               {/* Hover Dark Overlay containing active likes and descriptions */}
               <div className="absolute inset-0 bg-brand-black/85 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 text-left z-10">
-                
                 {/* Highlight Icon */}
                 <div className="flex justify-end">
                   <Sparkles className="h-3.5 w-3.5 text-brand-gold" />
@@ -64,16 +65,13 @@ export default function SocialGallery() {
                     <span>{post.comments}</span>
                   </div>
                 </div>
-
               </div>
 
               {/* Glass subtle border sheen */}
               <div className="absolute inset-2 border border-brand-cream/0 group-hover:border-brand-cream/20 rounded-xl transition-all pointer-events-none" />
-
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

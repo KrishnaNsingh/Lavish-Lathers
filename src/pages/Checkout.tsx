@@ -309,7 +309,7 @@ export default function CheckoutPage() {
                     required
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    placeholder="e.g. Krishna Narayan Singh"
+                    placeholder="e.g. Type your full name here"
                     className={`w-full px-4 py-3 rounded-xl border ${validationErrors.fullName ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-fullname"
                   />
