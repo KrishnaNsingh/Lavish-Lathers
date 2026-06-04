@@ -11,7 +11,7 @@ export default function SocialGallery() {
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
           <div className="flex items-center justify-center space-x-1.5 text-brand-gold text-xs font-semibold tracking-widest uppercase font-sans-poppins">
             <Instagram className="h-4 w-4" />
-            <span>@LavishLathers.Atelier</span>
+            <span>@lavishlathersbyesther</span>
           </div>
           <h2 className="font-serif-playfair text-3xl sm:text-4xl text-brand-black tracking-tight font-light font-medium">
             Sights from our Soapmaking Sanctuary

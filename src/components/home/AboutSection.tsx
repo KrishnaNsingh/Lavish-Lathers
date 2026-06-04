@@ -31,7 +31,7 @@ export default function AboutSection() {
             {/* Image 2: Stack of cured soaps offset vertically */}
             <div className="w-full sm:w-[45%] aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-lg border border-brand-cream/80 relative sm:translate-y-12 group">
               <img
-                src="https://images.unsplash.com/photo-1605264964521-300ed3f3149b?auto=format&fit=crop&q=80&w=400"
+                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780575392/4769675475445dde557a7776326025f4_qazwfu.jpg"
                 alt="Curing cold process blocks in dark pine vaults"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
