@@ -259,7 +259,7 @@ export default function Hero() {
               <div className="space-y-4">
                 <div className="aspect-square w-full rounded-2xl overflow-hidden bg-brand-ivory relative">
                   <img
-                    src="https://images.unsplash.com/photo-1607006342411-92447c05b579?auto=format&fit=crop&q=80&w=500"
+                    src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780576883/Gemini_Generated_Image_rtc2i7rtc2i7rtc2_eeaoyr.png"
                     alt="Lavender shea"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
@@ -269,7 +269,7 @@ export default function Hero() {
                   </span>
                 </div>
                 <h3 className="font-serif-playfair text-lg text-brand-black font-semibold">
-                  Lavender & Shea Butter Comfort Bar
+                  Cocoa & Shea Butter Comfort Bar
                 </h3>
                 <p className="text-xs text-[#0B0B0B]/60 leading-relaxed font-sans-inter">
                   Formulated to relieve sensory stress and hydrate sensitive
@@ -283,7 +283,7 @@ export default function Hero() {
                     Price per bar
                   </span>
                   <span className="font-serif-cormorant italic font-bold text-lg text-brand-black">
-                    ₹1,490
+                    ₹199
                   </span>
                 </div>
                 <button
@@ -300,7 +300,7 @@ export default function Hero() {
               <div className="space-y-4">
                 <div className="aspect-square w-full rounded-2xl overflow-hidden bg-brand-ivory relative">
                   <img
-                    src="https://images.unsplash.com/photo-1605264964521-300ed3f3149b?auto=format&fit=crop&q=80&w=500"
+                    src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780578665/Gemini_Generated_Image_ey0u5jey0u5jey0u_yzlmm1.png"
                     alt="Saffron Mysore"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
@@ -310,11 +310,10 @@ export default function Hero() {
                   </span>
                 </div>
                 <h3 className="font-serif-playfair text-lg text-brand-black font-semibold">
-                  Kashmiri Saffron & Sandalwood Cleanser
+                  Mongo and Shea Cleanser
                 </h3>
                 <p className="text-xs text-[#0B0B0B]/60 leading-relaxed font-sans-inter">
-                  Specifically compounds active crocin from rare saffron threads
-                  to eliminate skin dullness and restore dynamic glow.
+                  Nourishing butters are known for their deep moisturizing properties, working together to hydrate and pamper your skin.
                 </p>
               </div>
 
@@ -324,7 +323,7 @@ export default function Hero() {
                     Price per bar
                   </span>
                   <span className="font-serif-cormorant italic font-bold text-lg text-brand-black">
-                    ₹1,990
+                    ₹199
                   </span>
                 </div>
                 <button

@@ -12,7 +12,7 @@ export default function FeaturedCollections() {
       name: "Herbal Soaps",
       tagline: "Dense, 6-Week Cured Botanical Bars",
       description: "Organic daily skin-polishing cold process soaps crafted with raw African shea and cold-pressed botanical oils.",
-      image: "https://images.unsplash.com/photo-1607006342411-92447c05b579?auto=format&fit=crop&q=80&w=600"
+      image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780576883/Gemini_Generated_Image_rtc2i7rtc2i7rtc2_eeaoyr.png"
     },
     {
       name: "Essential Oils",
@@ -30,7 +30,7 @@ export default function FeaturedCollections() {
       name: "Souvenirs",
       tagline: "Hand-Carved Sculptures & Keepsakes",
       description: "Emotional floral clay curios, heart lace designs, and wedding favors curated by hand in our workshop.",
-      image: "https://images.unsplash.com/photo-1515688594390-b649af70d282?auto=format&fit=crop&q=80&w=600"
+      image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780577342/b0d4e596aebd74cc5514dc3678b413f7_irsxzs.jpg"
     },
     {
       name: "Floral Collection",
@@ -42,7 +42,7 @@ export default function FeaturedCollections() {
       name: "Self Care Collection",
       tagline: "Nourishing Bathing Sanctuary Rituals",
       description: "Deep kaolin detox blocks, vetiver bath teas, and linen vanity cloths for deep-pore botanical skin therapy.",
-      image: "https://images.unsplash.com/photo-1590439471364-192aa70c0b53?auto=format&fit=crop&q=80&w=600"
+      image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780577581/543e0860a08171211fe906e58e0ba6da_jyb71h.jpg"
     }
   ];
 
