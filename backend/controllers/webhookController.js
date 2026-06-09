@@ -26,16 +26,31 @@ const razorpayWebhook = async (req, res) => {
     console.log("Razorpay Webhook Event Received:", payload.event);
 
     // Resolve order status on successful webhook callback
-    if (payload.event === "order.paid" || payload.event === "payment.captured") {
+    if (
+      payload.event === "order.paid" ||
+      payload.event === "payment.captured"
+    ) {
       const paymentEntity = payload.payload.payment.entity;
       const razorpayOrderId = paymentEntity.order_id;
       const razorpayPaymentId = paymentEntity.id;
 
-      const order = await Order.findOne({ "payment.razorpayOrderId": razorpayOrderId });
+      const order = await Order.findOne({
+        "payment.razorpayOrderId": razorpayOrderId,
+      });
       if (order && order.payment.paymentStatus !== "paid") {
         order.payment.paymentStatus = "paid";
         order.payment.razorpayPaymentId = razorpayPaymentId;
         await order.save();
+        
+        for (const item of order.items) {
+          const product = await Product.findById(item.productId);
+
+          if (!product) continue;
+
+          product.stock -= item.quantity;
+
+          await product.save();
+        }
 
         try {
           await sendCustomerOrderEmail(order);
@@ -46,39 +61,27 @@ const razorpayWebhook = async (req, res) => {
         }
       }
     }
-    
+
     if (payload.event === "payment.failed") {
-      const paymentEntity =
-        payload.payload.payment.entity;
+      const paymentEntity = payload.payload.payment.entity;
 
-      const razorpayOrderId =
-        paymentEntity.order_id;
+      const razorpayOrderId = paymentEntity.order_id;
 
-      const order =
-        await Order.findOne({
-          "payment.razorpayOrderId":
-            razorpayOrderId,
-        });
+      const order = await Order.findOne({
+        "payment.razorpayOrderId": razorpayOrderId,
+      });
 
       if (order) {
-        order.payment.paymentStatus =
-          "failed";
+        order.payment.paymentStatus = "failed";
 
         await order.save();
 
         try {
-          await sendPaymentFailedEmail(
-            order
-          );
+          await sendPaymentFailedEmail(order);
 
-          console.log(
-            "Payment failure email sent"
-          );
+          console.log("Payment failure email sent");
         } catch (emailError) {
-          console.error(
-            "Payment failure email error:",
-            emailError
-          );
+          console.error("Payment failure email error:", emailError);
         }
       }
     }

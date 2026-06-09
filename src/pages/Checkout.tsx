@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  ShieldCheck,
-  Loader2,
-} from "lucide-react";
+import { ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
 import { CheckoutDetails, Order } from "../types";
 import { useApp } from "../context/AppContext";
 
@@ -38,7 +34,9 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState(0);
   const [message, setMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [validationErrors, setValidationErrors] = useState<Partial<CheckoutDetails>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Partial<CheckoutDetails>
+  >({});
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,7 +74,8 @@ export default function CheckoutPage() {
     const errors: Partial<CheckoutDetails> = {};
 
     if (formData.fullName.trim().length < 3) {
-      errors.fullName = "Please enter your official full name (minimum 3 characters).";
+      errors.fullName =
+        "Please enter your official full name (minimum 3 characters).";
     }
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -86,23 +85,29 @@ export default function CheckoutPage() {
 
     // 10-Digit Mobile Constraint Logic (Strips optional prefix variables)
     const rawDigits = formData.phone.replace(/\D/g, "");
-    const cleanPhone = rawDigits.startsWith("91") && rawDigits.length === 12 ? rawDigits.slice(2) : rawDigits;
+    const cleanPhone =
+      rawDigits.startsWith("91") && rawDigits.length === 12
+        ? rawDigits.slice(2)
+        : rawDigits;
     const indianPhoneRegex = /^[6-9]\d{9}$/;
     if (!indianPhoneRegex.test(cleanPhone)) {
       errors.phone = "Please enter a standard 10-digit Indian mobile number.";
     }
 
     if (formData.address.trim().length < 8) {
-      errors.address = "Please detail your full flat/building number and street coordinates.";
+      errors.address =
+        "Please detail your full flat/building number and street coordinates.";
     }
 
     if (!formData.city.trim()) errors.city = "City parameter is required.";
-    if (!formData.state.trim()) errors.state = "State or Territory specification is required.";
+    if (!formData.state.trim())
+      errors.state = "State or Territory specification is required.";
 
     // Indian PIN Code 6-digit structure verify rule
     const pinCodeRegex = /^[1-9][0-9]{5}$/;
     if (!pinCodeRegex.test(formData.zipCode.trim())) {
-      errors.zipCode = "Please provide a valid 6-digit PIN code (e.g., 400001).";
+      errors.zipCode =
+        "Please provide a valid 6-digit PIN code (e.g., 400001).";
     }
 
     setValidationErrors(errors);
@@ -156,7 +161,9 @@ export default function CheckoutPage() {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to compile transactional variables with backend route.");
+        throw new Error(
+          "Failed to compile transactional variables with backend route.",
+        );
       }
 
       const order = await response.json();
@@ -169,6 +176,7 @@ export default function CheckoutPage() {
         name: "Lavish Lathers",
         description: "Luxury Herbal Products Portfolio Acquisition",
         order_id: order.id,
+        
         handler: async function (response: any) {
           // STEP 3: Dispatch tracking tokens forward to your signature verification path
           try {
@@ -221,10 +229,15 @@ export default function CheckoutPage() {
               clearCart();
               navigate("/order-confirmation");
             } else {
-              alert("Payment Verification Failed. Cryptographic signature check rejected.");
+              alert(
+                "Payment Verification Failed. Cryptographic signature check rejected.",
+              );
             }
           } catch (verifyErr) {
-            console.error("Verification processing script exception:", verifyErr);
+            console.error(
+              "Verification processing script exception:",
+              verifyErr,
+            );
             alert("Error establishing connection with validation servers.");
           } finally {
             setIsProcessing(false);
@@ -241,8 +254,8 @@ export default function CheckoutPage() {
         modal: {
           ondismiss: function () {
             setIsProcessing(false);
-          }
-        }
+          },
+        },
       };
 
       // STEP 4: Call active popup layout window
@@ -250,7 +263,9 @@ export default function CheckoutPage() {
       razor.open();
     } catch (error) {
       console.error(error);
-      alert("Encountered initialization error building client transaction pipeline.");
+      alert(
+        "Encountered initialization error building client transaction pipeline.",
+      );
       setIsProcessing(false);
     }
   };
@@ -310,10 +325,14 @@ export default function CheckoutPage() {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="e.g. Type your full name here"
-                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.fullName ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.fullName ? "border-red-500" : "border-brand-beige/40"} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-fullname"
                   />
-                  {validationErrors.fullName && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.fullName}</p>}
+                  {validationErrors.fullName && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.fullName}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -327,10 +346,14 @@ export default function CheckoutPage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="e.g. 98765 43210"
-                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.phone ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.phone ? "border-red-500" : "border-brand-beige/40"} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-phone"
                   />
-                  {validationErrors.phone && <p className="text-red-500 text-[10px] mt-1延 font-medium">{validationErrors.phone}</p>}
+                  {validationErrors.phone && (
+                    <p className="text-red-500 text-[10px] mt-1延 font-medium">
+                      {validationErrors.phone}
+                    </p>
+                  )}
                 </div>
 
                 <div className="sm:col-span-2">
@@ -344,10 +367,14 @@ export default function CheckoutPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="e.g. krishna@lavishlathers.com"
-                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.email ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.email ? "border-red-500" : "border-brand-beige/40"} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-email"
                   />
-                  {validationErrors.email && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.email}</p>}
+                  {validationErrors.email && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -370,10 +397,14 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="e.g. Flat 304, Royal Crest Apartments, near Lotus Temple"
-                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.address ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.address ? "border-red-500" : "border-brand-beige/40"} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all`}
                     id="checkout-address"
                   />
-                  {validationErrors.address && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.address}</p>}
+                  {validationErrors.address && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.address}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -390,7 +421,11 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
                     id="checkout-city"
                   />
-                  {validationErrors.city && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.city}</p>}
+                  {validationErrors.city && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.city}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -407,7 +442,11 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-3 rounded-xl border border-brand-beige/40 bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all"
                     id="checkout-state"
                   />
-                  {validationErrors.state && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.state}</p>}
+                  {validationErrors.state && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.state}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -422,10 +461,14 @@ export default function CheckoutPage() {
                     value={formData.zipCode}
                     onChange={handleInputChange}
                     placeholder="e.g. 400001"
-                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.zipCode ? 'border-red-500' : 'border-brand-beige/40'} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all font-mono`}
+                    className={`w-full px-4 py-3 rounded-xl border ${validationErrors.zipCode ? "border-red-500" : "border-brand-beige/40"} bg-[#FAF7F2] text-sm text-brand-black placeholder-brand-black/35 focus:ring-1 focus:ring-brand-gold focus:outline-none focus:border-brand-gold transition-all font-mono`}
                     id="checkout-zip"
                   />
-                  {validationErrors.zipCode && <p className="text-red-500 text-[10px] mt-1 font-medium">{validationErrors.zipCode}</p>}
+                  {validationErrors.zipCode && (
+                    <p className="text-red-500 text-[10px] mt-1 font-medium">
+                      {validationErrors.zipCode}
+                    </p>
+                  )}
                 </div>
 
                 <div className="sm:col-span-3">
@@ -518,7 +561,8 @@ export default function CheckoutPage() {
                             Wax-seal scroll included:{" "}
                           </span>
                           <span className="text-brand-black/75">
-                            &ldquo;{item.giftNote || "Heartfelt Greetings"}&rdquo;
+                            &ldquo;{item.giftNote || "Heartfelt Greetings"}
+                            &rdquo;
                           </span>
                         </div>
                       )}
@@ -604,7 +648,8 @@ export default function CheckoutPage() {
               <div className="flex items-center space-x-2 text-[10px] text-brand-black/45 justify-center leading-normal">
                 <ShieldCheck className="h-4 w-4 text-brand-gold shrink-0" />
                 <span>
-                  Encrypted secure guest transaction &bull; Razorpay 3-D Secure Ready
+                  Encrypted secure guest transaction &bull; Razorpay 3-D Secure
+                  Ready
                 </span>
               </div>
             </div>
