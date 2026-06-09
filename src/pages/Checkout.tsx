@@ -121,7 +121,7 @@ export default function CheckoutPage() {
     try {
       // STEP 1: Initialize Razorpay order mapping values against core server
       const response = await fetch(
-        "http://localhost:5000/api/orders/create-razorpay-order",
+        `${import.meta.env.VITE_API_URL}/orders/create-razorpay-order`,
         {
           method: "POST",
           headers: {
@@ -176,12 +176,12 @@ export default function CheckoutPage() {
         name: "Lavish Lathers",
         description: "Luxury Herbal Products Portfolio Acquisition",
         order_id: order.id,
-        
+
         handler: async function (response: any) {
           // STEP 3: Dispatch tracking tokens forward to your signature verification path
           try {
             const verifyResponse = await fetch(
-              "http://localhost:5000/api/orders/verify-payment",
+              `${import.meta.env.VITE_API_URL}/orders/verify-payment`,
               {
                 method: "POST",
                 headers: {
