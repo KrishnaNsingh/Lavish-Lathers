@@ -106,15 +106,15 @@ const verifyPaymentAndCreateOrder = async (req, res) => {
     await appendOrderToSheet(order);
     console.log("After Google Sheet");
 
-    try {
-      await sendCustomerOrderEmail(order);
+    // try {
+    //   await sendCustomerOrderEmail(order);
 
-      await sendAdminOrderEmail(order);
+    //   await sendAdminOrderEmail(order);
 
-      console.log("Order emails sent successfully");
-    } catch (emailError) {
-      console.error("Email sending failed:", emailError);
-    }
+    //   console.log("Order emails sent successfully");
+    // } catch (emailError) {
+    //   console.error("Email sending failed:", emailError);
+    // }
 
     res.status(201).json({
       success: true,
