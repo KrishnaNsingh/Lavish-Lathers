@@ -1,15 +1,25 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { CheckCircle2, Gift, Calendar, MessageSquare, Sparkles } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function OrderConfirmation() {
   const navigate = useNavigate();
-  const { confirmedOrder, setConfirmedOrder, setFilterCategory } = useApp();
-
+  const location = useLocation(); // 💡 Initialize location tracking
+  // const { confirmedOrder, setConfirmedOrder, setFilterCategory } = useApp();
+  const { confirmedOrder: contextOrder, setConfirmedOrder, setFilterCategory } = useApp();
+  const confirmedOrder = contextOrder || location.state?.order;
+  
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Sync the local history order back into context if context lost it on a hard reload
+    if (location.state?.order && !contextOrder) {
+      setConfirmedOrder(location.state.order);
+    }
+  }, [location.state, contextOrder, setConfirmedOrder]);
 
   const handleContinueShopping = () => {
     setConfirmedOrder(null);
@@ -33,7 +43,7 @@ export default function OrderConfirmation() {
 
   return (
     <div className="bg-gradient-to-b from-brand-pink/20 via-brand-cream to-[#FAF7F2] py-32 min-h-screen text-brand-black font-sans-inter">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-8 animate-fade-in">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10 relative z-10 text-center space-y-8 animate-fade-in">
         
         {/* Large Decorative Centered Icon */}
         <div className="relative inline-flex items-center justify-center">
@@ -89,8 +99,8 @@ export default function OrderConfirmation() {
             </h3>
 
             <div className="space-y-3 font-sans-inter">
-              {confirmedOrder.items.some(it => it.isGift) ? (
-                confirmedOrder.items.filter(it => it.isGift).map((giftItem, idx) => (
+              {confirmedOrder.items.some((it: any) => it.isGift) ? (
+                confirmedOrder.items.filter((it: any) => it.isGift).map((giftItem: any, idx: number) =>(
                   <div key={idx} className="bg-[#FAF7F2] border border-dashed border-red-500/20 p-4 rounded-xl flex items-start gap-4">
                     
                     {/* Tiny visual Wax Seal Stamp Indicator */}
@@ -151,7 +161,7 @@ export default function OrderConfirmation() {
 
           <button
             onClick={() => {
-              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + confirmedOrder._id + " to request silk ribbon design selections!");
+              alert("Lavish Lathers WhatsApp concierge channel: +91 89712 91063 .\nQuote your Order ID: " + confirmedOrder._id + " to request silk ribbon design selections!");
             }}
             className="w-full sm:w-auto py-4 px-8 bg-transparent hover:bg-brand-pink border border-brand-black/20 text-brand-black rounded-full font-sans-poppins text-xs font-bold uppercase tracking-widest transition-colors duration-300 flex items-center justify-center space-x-2 focus:outline-none cursor-pointer"
             id="order-whatsapp-assist"
@@ -164,7 +174,7 @@ export default function OrderConfirmation() {
         {/* Premium citation scroll text */}
         <div className="pt-4 flex items-center justify-center space-x-2 text-[9px] uppercase tracking-[0.2em] font-sans-poppins text-brand-black/40">
           <Sparkles className="h-3 w-3 text-brand-gold" />
-          <span>Handcrafted with absolute devotion since 2012</span>
+          <span>Handcrafted with absolute devotion since 2023</span>
         </div>
 
       </div>

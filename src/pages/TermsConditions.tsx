@@ -12,7 +12,6 @@ export default function TermsConditions() {
   return (
     <div className="bg-[#FAF7F2] py-32 text-brand-black text-left font-sans-inter antialiased min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
-        
         {/* Navigation */}
         <button
           onClick={() => navigate(-1)}
@@ -31,30 +30,50 @@ export default function TermsConditions() {
             Terms &amp; Conditions
           </h1>
           <p className="font-sans-inter text-xs text-brand-black/55 max-w-xl font-light leading-relaxed">
-            Last updated: June 2026. Standard usage agreements protecting batch procurement schedules.
+            Last updated: June 2026. Standard usage agreements protecting batch
+            procurement schedules.
           </p>
         </div>
 
         {/* Content */}
         <div className="space-y-8 bg-brand-cream border border-brand-beige/25 p-8 sm:p-10 rounded-[2.5rem] shadow-sm text-sm text-brand-black/80 font-light leading-relaxed">
           <section className="space-y-3">
-            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">1. Unhurried Curing Mandates</h2>
+            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">
+              1. Unhurried Curing Mandates &amp; Natural Composition
+            </h2>
             <p>
-              Lavish Lathers herbal items rely completely on a dedicated six-week cold saponification curing phase. By checking out on our platform, you acknowledge that batches cannot be artificially accelerated. Delivery timelines depend implicitly on batch readiness to secure appropriate moisture bars.
+              Lavish Lathers herbal items rely completely on a dedicated
+              six-week cold saponification curing phase and are crafted with
+              entirely natural products with no chemicals. By checking out on
+              our platform, you acknowledge that batches cannot be artificially
+              accelerated. Delivery timelines depend implicitly on batch
+              readiness to secure appropriate moisture bars.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">2. Sovereign Dispatch Policies</h2>
+            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">
+              2. Sovereign Dispatch Policies
+            </h2>
             <p>
-              Orders are mapped natively inside Indian logistics routes. While shipping is entirely free for curations valued over ₹6,000, standard deliveries are subject to standard transit times. Any distinct courier notes should be outlined clearly inside the packaging instructions field during your checkout flow.
+              Orders are mapped natively inside Indian logistics routes,
+              shipping from Goa beauty to all over India. While shipping is
+              entirely free for curations valued over ₹2,000, standard
+              deliveries are subject to standard transit times. Any distinct
+              courier notes should be outlined clearly inside the packaging
+              instructions field during your checkout flow.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">3. Unboxing &amp; Return Charters</h2>
+            <h2 className="font-serif-playfair text-xl text-brand-black font-semibold">
+              3. Unboxing &amp; Return Charters
+            </h2>
             <p>
-              Due to the hyper-pure, organic nature of our formulas, returns are valid up to 15 days from delivery tracking indicators, provided the outer wax seal and artisan wrappers remain completely unopened. Broken shields are non-refundable to maintain strict hygienic code standards.
+              Due to the hyper-pure, organic nature of our formulas, we enforce
+              a strict No Return Policy. Broken shields or opened items are
+              completely non-refundable to maintain strict hygienic code
+              standards.
             </p>
           </section>
 
@@ -63,7 +82,6 @@ export default function TermsConditions() {
             <span>Atelier Operational Terms Active</span>
           </div>
         </div>
-
       </div>
     </div>
   );

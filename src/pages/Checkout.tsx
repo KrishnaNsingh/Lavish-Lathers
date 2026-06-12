@@ -177,7 +177,8 @@ export default function CheckoutPage() {
         description: "Luxury Herbal Products Portfolio Acquisition",
         order_id: order.id,
 
-        handler: async function (response: any) {
+        // 💡 FIX 1: Use an ES6 arrow function to preserve component and hook scope
+        handler: async (response: any) => {
           // STEP 3: Dispatch tracking tokens forward to your signature verification path
           try {
             const verifyResponse = await fetch(
@@ -227,7 +228,12 @@ export default function CheckoutPage() {
             if (data.success) {
               setConfirmedOrder(data.order);
               clearCart();
-              navigate("/order-confirmation");
+              
+              // 💡 FIX 2: Explicitly pass the order data via location history state 
+              // to bypass synchronous React Context update delays
+              setTimeout(() => {
+                navigate("/order-confirmation", { state: { order: data.order } });
+              }, 100);
             } else {
               alert(
                 "Payment Verification Failed. Cryptographic signature check rejected.",

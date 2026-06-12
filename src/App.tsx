@@ -13,7 +13,7 @@ import HomePage from "./pages/Home";
 import ShopPage from "./pages/Shop";
 import ProductPage from "./pages/Product";
 import CheckoutPage from "./pages/Checkout";
-import OrderConfirmationPage from "./pages/OrderConfirmation";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 
@@ -50,7 +50,7 @@ function AppContent() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route
             path="/order-confirmation"
-            element={<OrderConfirmationPage />}
+            element={<OrderConfirmation />}
           />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
