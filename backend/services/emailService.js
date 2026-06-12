@@ -3,8 +3,10 @@ const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formatOrderItemsHtml = (items) => {
-  return items.map(item => {
-    const giftScrollHtml = item.isGift ? `
+  return items
+    .map((item) => {
+      const giftScrollHtml = item.isGift
+        ? `
       <tr>
         <td colspan="3" style="padding: 10px 15px 15px 15px;">
           <div style="background-color: #FCFAF5; border: 1px dashed #D6C29E; border-radius: 12px; padding: 15px; position: relative;">
@@ -12,21 +14,22 @@ const formatOrderItemsHtml = (items) => {
               📜 WAX-SEALED GIFT SCROLL
             </div>
             <div style="font-size: 13px; font-family: Georgia, serif; color: #8A251E; font-weight: bold; margin-bottom: 4px;">
-              To: ${item.giftRecipient || 'Patron'}
+              To: ${item.giftRecipient || "Patron"}
             </div>
             <div style="font-size: 13px; font-style: italic; color: #2F2C2A; line-height: 1.6; font-family: Georgia, serif;">
-              &ldquo;${item.giftNote || 'Heartfelt Greetings'}&rdquo;
+              &ldquo;${item.giftNote || "Heartfelt Greetings"}&rdquo;
             </div>
           </div>
         </td>
       </tr>
-    ` : '';
+    `
+        : "";
 
-    return `
+      return `
       <tr style="border-bottom: 1px solid #EFECE6;">
         <td style="padding: 15px 10px; font-family: Georgia, serif; font-size: 14px; color: #1A1817; font-weight: 500;">
           ${item.name}
-          <div style="font-size: 10px; color: #7E7771; font-family: sans-serif; margin-top: 2px;">Registry: ${item.registryId || 'N/A'}</div>
+          <div style="font-size: 10px; color: #7E7771; font-family: sans-serif; margin-top: 2px;">Registry: ${item.registryId || "N/A"}</div>
         </td>
         <td style="padding: 15px 10px; font-family: Arial, sans-serif; font-size: 14px; color: #2F2C2A; text-align: center;">
           ${item.quantity}
@@ -37,7 +40,8 @@ const formatOrderItemsHtml = (items) => {
       </tr>
       ${giftScrollHtml}
     `;
-  }).join('');
+    })
+    .join("");
 };
 
 const sendCustomerOrderEmail = async (order) => {
@@ -45,7 +49,7 @@ const sendCustomerOrderEmail = async (order) => {
     console.log("Customer Email Destination:", order.customer.email);
 
     const response = await resend.emails.send({
-      from: "Lavish Lathers <onboarding@resend.dev>",
+      from: "Lavish Lathers <orders@mail.lavishlathers.in>",
       to: order.customer.email,
       subject: "Order Confirmed - Lavish Lathers",
       html: `
@@ -89,7 +93,7 @@ const sendCustomerOrderEmail = async (order) => {
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td style="font-size: 12px; color: #7E7771; padding: 3px 0;">Date of Registry:</td>
-                        <td style="font-size: 12px; color: #1A1817; text-align: right; font-weight: 500; padding: 3px 0;">${new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                        <td style="font-size: 12px; color: #1A1817; text-align: right; font-weight: 500; padding: 3px 0;">${new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td>
                       </tr>
                       <tr>
                         <td style="font-size: 12px; color: #7E7771; padding: 3px 0;">Dispatch Destination:</td>
@@ -171,7 +175,7 @@ const sendAdminOrderEmail = async (order) => {
     console.log("Admin Email Destination:", process.env.ADMIN_EMAIL);
 
     const response = await resend.emails.send({
-      from: "Lavish Lathers <onboarding@resend.dev>",
+      from: "Lavish Lathers <orders@mail.lavishlathers.in>",
       to: process.env.ADMIN_EMAIL,
       subject: `New Patron Order Received - Ref: ${order._id.toString().slice(-6).toUpperCase()}`,
       html: `
@@ -213,7 +217,7 @@ const sendAdminOrderEmail = async (order) => {
               <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #2F2C2A;">
                 ${order.shippingAddress.street}<br>
                 ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}<br>
-                ${order.shippingAddress.instructions ? `<span style="font-style: italic; color: #7E7771;">Instructions: ${order.shippingAddress.instructions}</span>` : ''}
+                ${order.shippingAddress.instructions ? `<span style="font-style: italic; color: #7E7771;">Instructions: ${order.shippingAddress.instructions}</span>` : ""}
               </p>
             </td>
           </tr>
@@ -247,7 +251,7 @@ const sendAdminOrderEmail = async (order) => {
                 </tr>
                 <tr>
                   <td style="font-size: 13px; color: #7E7771; padding-top: 5px;">Payment ID:</td>
-                  <td align="right" style="font-family: monospace; font-size: 12px; color: #2F2C2A; padding-top: 5px;">${order.payment?.razorpayPaymentId || 'N/A'}</td>
+                  <td align="right" style="font-family: monospace; font-size: 12px; color: #2F2C2A; padding-top: 5px;">${order.payment?.razorpayPaymentId || "N/A"}</td>
                 </tr>
               </table>
             </td>
@@ -277,7 +281,7 @@ const sendPaymentFailedEmail = async (order) => {
     console.log("Payment Failed Email Destination:", order.customer.email);
 
     const response = await resend.emails.send({
-      from: "Lavish Lathers <onboarding@resend.dev>",
+      from: "Lavish Lathers <orders@mail.lavishlathers.in>",
       to: order.customer.email,
       subject: "Payment Failed - Lavish Lathers",
       html: `
@@ -339,7 +343,7 @@ const sendPaymentFailedEmail = async (order) => {
           <!-- CTA to Retry -->
           <tr>
             <td align="center" style="padding: 10px 30px 35px 30px; text-align: center;">
-              <a href="http://localhost:5173/shop" style="background-color: #1A1817; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.15em; padding: 15px 30px; border-radius: 30px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-family: sans-serif;">
+              <a href="${process.env.FRONTEND_URL}/shop" style="background-color: #1A1817; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.15em; padding: 15px 30px; border-radius: 30px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-family: sans-serif;">
                 Return &amp; Retry Payment
               </a>
               <p style="margin: 15px 0 0 0; font-size: 12px; color: #7E7771; font-weight: 300; line-height: 1.5; font-family: sans-serif;">
