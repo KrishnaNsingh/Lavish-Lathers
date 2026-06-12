@@ -8,7 +8,7 @@ export default function AboutPage() {
 
   return (
     <div className="bg-[#FAF7F2] py-32 text-brand-black text-left font-sans-inter">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         
         {/* HERO HEADER */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">

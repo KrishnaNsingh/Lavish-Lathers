@@ -89,7 +89,7 @@ export default function ContactPage() {
 
   return (
     <div className="bg-[#FAF7F2] py-32 text-brand-black text-left font-sans-inter">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         {/* HEADER */}
         <div className="text-left space-y-3 mb-12 border-b border-brand-beige/20 pb-6">
           <span className="text-[10px] uppercase tracking-[0.4em] font-sans-poppins font-semibold text-brand-gold">

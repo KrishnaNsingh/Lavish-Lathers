@@ -277,7 +277,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="bg-brand-cream py-32 min-h-screen text-brand-black font-sans-inter">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         {/* Back navigation */}
         <button
           onClick={() => navigate("/shop")}

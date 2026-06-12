@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="bg-[#FAF7F2] py-32 text-brand-black text-left font-sans-inter antialiased min-h-screen">
-      <div className="max-w-4xl mx-auto px-6 sm:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         
         {/* Navigation */}
         <button

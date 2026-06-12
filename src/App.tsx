@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
+import  ScrollToTop  from "./components/ScrollToTop";
 
 // Layout Assets
 import Navbar from "./components/Navbar";
@@ -40,6 +41,7 @@ function AppContent() {
 
       {/* Main viewport routes switches */}
       <main className="flex-grow">
+        <ScrollToTop />
         <Routes>
           {/* Public directories */}
           <Route path="/" element={<HomePage />} />

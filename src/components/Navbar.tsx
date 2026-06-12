@@ -53,14 +53,25 @@ export default function Navbar() {
 
   const isAtHomeTop = isHome && !isScrolled;
 
+  // // Header dynamic placement and premium backing
+  // const headerClass = isHome
+  //   ? `fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${
+  //       isScrolled
+  //         ? "bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 shadow-md animate-slide-down"
+  //         : "bg-black/20 backdrop-blur-[2px] border-b border-white/10"
+  //     }`
+  //   : "sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 w-full";
   // Header dynamic placement and premium backing
+
+
+  // 💡 GAP REDUCTION FIX: Converted non-home route from 'sticky' to 'fixed top-0 left-0 right-0' layout configuration
   const headerClass = isHome
     ? `fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${
         isScrolled
           ? "bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 shadow-md animate-slide-down"
           : "bg-black/20 backdrop-blur-[2px] border-b border-white/10"
       }`
-    : "sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 w-full";
+    : "fixed top-0 left- right-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 w-full";
 
   // Dynamic aesthetic class names for links
   const linkTextClass = (active: boolean) => {
@@ -80,17 +91,42 @@ export default function Navbar() {
     <header className={headerClass} id="app-nav-header">
       {/* --- INTEGRATED TOP PORTION TICKER BAR --- */}
       <div
-        className={`transition-all duration-500 text-[10px] uppercase tracking-[0.25em] py-2 px-4 text-center font-sans-poppins font-semibold flex items-center justify-center space-x-2 border-b ${
+        className={`transition-all duration-500 text-[10px] uppercase tracking-[0.25em] py-2.5 overflow-hidden font-sans-poppins font-semibold border-b w-full ${
           isAtHomeTop
             ? "bg-black/50 border-white/5 text-brand-cream"
             : "bg-brand-black border-brand-gold/15 text-brand-cream"
         }`}
         id="top-ticker-banner"
       >
-        <span className="truncate">
-          ✨ Complimentary Sandalwood &amp; Satin Ribbon Gifting wraps with all
-          order values &bull; Free courier shipping over ₹6,000 ✨
-        </span>
+        {/* Flex Container to align the scrolling loops back-to-back */}
+        <div className="flex whitespace-nowrap min-w-full relative">
+          {/* First Loop Content Track */}
+          <div className="animate-marquee flex items-center shrink-0 space-x-8 pr-8">
+            <span>
+              ✨ Complimentary Sandalwood &amp; Satin Ribbon Gifting wraps with
+              all order values &bull; Free courier shipping over ₹2,000 ✨
+            </span>
+            <span>
+              ✨ Complimentary Sandalwood &amp; Satin Ribbon Gifting wraps with
+              all order values &bull; Free courier shipping over ₹2,000 ✨
+            </span>
+          </div>
+
+          {/* Second Duplicate Content Track (Clones the timeline to ensure an un-broken sequence loop) */}
+          <div
+            className="animate-marquee flex items-center shrink-0 space-x-8 pr-8"
+            aria-hidden="true"
+          >
+            <span>
+              ✨ Complimentary Sandalwood &amp; Satin Ribbon Gifting wraps with
+              all order values &bull; Free courier shipping over ₹2,000 ✨
+            </span>
+            <span>
+              ✨ Complimentary Sandalwood &amp; Satin Ribbon Gifting wraps with
+              all order values &bull; Free courier shipping over ₹2,000 ✨
+            </span>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
