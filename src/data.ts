@@ -3,38 +3,38 @@ import { Product } from './types';
 export const INSTAGRAM_POSTS = [
   {
     id: "ig-1",
-    image: "https://images.unsplash.com/photo-1607006342411-92447c05b579?auto=format&fit=crop&q=80&w=500",
-    likes: 312,
-    comments: 24,
-    caption: "Pouring serenity. Our signature French mountain lavender curls directly into cold-process molds. Craft takes patience, and luxury takes time. 💜 #LavishLathers"
+    image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1781333148/Screenshot_2026-06-13_114419_contdn.png",
+    likes: 82,
+    comments: 14,
+    caption: "Turning tiny fruit embeds into a beautiful handcrafted soap that looks good enough to eat (but please don’t 😄). #LavishLathers"
   },
   {
     id: "ig-2",
-    image: "https://images.unsplash.com/photo-1515688594390-b649af70d282?auto=format&fit=crop&q=80&w=500",
-    likes: 582,
-    comments: 48,
-    caption: "Keepsakes of pure elegance. Our Hand-Carved Lace Hearts bound inside silk ribbons are waiting to elevate your special anniversary gift. 🌹 #ArtisanSouvenirs"
+    image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1781333433/Screenshot_2026-06-13_122003_vvrww1.png",
+    likes: 43,
+    comments: 9,
+    caption: "Celebrate every moment with a touch of handcrafted elegance 🌸 #ArtisanSouvenirs"
   },
   {
     id: "ig-3",
-    image: "https://images.unsplash.com/photo-1605264964521-300ed3f3149b?auto=format&fit=crop&q=80&w=500",
-    likes: 412,
-    comments: 19,
-    caption: "Golden hours. Kashmiri saffron threads and red clay curing peacefully on clean pine lattices. Organic skincare, handcrafted with profound devotion. ✨ #OrganicGlow"
+    image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1780577581/543e0860a08171211fe906e58e0ba6da_jyb71h.jpg",
+    likes: 12,
+    comments: 7,
+    caption: "Elevate your daily ritual with a touch of botanical luxury—where pure ingredients meet timeless grace. ✨ #OrganicGlow"
   },
   {
     id: "ig-4",
-    image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=500",
-    likes: 389,
-    comments: 11,
-    caption: "Aromatherapy rituals. Drip, release, and ground with woodsy Himalayan Cedarwood extracts. Create your temple at home tonight. 🌿 #BotanicalElixir"
+    image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1781333796/Screenshot_2026-06-13_122605_sohdvp.png",
+    likes: 18,
+    comments: 4,
+    caption: "Check out the stunning new “A Catalogue of Soap crafted Memories” booklet we designed for Lavish Lathers’ by Esther Mascarenhas. 🌿 #BotanicalElixir"
   },
   {
     id: "ig-5",
-    image: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&q=80&w=500",
+    image: "https://res.cloudinary.com/dzowyrkcg/image/upload/v1781333947/Screenshot_2026-06-13_122851_s6yhan.png",
     likes: 641,
     comments: 52,
-    caption: "Sunlight dancing off 24K gold leaf flakes suspended in dense amber resin. Perfect decorative detail for your sanctuary room. ☀️ #LuxurySoapArt"
+    caption: "Surprise your loved ones with something truly special – a handcrafted piece that’s not only a treat for the skin but also a keepsake. ☀️ #LuxurySoapArt"
   },
   {
     id: "ig-6",

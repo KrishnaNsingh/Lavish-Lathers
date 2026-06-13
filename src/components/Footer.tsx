@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Leaf, Sparkles, Send, Heart } from "lucide-react";
+import { Leaf, Sparkles, Send, Heart, Instagram } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 export default function Footer() {
@@ -206,10 +206,25 @@ export default function Footer() {
             </Link>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <span>Formulated with</span>
-            <Heart className="h-3 w-3 fill-current text-brand-pink" />
-            <span>&amp; Red Clays</span>
+          {/* Added Instagram handle link on the same structural row level */}
+          <div className="flex items-center space-x-4">
+            <a 
+              href="https://instagram.com/lavishlathersbyesther" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-neutral-400 hover:text-[#C5A059] transition-colors cursor-pointer flex items-center space-x-1"
+            >
+              <Instagram className="h-4 w-4 stroke-[1.5]" />
+              <span className="font-sans-poppins font-medium tracking-wide normal-case text-xs">@lavishlathersbyesther</span>
+            </a>
+            
+            <span className="text-neutral-600">|</span>
+
+            <div className="flex items-center space-x-1">
+              <span>Formulated with</span>
+              <Heart className="h-3 w-3 fill-current text-brand-pink" />
+              <span>&amp; Red Clays</span>
+            </div>
           </div>
         </div>
       </div>

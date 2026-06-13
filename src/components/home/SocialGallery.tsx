@@ -28,7 +28,7 @@ export default function SocialGallery() {
               key={post.id}
               className="group relative aspect-square overflow-hidden rounded-2xl bg-brand-ivory cursor-pointer shadow-xs border border-brand-beige/10"
               onClick={() => {
-                alert(`Instagram caption:\n"${post.caption}"\n\nCome and follow our journey on @LavishLathers.Atelier to receive exclusive coupons!`);
+                alert(`Instagram caption:\n"${post.caption}"\n\nCome and follow our journey on @lavishlathersbyesther to receive exclusive coupons!`);
               }}
               id={`ig-hover-${post.id}`}
             >

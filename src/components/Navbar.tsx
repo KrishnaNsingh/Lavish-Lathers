@@ -63,7 +63,6 @@ export default function Navbar() {
   //   : "sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-md border-b border-brand-beige/30 w-full";
   // Header dynamic placement and premium backing
 
-
   // 💡 GAP REDUCTION FIX: Converted non-home route from 'sticky' to 'fixed top-0 left-0 right-0' layout configuration
   const headerClass = isHome
     ? `fixed top-0 left-0 right-0 z-40 transition-all duration-500 w-full ${
@@ -155,12 +154,19 @@ export default function Navbar() {
             <div
               className={`hidden sm:flex items-center space-x-4 text-[10.5px] uppercase tracking-widest font-sans-poppins font-light transition-colors duration-500 ${storeTextClass}`}
             >
-              <span className="flex items-center space-x-1.5 select-none cursor-pointer">
+              {/* ✨ GOOGLE MAPS LINK: Wrapped the store locator inside an anchor tag pointing to Carmona, Goa */}
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Carmona+Goa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-1.5 select-none cursor-pointer group"
+              >
                 <MapPin className="h-3.5 w-3.5 text-brand-gold stroke-[1.5]" />
                 <span className="hover:text-brand-gold transition-colors">
                   Our Stores
                 </span>
-              </span>
+              </a>
+
               <span
                 className={`transition-colors ${isAtHomeTop ? "text-white/20" : "text-brand-beige/40"}`}
               >

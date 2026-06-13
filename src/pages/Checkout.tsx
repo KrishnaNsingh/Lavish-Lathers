@@ -12,7 +12,7 @@ export default function CheckoutPage() {
     (total, item) => total + item.product.price * item.quantity,
     0,
   );
-  const isFreeShipping = subtotal >= 6000;
+  const isFreeShipping = subtotal >= 2000;
   const shippingCharge = isFreeShipping ? 0 : 299;
   const grandTotal = subtotal + shippingCharge;
 
