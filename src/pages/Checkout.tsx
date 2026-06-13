@@ -343,7 +343,7 @@ export default function CheckoutPage() {
 
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest font-sans-poppins text-brand-black/55 mb-1.5 font-bold">
-                    Phone Contact (for WhatsApp Updates) *
+                    Phone Contact (+91) *
                   </label>
                   <input
                     type="tel"
@@ -578,7 +578,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Promo Coupon Module */}
-              <div className="pt-4 border-t border-brand-beige/20 space-y-2">
+              {/* <div className="pt-4 border-t border-brand-beige/20 space-y-2">
                 <span className="block text-[9px] uppercase tracking-widest font-sans-poppins text-brand-black/50 font-medium font-bold">
                   Have an Event Promo?
                 </span>
@@ -607,7 +607,7 @@ export default function CheckoutPage() {
                     {message}
                   </p>
                 )}
-              </div>
+              </div> */}
 
               {/* Cost ledger block lines */}
               <div className="border-t border-brand-beige/20 pt-4 text-xs space-y-2.5">

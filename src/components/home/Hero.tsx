@@ -18,7 +18,7 @@ export default function Hero() {
       subText:
         "UNCOMPROMISED BOTANICAL PURITY CURED FOR DISCRIMINATING PATRONS.",
       buttonText: "SHOP THE COLLECTION",
-      category: "Gift Boxes",
+      category: "All",
       textColor: "text-brand-cream",
       goldText: "text-[#D4AF37]",
       imageUrl:
