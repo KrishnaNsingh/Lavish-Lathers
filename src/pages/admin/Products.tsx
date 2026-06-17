@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Plus, Edit3, Trash2, X, Archive } from "lucide-react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import { productApi } from "../../api/productApi";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Product } from "../../types";
 
 export default function AdminProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [loading, setLoading] = useState(true);
 
   // Form modals state
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -31,22 +32,33 @@ export default function AdminProducts() {
   const [ingredients, setIngredients] = useState("");
   const [benefits, setBenefits] = useState("");
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const data = await productApi.getProducts();
-      setProducts(data);
-    } catch (err) {
-      console.error("Error loading admin products:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const fetchProducts = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const data = await productApi.getProducts();
+  //     setProducts(data);
+  //   } catch (err) {
+  //     console.error("Error loading admin products:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   fetchProducts();
+  // }, []);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchProducts();
   }, []);
+
+  const { data: products = [], isLoading: loading } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: () => productApi.getProducts(),
+  });
 
   const openAddForm = () => {
     setEditingProduct(null);
@@ -96,8 +108,9 @@ export default function AdminProducts() {
     try {
       const res = await productApi.deleteProduct(id);
       if (res.success) {
-        // Optimize local UI state directly
-        setProducts((prev) => prev.filter((p) => p._id !== id));
+        await queryClient.invalidateQueries({
+          queryKey: ["products"],
+        });
       }
     } catch (err) {
       console.error("Failed to delete admin product:", err);
@@ -142,15 +155,25 @@ export default function AdminProducts() {
 
     try {
       if (editingProduct) {
-        const res = await productApi.editProduct(editingProduct._id, payload);
-        // Clean dynamic UI update mapping
-        setProducts((prev) =>
-          prev.map((p) => (p._id === editingProduct._id ? res.product : p)),
-        );
+        // const res = await productApi.editProduct(editingProduct._id, payload);
+        // // Clean dynamic UI update mapping
+        // setProducts((prev) =>
+        //   prev.map((p) => (p._id === editingProduct._id ? res.product : p)),
+        // );
+        await productApi.editProduct(editingProduct._id, payload);
+
+        await queryClient.invalidateQueries({
+          queryKey: ["products"],
+        });
       } else {
-        const res = await productApi.addProduct(payload);
-        // Append newly created database product record directly
-        setProducts((prev) => [res.product, ...prev]);
+        // const res = await productApi.addProduct(payload);
+        // // Append newly created database product record directly
+        // setProducts((prev) => [res.product, ...prev]);
+        await productApi.addProduct(payload);
+
+        await queryClient.invalidateQueries({
+          queryKey: ["products"],
+        });
       }
       setIsFormOpen(false);
     } catch (err) {
