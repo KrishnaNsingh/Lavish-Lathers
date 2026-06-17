@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, CartItem, Order } from "../types";
+import { useProducts } from "../hooks/useProducts";
 import { productApi } from "../api/productApi";
 
 interface AppContextType {
@@ -44,8 +45,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [adminToken, setAdminToken] = useState<string | null>(
     localStorage.getItem("lavish_lathers_admin_token"),
   );
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    refetch: fetchProducts,
+  } = useProducts();
+  const fetchProductsManually = async () => {
+    await fetchProducts();
+  };
+  // const [products, setProducts] = useState<Product[]>([]);
+  // const [productsLoading, setProductsLoading] = useState(true);
 
   // Load cart & wishlist from localStorage on mounting
   useEffect(() => {
@@ -63,23 +72,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      setProductsLoading(true);
+  // const fetchProducts = async () => {
+  //   try {
+  //     setProductsLoading(true);
 
-      const data = await productApi.getProducts();
+  //     const data = await productApi.getProducts();
 
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed fetching products:", error);
-    } finally {
-      setProductsLoading(false);
-    }
-  };
+  //     setProducts(data);
+  //   } catch (error) {
+  //     console.error("Failed fetching products:", error);
+  //   } finally {
+  //     setProductsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
 
   const updateCartState = (newCart: CartItem[]) => {
     setCart(newCart);
@@ -176,7 +185,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         products,
         productsLoading,
-        fetchProducts,
+        // fetchProducts,
+        fetchProducts: fetchProductsManually,
         cart,
         wishlist,
         confirmedOrder,

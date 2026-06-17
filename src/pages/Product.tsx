@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Product } from "../types";
 import { useApp } from "../context/AppContext";
+import { useProduct } from "../hooks/useProduct";
+import { useProducts } from "../hooks/useProducts";
 import CustomMessageForm from "../components/CustomMessageForm";
 import { productApi } from "../api/productApi";
 
@@ -21,10 +23,10 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { wishlist, toggleWishlist, addToCart } = useApp();
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  // const [product, setProduct] = useState<Product | null>(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState("");
+  // const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   const [activeImage, setActiveImage] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -45,53 +47,77 @@ export default function ProductDetailPage() {
   const [localReviews, setLocalReviews] = useState<any[]>([]);
   const [submitSuccess, setSubmitSuccess] = useState("");
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   if (!id) return;
+
+  //   setLoading(true);
+  //   setError("");
+
+  //   const fetchProductData = async () => {
+  //     try {
+  //       const data = await productApi.getProductById(id!);
+
+  //       setProduct(data);
+
+  //       setActiveImage(data.imageUrl);
+
+  //       setQuantity(1);
+  //       setIsGift(false);
+  //       setGiftNote("");
+  //       setGiftRecipient("");
+  //       setLocalReviews([]);
+  //       setSubmitSuccess("");
+
+  //       const allData = await productApi.getProducts();
+
+  //       const filteredRelated = allData
+  //         .filter(
+  //           (p) =>
+  //             p._id !== id &&
+  //             (p.category === data.category ||
+  //               p.artistryType === data.artistryType),
+  //         )
+  //         .slice(0, 4);
+
+  //       setRelatedProducts(filteredRelated);
+  //     } catch (err: any) {
+  //       console.error("Failed loading selected product details:", err);
+
+  //       setError(
+  //         err.message || "An issue occurred pulling this formula curation.",
+  //       );
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProductData();
+  // }, [id]);
+  const { data: product, isLoading, error } = useProduct(id!);
+
+  const { data: allProducts = [] } = useProducts();
+
+  React.useEffect(() => {
     window.scrollTo(0, 0);
-    if (!id) return;
-
-    setLoading(true);
-    setError("");
-
-    const fetchProductData = async () => {
-      try {
-        const data = await productApi.getProductById(id!);
-
-        setProduct(data);
-
-        setActiveImage(data.imageUrl);
-
-        setQuantity(1);
-        setIsGift(false);
-        setGiftNote("");
-        setGiftRecipient("");
-        setLocalReviews([]);
-        setSubmitSuccess("");
-
-        const allData = await productApi.getProducts();
-
-        const filteredRelated = allData
-          .filter(
-            (p) =>
-              p._id !== id &&
-              (p.category === data.category ||
-                p.artistryType === data.artistryType),
-          )
-          .slice(0, 4);
-
-        setRelatedProducts(filteredRelated);
-      } catch (err: any) {
-        console.error("Failed loading selected product details:", err);
-
-        setError(
-          err.message || "An issue occurred pulling this formula curation.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductData();
   }, [id]);
+  React.useEffect(() => {
+    if (product?.imageUrl) {
+      setActiveImage(product.imageUrl);
+    }
+  }, [product]);
+
+  
+  const relatedProducts = product
+    ? allProducts
+        .filter(
+          (p) =>
+            p._id !== product._id &&
+            (p.category === product.category ||
+              p.artistryType === product.artistryType),
+        )
+        .slice(0, 4)
+    : [];
 
   const handleIncrement = () => {
     if (!product) return;
@@ -110,7 +136,7 @@ export default function ProductDetailPage() {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-brand-cream text-brand-black flex items-center justify-center font-sans-poppins text-xs uppercase tracking-[0.25em] text-brand-gold">
         Loading Bespoke Formula Ledger...
@@ -118,11 +144,12 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (error || !product) {
+  if (!product || error) {
     return (
       <div className="min-h-screen bg-brand-cream text-brand-black flex flex-col items-center justify-center p-6 space-y-4">
         <h2 className="font-serif-playfair text-xl text-red-700">
-          {error || "Formula not loaded."}
+          {/* {error || "Formula not loaded."} */}
+          {error instanceof Error ? error.message : "Formula not loaded."}
         </h2>
         <button
           onClick={() => navigate("/shop")}
