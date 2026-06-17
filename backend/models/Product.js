@@ -36,21 +36,13 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: [
-        "Herbal Soaps",
-        "Essential Oils",
-        "Gift Boxes",
-        "Souvenirs",
-      ],
+      enum: ["Herbal Soaps", "Essential Oils", "Gift Boxes", "Souvenirs"],
       required: true,
     },
 
     artistryType: {
       type: String,
-      enum: [
-        "Skincare formulation",
-        "Keepsake Souvenir",
-      ],
+      enum: ["Skincare formulation", "Keepsake Souvenir"],
       required: true,
     },
 
@@ -69,17 +61,15 @@ const productSchema = new mongoose.Schema(
       default: false,
     },
 
-    ingredients: [
-      {
-        type: String,
-      },
-    ],
+    ingredients: {
+      type: [String],
+      default: [],
+    },
 
-    benefits: [
-      {
-        type: String,
-      },
-    ],
+    benefits: {
+      type: [String],
+      default: [],
+    },
 
     customMessageAvailable: {
       type: Boolean,
@@ -88,7 +78,7 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Product", productSchema);

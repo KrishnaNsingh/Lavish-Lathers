@@ -113,7 +113,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       updated = cart.map((item, idx) =>
         idx === existingIdx
           ? { ...item, quantity: item.quantity + quantity }
-          : item
+          : item,
       );
     } else {
       updated = [

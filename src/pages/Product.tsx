@@ -5,6 +5,7 @@ import {
   Plus,
   Minus,
   CheckCircle,
+  ChevronDown,
   Leaf,
   Sparkles,
   ShoppingBag,
@@ -35,6 +36,7 @@ export default function ProductDetailPage() {
   const [isGift, setIsGift] = useState(false);
   const [giftNote, setGiftNote] = useState("");
   const [giftRecipient, setGiftRecipient] = useState("");
+  const [openSection, setOpenSection] = useState<string>("details");
 
   // Settle review inputs
   const [reviewName, setReviewName] = useState("");
@@ -90,62 +92,6 @@ export default function ProductDetailPage() {
 
     fetchProductData();
   }, [id]);
-
-  // const handleReviewSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!reviewName || !reviewText) {
-  //     alert("Please provide both your name and review remarks.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(`/api/products/${id}/review`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         reviewerName: reviewName,
-  //         rating: reviewRating,
-  //         comment: reviewText,
-  //       }),
-  //     });
-
-  //     if (response.ok) {
-  //       const updatedProductWithReview = await response.json();
-  //       setProduct(updatedProductWithReview);
-
-  //       // Also add to local placeholder array for instant list visual updates
-  //       const newRev = {
-  //         id: `rev-local-${Date.now()}`,
-  //         name: reviewName,
-  //         rating: reviewRating,
-  //         text: reviewText,
-  //         date: new Date().toLocaleDateString("en-US", {
-  //           year: "numeric",
-  //           month: "long",
-  //           day: "numeric",
-  //         }),
-  //       };
-  //       setLocalReviews([newRev, ...localReviews]);
-  //       setReviewName("");
-  //       setReviewText("");
-  //       setSubmitSuccess(
-  //         "Thank you! Your verified patron review has been loaded live onto the product records.",
-  //       );
-  //       setTimeout(() => {
-  //         setSubmitSuccess("");
-  //       }, 5000);
-  //     } else {
-  //       alert(
-  //         "We were unable to submit your review to the boutique logs. Please try again.",
-  //       );
-  //     }
-  //   } catch (err) {
-  //     console.error("Error submitting product review:", err);
-  //     alert("Error submitting review. Check your network console.");
-  //   }
-  // };
 
   const handleIncrement = () => {
     if (!product) return;
@@ -259,26 +205,6 @@ export default function ProductDetailPage() {
               <h1 className="font-serif-playfair text-3xl sm:text-4xl text-brand-black leading-tight tracking-wide mb-3 font-semibold font-medium">
                 {product.name}
               </h1>
-
-              {/* Stars rating */}
-              {/* <div className="flex items-center space-x-3 mt-2">
-                <div className="flex text-brand-gold">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(product.rating)
-                          ? "fill-current"
-                          : "opacity-30"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-[11px] font-sans-poppins font-medium text-brand-black/60 pt-0.5">
-                  {product.rating.toFixed(1)} Rating ({product.reviewsCount}{" "}
-                  Patron Reviews)
-                </span>
-              </div> */}
             </div>
 
             {/* Pricing Section */}
@@ -314,99 +240,118 @@ export default function ProductDetailPage() {
               <p className="font-sans-inter text-sm text-brand-black/80 font-normal leading-relaxed">
                 {product.shortDescription}
               </p>
-              <p className="font-sans-inter text-xs text-brand-black/60 font-light leading-relaxed">
-                {product.detailedDescription}
-              </p>
             </div>
 
             {/* TAB SYSTEM (Philosophy, Ingredients, Benefits) */}
             <div className="border border-brand-beige/30 rounded-2xl overflow-hidden bg-brand-cream shadow-sm">
-              <div className="flex border-b border-brand-beige/30 text-xs uppercase font-sans-poppins tracking-wider font-semibold">
-                <button
-                  onClick={() => setActiveTab("details")}
-                  className={`flex-1 py-4 text-center cursor-pointer transition-colors ${
-                    activeTab === "details"
-                      ? "bg-[#FAF7F2] text-brand-gold border-r border-brand-beige/30"
-                      : "bg-transparent text-brand-black/50 hover:text-brand-black hover:bg-[#FAF7F2]/50"
-                  }`}
-                  id="tab-details-btn"
-                >
+              {/* Philosophy */}
+              <button
+                onClick={() =>
+                  setOpenSection(openSection === "details" ? "" : "details")
+                }
+                className="w-full flex items-center justify-between px-6 py-5 text-left border-b border-brand-beige/30 hover:bg-[#FAF7F2] transition-all duration-300"
+              >
+                <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
                   Philosophy
-                </button>
-                <button
-                  onClick={() => setActiveTab("ingredients")}
-                  className={`flex-1 py-4 text-center cursor-pointer transition-colors ${
-                    activeTab === "ingredients"
-                      ? "bg-[#FAF7F2] text-brand-gold border-x border-brand-beige/30"
-                      : "bg-transparent text-brand-black/50 hover:text-brand-black hover:bg-[#FAF7F2]/50"
+                </span>
+
+                <ChevronDown
+                  className={`h-5 w-5 text-brand-gold transition-transform duration-300 ${
+                    openSection === "details" ? "rotate-180" : ""
                   }`}
-                  id="tab-ingredients-btn"
-                >
+                />
+              </button>
+
+              {openSection === "details" && (
+                <div className="px-6 py-5 bg-[#FCFBF8] border-b border-brand-beige/20">
+                  <p className="text-sm leading-7 text-brand-black/75 font-sans-inter">
+                    {product.detailedDescription ||
+                      "Crafted using traditional botanical techniques and carefully selected ingredients."}
+                  </p>
+                </div>
+              )}
+
+              {/* Ingredients */}
+              <button
+                onClick={() =>
+                  setOpenSection(
+                    openSection === "ingredients" ? "" : "ingredients",
+                  )
+                }
+                className="w-full flex items-center justify-between px-6 py-5 text-left border-b border-brand-beige/30 hover:bg-[#FAF7F2] transition-all duration-300"
+              >
+                <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
                   Active Ingredients
-                </button>
-                <button
-                  onClick={() => setActiveTab("benefits")}
-                  className={`flex-1 py-4 text-center cursor-pointer transition-colors ${
-                    activeTab === "benefits"
-                      ? "bg-[#FAF7F2] text-brand-gold border-l border-brand-beige/30"
-                      : "bg-transparent text-brand-black/50 hover:text-brand-black hover:bg-[#FAF7F2]/50"
+                </span>
+
+                <ChevronDown
+                  className={`h-5 w-5 text-brand-gold transition-transform duration-300 ${
+                    openSection === "ingredients" ? "rotate-180" : ""
                   }`}
-                  id="tab-benefits-btn"
-                >
+                />
+              </button>
+
+              {openSection === "ingredients" && (
+                <div className="px-6 py-5 bg-[#FCFBF8] border-b border-brand-beige/20">
+                  <ul className="space-y-3">
+                    {product.ingredients?.length > 0 ? (
+                      product.ingredients.map((ing, i) => (
+                        <li
+                          key={i}
+                          className="flex items-center gap-3 text-sm text-brand-black/75"
+                        >
+                          <span className="h-2 w-2 rounded-full bg-brand-gold" />
+                          <span>{ing}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="italic text-brand-black/50">
+                        Ingredient information coming soon.
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
+
+              {/* Benefits */}
+              <button
+                onClick={() =>
+                  setOpenSection(openSection === "benefits" ? "" : "benefits")
+                }
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#FAF7F2] transition-all duration-300"
+              >
+                <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
                   Ritual Benefits
-                </button>
-              </div>
+                </span>
 
-              <div className="p-6 text-left bg-[#FCFBF8] text-xs leading-relaxed text-brand-black/75">
-                {activeTab === "details" && (
-                  <div className="space-y-2">
-                    <p className="font-sans-inter">
-                      This batch cured in dark climate-controlled cedarwood
-                      chambers.
-                    </p>
-                    <p className="font-sans-inter">
-                      Free of parabens, palm-oils, microplastics, and petroleum.
-                      Crafted in sterile environment under guidance of seasoned
-                      herbalists.
-                    </p>
-                  </div>
-                )}
+                <ChevronDown
+                  className={`h-5 w-5 text-brand-gold transition-transform duration-300 ${
+                    openSection === "benefits" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
 
-                {activeTab === "ingredients" && (
-                  <ul className="space-y-2.5 font-sans-inter">
-                    {product.ingredients?.map((ing, i) => (
-                      <li key={i} className="flex items-center space-x-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />
-                        <span>
-                          <strong>{ing}</strong>: Hand-measured, unrefined
-                          organic element source.
-                        </span>
-                      </li>
-                    )) || (
-                      <li>
-                        All botanical oils used are certified cold-pressed
-                        unrefined resources.
+              {openSection === "benefits" && (
+                <div className="px-6 py-5 bg-[#FCFBF8]">
+                  <ul className="space-y-3">
+                    {product.benefits?.length > 0 ? (
+                      product.benefits.map((ben, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-brand-black/75"
+                        >
+                          <CheckCircle className="h-4 w-4 text-brand-gold mt-0.5 shrink-0" />
+                          <span>{ben}</span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="italic text-brand-black/50">
+                        Benefit information coming soon.
                       </li>
                     )}
                   </ul>
-                )}
-
-                {activeTab === "benefits" && (
-                  <ul className="space-y-2.5 font-sans-inter">
-                    {product.benefits?.map((ben, i) => (
-                      <li key={i} className="flex items-start space-x-2">
-                        <CheckCircle className="h-3.5 w-3.5 text-brand-gold shrink-0 mt-0.5" />
-                        <span>{ben}</span>
-                      </li>
-                    )) || (
-                      <li>
-                        Restores surface ph values, clarifies dirt, and locks
-                        skin humidity.
-                      </li>
-                    )}
-                  </ul>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* PERSONALIZATION FORM WIDGET */}
@@ -478,9 +423,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-
             {/* LIVE VERIFIED REVIEWS SECTION */}
-            
           </div>
         </div>
 

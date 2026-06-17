@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit3, Trash2, X, Archive } from 'lucide-react';
-import AdminLayout from '../../components/admin/AdminLayout';
-import { productApi } from '../../api/productApi';
-import { Product } from '../../types';
+import React, { useState, useEffect } from "react";
+import { Plus, Edit3, Trash2, X, Archive } from "lucide-react";
+import AdminLayout from "../../components/admin/AdminLayout";
+import { productApi } from "../../api/productApi";
+import { Product } from "../../types";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -13,17 +13,23 @@ export default function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Input states
-  const [registryId, setRegistryId] = useState('');
-  const [name, setName] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [detailedDescription, setDetailedDescription] = useState('');
+  const [registryId, setRegistryId] = useState("");
+  const [name, setName] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+  const [detailedDescription, setDetailedDescription] = useState("");
   const [price, setPrice] = useState(1);
-  const [category, setCategory] = useState<'Herbal Soaps' | 'Essential Oils' | 'Gift Boxes' | 'Souvenirs'>('Herbal Soaps');
-  const [artistryType, setArtistryType] = useState<'Skincare formulation' | 'Keepsake Souvenir'>('Skincare formulation');
+  const [category, setCategory] = useState<
+    "Herbal Soaps" | "Essential Oils" | "Gift Boxes" | "Souvenirs"
+  >("Herbal Soaps");
+  const [artistryType, setArtistryType] = useState<
+    "Skincare formulation" | "Keepsake Souvenir"
+  >("Skincare formulation");
   const [stock, setStock] = useState(10);
   const [featured, setFeatured] = useState(false);
   const [souvenir, setSouvenir] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [benefits, setBenefits] = useState("");
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -45,16 +51,20 @@ export default function AdminProducts() {
   const openAddForm = () => {
     setEditingProduct(null);
     setRegistryId(`prod-${Date.now()}`);
-    setName('');
-    setShortDescription('');
-    setDetailedDescription('');
+    setName("");
+    setShortDescription("");
+    setDetailedDescription("");
     setPrice(299);
-    setCategory('Herbal Soaps');
-    setArtistryType('Skincare formulation');
+    setCategory("Herbal Soaps");
+    setArtistryType("Skincare formulation");
     setStock(15);
     setFeatured(false);
     setSouvenir(false);
-    setImageUrl('https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80');
+    setIngredients("");
+    setBenefits("");
+    setImageUrl(
+      "https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80",
+    );
     setIsFormOpen(true);
   };
 
@@ -63,19 +73,26 @@ export default function AdminProducts() {
     setRegistryId(prod.registryId);
     setName(prod.name);
     setShortDescription(prod.shortDescription);
-    setDetailedDescription(prod.detailedDescription || '');
+    setDetailedDescription(prod.detailedDescription || "");
     setPrice(prod.price);
     setCategory(prod.category);
     setArtistryType(prod.artistryType);
     setStock(prod.stock);
     setFeatured(prod.featured || false);
     setSouvenir(prod.souvenir || false);
-    setImageUrl(prod.imageUrl || '');
+    setIngredients((prod.ingredients || []).join("\n"));
+    setBenefits((prod.benefits || []).join("\n"));
+    setImageUrl(prod.imageUrl || "");
     setIsFormOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you positive you wish to remove this exquisite curation from the registry?")) return;
+    if (
+      !window.confirm(
+        "Are you positive you wish to remove this exquisite curation from the registry?",
+      )
+    )
+      return;
     try {
       const res = await productApi.deleteProduct(id);
       if (res.success) {
@@ -91,7 +108,9 @@ export default function AdminProducts() {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !shortDescription || !registryId || !imageUrl) {
-      alert("Please key in core product parameters (Name, Image, Short Description).");
+      alert(
+        "Please key in core product parameters (Name, Image, Short Description).",
+      );
       return;
     }
 
@@ -108,8 +127,17 @@ export default function AdminProducts() {
       souvenir,
       imageUrl,
       customMessageAvailable: souvenir,
-      ingredients: editingProduct?.ingredients || [],
-      benefits: editingProduct?.benefits || []
+      // ingredients: editingProduct?.ingredients || [],
+      // benefits: editingProduct?.benefits || [],
+      ingredients: ingredients
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+
+      benefits: benefits
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
     };
 
     try {
@@ -117,7 +145,7 @@ export default function AdminProducts() {
         const res = await productApi.editProduct(editingProduct._id, payload);
         // Clean dynamic UI update mapping
         setProducts((prev) =>
-          prev.map((p) => (p._id === editingProduct._id ? res.product : p))
+          prev.map((p) => (p._id === editingProduct._id ? res.product : p)),
         );
       } else {
         const res = await productApi.addProduct(payload);
@@ -127,7 +155,9 @@ export default function AdminProducts() {
       setIsFormOpen(false);
     } catch (err) {
       console.error("Product submission failed:", err);
-      alert("Bespoke product registration failed. Try checking API configurations.");
+      alert(
+        "Bespoke product registration failed. Try checking API configurations.",
+      );
     }
   };
 
@@ -137,10 +167,11 @@ export default function AdminProducts() {
       subtitle="Exquisite additions, updates, or removals of our 6-week cold saponification bath blocks, face distillations, and customizable wax-sealed souvenir items."
     >
       <div className="space-y-6 font-sans-inter text-left">
-        
         {/* Actions head bar */}
         <div className="flex justify-between items-center font-sans-poppins">
-          <span className="text-xs text-brand-cream/45">Total: <strong>{products.length}</strong> items curated</span>
+          <span className="text-xs text-brand-cream/45">
+            Total: <strong>{products.length}</strong> items curated
+          </span>
           <button
             onClick={openAddForm}
             className="py-3 px-6 bg-brand-gold hover:bg-brand-cream text-brand-black rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center space-x-2 cursor-pointer shadow-md"
@@ -154,12 +185,14 @@ export default function AdminProducts() {
         {/* LOADING SCREEN */}
         {loading ? (
           <div className="py-20 flex text-center justify-center text-xs uppercase tracking-widest text-brand-gold font-sans-poppins">
-             Opening Cedarwood Chamber Files...
+            Opening Cedarwood Chamber Files...
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-24 bg-[#141211] border border-brand-cream/10 rounded-3xl space-y-4">
             <Archive className="h-10 w-10 text-brand-cream/20 mx-auto" />
-            <p className="text-xs text-brand-cream/55">No curated botanical items on record.</p>
+            <p className="text-xs text-brand-cream/55">
+              No curated botanical items on record.
+            </p>
           </div>
         ) : (
           /* Registries Table Layout */
@@ -168,26 +201,45 @@ export default function AdminProducts() {
               <table className="w-full text-left text-xs divide-y divide-brand-cream/5">
                 <thead className="bg-[#1A1817] text-brand-gold tracking-widest uppercase text-[9px] font-sans-poppins">
                   <tr>
-                    <th className="px-6 py-4 font-semibold">Offering Details</th>
-                    <th className="px-6 py-4 font-semibold">Curation Category</th>
+                    <th className="px-6 py-4 font-semibold">
+                      Offering Details
+                    </th>
+                    <th className="px-6 py-4 font-semibold">
+                      Curation Category
+                    </th>
                     <th className="px-6 py-4 font-semibold">Value</th>
                     <th className="px-6 py-4 font-semibold">Stock status</th>
-                    <th className="px-6 py-4 font-semibold">Curation Attributes</th>
-                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    <th className="px-6 py-4 font-semibold">
+                      Curation Attributes
+                    </th>
+                    <th className="px-6 py-4 font-semibold text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brand-cream/5 text-brand-cream/80">
                   {products.map((p) => (
-                    <tr key={p._id} className="hover:bg-brand-cream/5 transition-colors">
-                      
+                    <tr
+                      key={p._id}
+                      className="hover:bg-brand-cream/5 transition-colors"
+                    >
                       {/* Image + Title Column */}
                       <td className="px-6 py-4 flex items-center space-x-4">
                         <div className="w-12 aspect-square rounded-lg overflow-hidden bg-[#242221] shrink-0">
-                          <img src={p.imageUrl} alt={p.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                          <img
+                            src={p.imageUrl}
+                            alt={p.name}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="space-y-0.5">
-                          <h4 className="font-serif-playfair text-sm text-brand-cream font-medium line-clamp-1">{p.name}</h4>
-                          <span className="font-mono text-[9px] text-brand-cream/35">{p.registryId}</span>
+                          <h4 className="font-serif-playfair text-sm text-brand-cream font-medium line-clamp-1">
+                            {p.name}
+                          </h4>
+                          <span className="font-mono text-[9px] text-brand-cream/35">
+                            {p.registryId}
+                          </span>
                         </div>
                       </td>
 
@@ -204,19 +256,27 @@ export default function AdminProducts() {
                       {/* Units count */}
                       <td className="px-6 py-4">
                         {p.stock > 0 ? (
-                          <span className="text-emerald-400 font-sans-poppins text-[10px] font-semibold">{p.stock} cured pieces</span>
+                          <span className="text-emerald-400 font-sans-poppins text-[10px] font-semibold">
+                            {p.stock} cured pieces
+                          </span>
                         ) : (
-                          <span className="text-red-400 font-sans-poppins text-[10px] font-semibold">Out of Stock</span>
+                          <span className="text-red-400 font-sans-poppins text-[10px] font-semibold">
+                            Out of Stock
+                          </span>
                         )}
                       </td>
 
                       {/* Badges */}
                       <td className="px-6 py-4 space-x-1.5 font-sans-poppins text-[9px]">
                         {p.featured && (
-                          <span className="bg-brand-gold/15 text-brand-gold px-2 py-0.5 rounded-md uppercase font-semibold">Bestseller</span>
+                          <span className="bg-brand-gold/15 text-brand-gold px-2 py-0.5 rounded-md uppercase font-semibold">
+                            Bestseller
+                          </span>
                         )}
                         {p.souvenir && (
-                          <span className="bg-brand-cream/20 text-brand-cream px-2 py-0.5 rounded-md uppercase font-semibold">Keepsake</span>
+                          <span className="bg-brand-cream/20 text-brand-cream px-2 py-0.5 rounded-md uppercase font-semibold">
+                            Keepsake
+                          </span>
                         )}
                       </td>
 
@@ -239,7 +299,6 @@ export default function AdminProducts() {
                           </button>
                         </div>
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
@@ -251,14 +310,18 @@ export default function AdminProducts() {
         {/* MODAL FORM FOR ADDING / EDITING DESIGNS */}
         {isFormOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" onClick={() => setIsFormOpen(false)} />
-            
+            <div
+              className="absolute inset-0 bg-black/85 backdrop-blur-xs"
+              onClick={() => setIsFormOpen(false)}
+            />
+
             <div className="relative bg-[#141211] border border-brand-cream/20 rounded-[2rem] w-full max-w-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl animate-zoom-in text-brand-cream text-left">
-              
               {/* Header */}
               <div className="flex items-center justify-between pb-4 border-b border-brand-cream/10 mb-6 font-sans-poppins">
                 <h3 className="font-serif-playfair text-xl text-brand-gold font-semibold">
-                  {editingProduct ? "Revise Botanical Record" : "Add Exquisite Curation"}
+                  {editingProduct
+                    ? "Revise Botanical Record"
+                    : "Add Exquisite Curation"}
                 </h3>
                 <button
                   onClick={() => setIsFormOpen(false)}
@@ -269,11 +332,15 @@ export default function AdminProducts() {
               </div>
 
               {/* Form Input fields */}
-              <form onSubmit={handleFormSubmit} className="space-y-4 text-xs font-sans-inter">
-                
+              <form
+                onSubmit={handleFormSubmit}
+                className="space-y-4 text-xs font-sans-inter"
+              >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Registry Reference ID *</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                      Registry Reference ID *
+                    </label>
                     <input
                       type="text"
                       required
@@ -286,7 +353,9 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Symmetrical Name *</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                      Symmetrical Name *
+                    </label>
                     <input
                       type="text"
                       required
@@ -298,7 +367,9 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Value in INR *</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                      Value in INR *
+                    </label>
                     <input
                       type="number"
                       required
@@ -311,7 +382,9 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Sandalwood Stock Units *</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                      Sandalwood Stock Units *
+                    </label>
                     <input
                       type="number"
                       required
@@ -324,7 +397,9 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">Curation Registry Category</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">
+                      Curation Registry Category
+                    </label>
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value as any)}
@@ -338,20 +413,60 @@ export default function AdminProducts() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">Artistry Type Mode</label>
+                    <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold font-sans-poppins">
+                      Artistry Type Mode
+                    </label>
                     <select
                       value={artistryType}
                       onChange={(e) => setArtistryType(e.target.value as any)}
                       className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream focus:border-brand-gold focus:outline-none"
                     >
-                      <option value="Skincare formulation">Skincare formulation</option>
-                      <option value="Keepsake Souvenir">Keepsake Souvenir</option>
+                      <option value="Skincare formulation">
+                        Skincare formulation
+                      </option>
+                      <option value="Keepsake Souvenir">
+                        Keepsake Souvenir
+                      </option>
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Exquisite Thumbnail URL *</label>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Active Ingredients
+                  </label>
+
+                  <textarea
+                    rows={5}
+                    value={ingredients}
+                    onChange={(e) => setIngredients(e.target.value)}
+                    placeholder={`Goat Milk
+                                  Coconut Oil
+                                  Olive Oil`}
+                    className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Ritual Benefits
+                  </label>
+
+                  <textarea
+                    rows={5}
+                    value={benefits}
+                    onChange={(e) => setBenefits(e.target.value)}
+                    placeholder={`Deep hydration
+                                    Gentle cleansing
+                                    Supports healthy skin`}
+                    className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Exquisite Thumbnail URL *
+                  </label>
                   <input
                     type="url"
                     required
@@ -363,11 +478,13 @@ export default function AdminProducts() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Short Curatorial Description *</label>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Short Curatorial Description *
+                  </label>
                   <input
                     type="text"
                     required
-                    maxLength={200}
+                    maxLength={400}
                     placeholder="A concise, high-end description summarizing key ingredients."
                     value={shortDescription}
                     onChange={(e) => setShortDescription(e.target.value)}
@@ -376,7 +493,9 @@ export default function AdminProducts() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">Deep Philosophical Curation Details</label>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Deep Philosophical Curation Details
+                  </label>
                   <textarea
                     rows={3}
                     placeholder="A complete, beautiful paragraph about botanical weights, cedar chambers, and absolute extracts."
@@ -421,16 +540,13 @@ export default function AdminProducts() {
                     type="submit"
                     className="px-6 py-3 bg-brand-gold hover:bg-brand-cream text-brand-black rounded-xl transition-all cursor-pointer"
                   >
-                     Commit Curation Change
+                    Commit Curation Change
                   </button>
                 </div>
-
               </form>
-
             </div>
           </div>
         )}
-
       </div>
     </AdminLayout>
   );

@@ -29,9 +29,9 @@ export interface Product {
 
   souvenir: boolean;
 
-  ingredients?: string[];
+  ingredients: string[];
 
-  benefits?: string[];
+  benefits: string[];
 
   customMessageAvailable: boolean;
 

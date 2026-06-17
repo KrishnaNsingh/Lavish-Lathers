@@ -30,6 +30,7 @@ const appendOrderToSheet = async (order) => {
       order.pricing.subtotal,
       order.pricing.shipping,
       order.pricing.total,
+      // order.shippingAddress.instructions,
       order.payment?.paymentStatus || "paid",
       order.orderStatus || "pending",
       new Date(order.createdAt || Date.now()).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
