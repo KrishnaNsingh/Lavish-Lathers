@@ -441,8 +441,8 @@ export default function AdminProducts() {
                     value={ingredients}
                     onChange={(e) => setIngredients(e.target.value)}
                     placeholder={`Goat Milk
-                                  Coconut Oil
-                                  Olive Oil`}
+Coconut Oil
+Olive Oil`}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
                   />
                 </div>
@@ -457,8 +457,8 @@ export default function AdminProducts() {
                     value={benefits}
                     onChange={(e) => setBenefits(e.target.value)}
                     placeholder={`Deep hydration
-                                    Gentle cleansing
-                                    Supports healthy skin`}
+Gentle cleansing
+Supports healthy skin`}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
                   />
                 </div>
