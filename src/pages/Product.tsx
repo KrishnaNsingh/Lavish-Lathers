@@ -107,7 +107,7 @@ export default function ProductDetailPage() {
     }
   }, [product]);
 
-  
+
   const relatedProducts = product
     ? allProducts
         .filter(
@@ -165,7 +165,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-brand-cream py-32 min-h-screen text-brand-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         {/* Back and Navigation helper */}
         <div className="flex items-center justify-between mb-8 border-b border-brand-beige/20 pb-4">
           <button

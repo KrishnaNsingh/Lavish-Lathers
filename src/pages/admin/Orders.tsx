@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import {
   ClipboardList,
   MessageSquare,
@@ -13,53 +15,80 @@ import { orderApi } from "../../api/orderApi";
 import { Order } from "../../types";
 
 export default function AdminOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [orders, setOrders] = useState<Order[]>([]);
+  // const [loading, setLoading] = useState(true);
 
   // Focus modal details
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      const data = await orderApi.getOrders();
-      setOrders(data);
-    } catch (err) {
-      console.error("Error fetching order records:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const queryClient = useQueryClient();
+
+  const { data: orders = [], isLoading: loading } = useQuery<Order[]>({
+    queryKey: ["orders"],
+    queryFn: orderApi.getOrders,
+  });
+
+  // const fetchOrders = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const data = await orderApi.getOrders();
+  //     setOrders(data);
+  //   } catch (err) {
+  //     console.error("Error fetching order records:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   fetchOrders();
+  // }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchOrders();
   }, []);
 
-  const handleStatusChange = async (
-    id: string,
-    newStatus: "pending" | "packaging" | "shipped" | "delivered",
-  ) => {
-    try {
-      const res = await orderApi.updateOrderStatus(id, newStatus);
-      if (res.success) {
-        // Update in layout state
-        setOrders((prev) =>
-          prev.map((o) =>
-            o._id === id ? { ...o, orderStatus: newStatus } : o,
-          ),
-        );
-        if (selectedOrder?._id === id) {
-          setSelectedOrder((prev) =>
-            prev ? { ...prev, orderStatus: newStatus } : null,
-          );
-        }
-      }
-    } catch (err) {
-      console.error("Failed to transition status:", err);
-      alert("Encountered error updating dispatch status.");
-    }
-  };
+  // const handleStatusChange = async (
+  //   id: string,
+  //   newStatus: "pending" | "packaging" | "shipped" | "delivered",
+  // ) => {
+  //   try {
+  //     const res = await orderApi.updateOrderStatus(id, newStatus);
+  //     if (res.success) {
+  //       // Update in layout state
+  //       setOrders((prev) =>
+  //         prev.map((o) =>
+  //           o._id === id ? { ...o, orderStatus: newStatus } : o,
+  //         ),
+  //       );
+  //       if (selectedOrder?._id === id) {
+  //         setSelectedOrder((prev) =>
+  //           prev ? { ...prev, orderStatus: newStatus } : null,
+  //         );
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to transition status:", err);
+  //     alert("Encountered error updating dispatch status.");
+  //   }
+  // };
+
+  const statusMutation = useMutation({
+  mutationFn: ({
+    id,
+    status,
+  }: {
+    id: string;
+    status: "pending" | "packaging" | "shipped" | "delivered";
+  }) => orderApi.updateOrderStatus(id, status),
+
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: ["orders"],
+    });
+  },
+});
 
   const statusTags = {
     pending: {
@@ -189,12 +218,22 @@ export default function AdminOrders() {
                             {/* 🛠️ WIRED SELECT COMPONENT */}
                             <select
                               value={o.orderStatus}
-                              onChange={async (e) => {
-                                // Calls api, runs UI state mutation map, then forces state reload
-                                await handleStatusChange(
-                                  o._id,
-                                  e.target.value as any,
-                                );
+                              // onChange={async (e) => {
+                              //   // Calls api, runs UI state mutation map, then forces state reload
+                              //   await handleStatusChange(
+                              //     o._id,
+                              //     e.target.value as any,
+                              //   );
+                              // }}
+                              onChange={(e) => {
+                                statusMutation.mutate({
+                                  id: o._id,
+                                  status: e.target.value as
+                                    | "pending"
+                                    | "packaging"
+                                    | "shipped"
+                                    | "delivered",
+                                });
                               }}
                               className="bg-[#1F1E1D] border border-brand-cream/15 text-brand-cream/80 px-2 py-1.5 rounded-lg text-[9px] font-sans-poppins uppercase focus:outline-none focus:border-brand-gold cursor-pointer"
                             >
