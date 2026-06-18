@@ -158,7 +158,7 @@ const sendCustomerOrderEmail = async (order) => {
               <p style="margin: 0; font-size: 11px; color: #FAF7F2; font-weight: 300; line-height: 1.5; font-family: sans-serif;">
                 Concierge snap favors or ribbon wrapping details?
                 <br>
-                Chat with our artisans on WhatsApp: <strong style="color: #BFA873;">+1 (555) 0199-CONCIERGE</strong>
+                Chat with our artisans on WhatsApp: <strong style="color: #BFA873;">+91 89712 91063-CONCIERGE</strong>
               </p>
               <p style="margin: 15px 0 0 0; font-size: 9px; color: #7E7771; text-transform: uppercase; letter-spacing: 0.2em; font-family: sans-serif;">&copy; ${new Date().getFullYear()} Lavish Lathers. All rights reserved.</p>
             </td>
