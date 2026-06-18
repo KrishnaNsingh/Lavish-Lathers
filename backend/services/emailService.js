@@ -89,7 +89,7 @@ const sendCustomerOrderEmail = async (order) => {
                   <td style="font-family: sans-serif; font-size: 10px; color: #BFA873; font-weight: bold; text-align: right; text-transform: uppercase; letter-spacing: 0.1em;">Curing &amp; Packaging</td>
                 </tr>
                 <tr>
-                  <td colspan="2" style="padding-top: 15px; border-top: 1px solid #EFECE6; margin-top: 15px;">
+                    <td colspan="2" style="padding-top: 15px; border-top: 1px solid #EFECE6; margin-top: 15px;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td style="font-size: 12px; color: #7E7771; padding: 3px 0;">Date of Registry:</td>
@@ -102,12 +102,12 @@ const sendCustomerOrderEmail = async (order) => {
                         </td>
                       </tr>
                     </table>
-                    <td style="padding:10px 0;">
-                      <strong>Packaging Instructions:</strong><br/>
-                      ${order.shippingAddress?.instructions || "None provided"}
-                    </td>
                   </td>
                 </tr>
+                <td style="padding:10px 0;">
+                  <strong>Packaging Instructions:</strong><br/>
+                  ${order.shippingAddress?.instructions || "None provided"}
+                </td>
               </table>
             </td>
           </tr>
