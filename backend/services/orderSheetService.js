@@ -29,8 +29,8 @@ const appendOrderToSheet = async (order) => {
       order.items.reduce((sum, item) => sum + item.quantity, 0),
       order.pricing.subtotal,
       order.pricing.shipping,
+      order.shippingAddress.instructions || "",
       order.pricing.total,
-      // order.shippingAddress.instructions,
       order.payment?.paymentStatus || "paid",
       order.orderStatus || "pending",
       new Date(order.createdAt || Date.now()).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
@@ -39,7 +39,7 @@ const appendOrderToSheet = async (order) => {
     // 4. Fire append request using spreadsheet environment parameters
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range: "Sheet1!A:M",
+      range: "Sheet1!A:N",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values,

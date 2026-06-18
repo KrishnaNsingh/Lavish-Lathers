@@ -75,20 +75,20 @@ export default function AdminOrders() {
   // };
 
   const statusMutation = useMutation({
-  mutationFn: ({
-    id,
-    status,
-  }: {
-    id: string;
-    status: "pending" | "packaging" | "shipped" | "delivered";
-  }) => orderApi.updateOrderStatus(id, status),
+    mutationFn: ({
+      id,
+      status,
+    }: {
+      id: string;
+      status: "pending" | "packaging" | "shipped" | "delivered";
+    }) => orderApi.updateOrderStatus(id, status),
 
-  onSuccess: () => {
-    queryClient.invalidateQueries({
-      queryKey: ["orders"],
-    });
-  },
-});
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["orders"],
+      });
+    },
+  });
 
   const statusTags = {
     pending: {
@@ -292,6 +292,17 @@ export default function AdminOrders() {
                         {selectedOrder.shippingAddress.postalCode}
                       </p>
                     </div>
+                    {selectedOrder.shippingAddress?.instructions && (
+                      <div className="mt-4">
+                        <h4 className="text-brand-gold text-xs uppercase tracking-widest font-semibold mb-2">
+                          Artisan Instructions
+                        </h4>
+
+                        <div className="bg-[#141211] border border-brand-gold/20 rounded-xl p-4 text-sm text-brand-cream">
+                          {selectedOrder.shippingAddress.instructions}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
