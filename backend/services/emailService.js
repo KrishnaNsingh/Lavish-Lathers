@@ -352,7 +352,7 @@ const sendPaymentFailedEmail = async (order) => {
               </a>
               <p style="margin: 15px 0 0 0; font-size: 12px; color: #7E7771; font-weight: 300; line-height: 1.5; font-family: sans-serif;">
                 If you have been debited but do not receive a confirmation within 1 hour,<br>
-                please contact our concierge team at: <strong style="color: #1A1817;">+1 (555) 0199-CONCIERGE</strong>
+                please contact our concierge team at: <strong style="color: #1A1817;">+91 89712 91063-CONCIERGE</strong>
               </p>
             </td>
           </tr>
