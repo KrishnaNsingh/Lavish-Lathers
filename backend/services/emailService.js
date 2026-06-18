@@ -100,12 +100,12 @@ const sendCustomerOrderEmail = async (order) => {
                         <td style="font-size: 12px; color: #1A1817; text-align: right; font-weight: 500; padding: 3px 0;">
                           ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}
                         </td>
-                        <td style="padding:10px 0;">
-                          <strong>Packaging Instructions:</strong><br/>
-                          ${order.shippingAddress?.instructions || "None provided"}
-                        </td>
                       </tr>
                     </table>
+                    <td style="padding:10px 0;">
+                      <strong>Packaging Instructions:</strong><br/>
+                      ${order.shippingAddress?.instructions || "None provided"}
+                    </td>
                   </td>
                 </tr>
               </table>
