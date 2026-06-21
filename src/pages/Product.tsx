@@ -107,7 +107,6 @@ export default function ProductDetailPage() {
     }
   }, [product]);
 
-
   const relatedProducts = product
     ? allProducts
         .filter(
@@ -419,34 +418,38 @@ export default function ProductDetailPage() {
                   </button>
                 </div>
 
-                {/* Bag Addition Button */}
-                <button
-                  onClick={handleAddToBag}
-                  disabled={product.stock <= 0}
-                  className="flex-1 group py-4 px-8 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black disabled:bg-brand-beige/50 disabled:text-brand-black/40 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg shadow-brand-black/10 transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
-                  id="add-to-bag-cta"
-                >
-                  <ShoppingBag className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                  <span>
-                    {isGift
-                      ? "Add Custom Gifting Pack"
-                      : "Add to Sandalwood Bag"}
-                  </span>
-                </button>
+                {/* 💡 FIX: Wrapped the Action Buttons in a flex container to keep them inline on mobile views */}
+                <div className="flex flex-1 items-center gap-4 w-full">
+                  {/* Bag Addition Button */}
+                  <button
+                    onClick={handleAddToBag}
+                    disabled={product.stock <= 0}
+                    className="flex-1 group py-4 px-8 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black disabled:bg-brand-beige/50 disabled:text-brand-black/40 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg shadow-brand-black/10 transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
+                    id="add-to-bag-cta"
+                  >
+                    <ShoppingBag className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                    <span>
+                      {isGift
+                        ? "Add Custom Gifting Pack"
+                        : "Add to Sandalwood Bag"}
+                    </span>
+                  </button>
 
-                <button
-                  onClick={() => toggleWishlist(product._id)}
-                  className={`p-4 rounded-full border transition-all cursor-pointer ${
-                    isWishlisted
-                      ? "bg-brand-pink text-red-500 border-transparent"
-                      : "bg-[#FAF7F2] border-brand-beige/40 text-brand-black hover:text-brand-gold hover:border-brand-gold"
-                  }`}
-                  id="wishlist-toggle-detail"
-                >
-                  <Heart
-                    className={`h-5 w-5 ${isWishlisted ? "fill-current" : ""}`}
-                  />
-                </button>
+                  {/* Wishlist Button */}
+                  <button
+                    onClick={() => toggleWishlist(product._id)}
+                    className={`p-4 rounded-full border transition-all cursor-pointer ${
+                      isWishlisted
+                        ? "bg-brand-pink text-red-500 border-transparent"
+                        : "bg-[#FAF7F2] border-brand-beige/40 text-brand-black hover:text-brand-gold hover:border-brand-gold"
+                    }`}
+                    id="wishlist-toggle-detail"
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${isWishlisted ? "fill-current" : ""}`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
 

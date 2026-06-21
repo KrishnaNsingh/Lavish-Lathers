@@ -23,7 +23,7 @@ export default function CustomMessageForm({
     <div className="bg-brand-cream border border-brand-beige/30 p-6 rounded-3xl text-left space-y-6 shadow-sm">
       
       {/* Header with Gift Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center space-x-2.5">
           <Gift className="h-5 w-5 text-brand-gold" />
           <h4 className="font-serif-playfair text-lg text-brand-black tracking-wide font-medium">
@@ -31,7 +31,8 @@ export default function CustomMessageForm({
           </h4>
         </div>
         
-        <label className="relative inline-flex items-center cursor-pointer">
+        {/* 💡 FIX 1: Added 'shrink-0' here so the label doesn't compress when text pushes against it */}
+        <label className="relative inline-flex items-center cursor-pointer shrink-0">
           <input
             type="checkbox"
             checked={isGift}
@@ -39,7 +40,8 @@ export default function CustomMessageForm({
             className="sr-only peer"
             id="gifting-message-checkbox"
           />
-          <div className="w-11 h-6 bg-brand-beige/40 rounded-full peer peer-focus:ring-1 peer-focus:ring-brand-gold peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-brand-gold after:border-brand-beige after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-black" />
+          {/* 💡 FIX 2: Added 'shrink-0' here to protect the layout structure of the pill */}
+          <div className="w-11 h-6 shrink-0 bg-brand-beige/40 rounded-full peer peer-focus:ring-1 peer-focus:ring-brand-gold peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-brand-gold after:border-brand-beige after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-black" />
           <span className="ml-3 text-xs uppercase tracking-widest font-sans-poppins font-medium text-brand-black/70">
             {isGift ? "Active" : "Add Message"}
           </span>

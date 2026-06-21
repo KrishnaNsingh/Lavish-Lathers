@@ -136,7 +136,7 @@ export default function OrderConfirmationView({
 
           <button
             onClick={() => {
-              alert("Lavish Lathers WhatsApp concierge channel: +1 (555) 0199-CONCIERGE.\nQuote your Order ID: " + order._id + " to request silk ribbon design selections!");
+              alert("Lavish Lathers WhatsApp concierge channel: +91 89712 91063-CONCIERGE.\nQuote your Order ID: " + order._id + " to request silk ribbon design selections!");
             }}
             className="w-full sm:w-auto py-4 px-8 bg-transparent hover:bg-brand-pink border border-brand-black/20 text-brand-black rounded-full font-sans-poppins text-xs font-bold uppercase tracking-widest transition-colors duration-300 flex items-center justify-center space-x-2 focus:outline-none"
             id="order-whatsapp-assist"
@@ -149,7 +149,7 @@ export default function OrderConfirmationView({
         {/* Premium citation scroll text */}
         <div className="pt-4 flex items-center justify-center space-x-2 text-[9px] uppercase tracking-[0.2em] font-sans-poppins text-brand-black/40">
           <Sparkles className="h-3 w-3 text-brand-gold" />
-          <span>Handcrafted with absolute devotion since 2012</span>
+          <span>Handcrafted with absolute devotion since 2022</span>
         </div>
 
       </div>
