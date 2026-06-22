@@ -18,6 +18,75 @@ export default function Footer() {
     setTimeout(() => setSuccess(false), 4000);
   };
 
+  {
+    /* 🌟 Custom Logo Icon Component mimicking "Lavish Leather Logo" */
+  }
+  const LavishLathersIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      viewBox="0 0 100 100"
+      className={`${className} fill-none`}
+      id="custom-emblem-svg"
+    >
+      {/* Clean, thin outer frame circle */}
+      <circle
+        cx="50"
+        cy="50"
+        r="45"
+        stroke="currentColor"
+        strokeWidth="0.75"
+        className="opacity-30 text-brand-gold"
+      />
+
+      {/* Primary Elegant Crescent Ring - sweeping down from top-left through bottom */}
+      <path
+        d="M 22 22 A 39 39 0 1 0 78 72"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        className="text-brand-gold"
+      />
+
+      {/* Secondary soft inner alignment arc */}
+      <path
+        d="M 18 35 A 37 37 0 0 1 70 18"
+        stroke="currentColor"
+        strokeWidth="0.75"
+        className="opacity-40 text-brand-gold"
+      />
+
+      {/* Pixel-Perfect Luxury Sparkle Star (Shifted up and left to sit precisely on the right line break) */}
+      <g transform="translate(75, 70)">
+        {/* Precision Flare Rays */}
+        <path
+          d="M 0 -15 L 0 15"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          className="text-brand-gold"
+        />
+        <path
+          d="M -15 0 L 15 0"
+          stroke="currentColor"
+          strokeWidth="1.25"
+          className="text-brand-gold"
+        />
+
+        {/* Subtle diamond accent glow specs directly matching image_2414fe.png */}
+        <circle
+          cx="-6"
+          cy="-6"
+          r="1"
+          className="fill-brand-gold text-brand-gold"
+        />
+        <circle
+          cx="6"
+          cy="5"
+          r="0.75"
+          className="fill-brand-gold text-brand-gold opacity-70"
+        />
+      </g>
+    </svg>
+  );
+
   return (
     <footer className="bg-[#0B0B0B] text-brand-cream pt-20 pb-10 border-t border-brand-cream/10 relative overflow-hidden text-left font-sans-inter">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[70%] h-32 bg-brand-gold/5 blur-3xl pointer-events-none" />
@@ -34,7 +103,11 @@ export default function Footer() {
               className="flex items-center space-x-2 text-left group focus:outline-none cursor-pointer"
               id="footer-logo-btn"
             >
-              <Leaf className="h-5 w-5 text-brand-gold group-hover:rotate-12 transition-transform duration-500" />
+              <img
+                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1782133346/Untitled_design_4_drj5jl.png"
+                alt="Lavish Lathers Emblem"
+                className="h-8 w-8 object-contain group-hover:rotate-12 transition-transform duration-500"
+              />
               <span className="font-serif-playfair text-xl tracking-[0.2em] uppercase text-brand-cream group-hover:text-brand-gold transition-colors font-light">
                 Lavish Lathers
               </span>
@@ -208,16 +281,18 @@ export default function Footer() {
 
           {/* Added Instagram handle link on the same structural row level */}
           <div className="flex items-center space-x-4">
-            <a 
-              href="https://instagram.com/lavishlathersbyesther" 
-              target="_blank" 
+            <a
+              href="https://instagram.com/lavishlathersbyesther"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-400 hover:text-[#C5A059] transition-colors cursor-pointer flex items-center space-x-1"
             >
               <Instagram className="h-4 w-4 stroke-[1.5]" />
-              <span className="font-sans-poppins font-medium tracking-wide normal-case text-xs">@lavishlathersbyesther</span>
+              <span className="font-sans-poppins font-medium tracking-wide normal-case text-xs">
+                @lavishlathersbyesther
+              </span>
             </a>
-            
+
             <span className="text-neutral-600">|</span>
 
             <div className="flex items-center space-x-1">

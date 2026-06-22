@@ -1,27 +1,78 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Leaf, Sparkles, Send, Heart } from 'lucide-react';
-import { useApp } from '../../context/AppContext';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Leaf, Sparkles, Send, Heart } from "lucide-react";
+import { useApp } from "../../context/AppContext";
 
 export default function Footer() {
   const { setFilterCategory } = useApp();
   const navigate = useNavigate();
-  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterEmail, setNewsletterEmail] = useState("");
   const [success, setSuccess] = useState(false);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) return;
     setSuccess(true);
-    setNewsletterEmail('');
+    setNewsletterEmail("");
     setTimeout(() => setSuccess(false), 4000);
   };
 
   const handleCategoryClick = (cat: string) => {
     setFilterCategory(cat);
-    navigate('/shop');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate("/shop");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  {
+    /* 🌟 Custom Logo Icon Component mimicking "Lavish Leather Logo" */
+  }
+  const LavishLathersIcon = ({ className = "h-6 w-6" }) => (
+    <svg
+      viewBox="0 0 100 100"
+      className={`${className} fill-none stroke-current`}
+      id="custom-emblem-svg"
+    >
+      {/* Elegant Gold Outer Crescent Rings */}
+      <circle cx="50" cy="50" r="44" strokeWidth="1.5" className="opacity-40" />
+      <path
+        d="M 12 50 A 38 38 0 1 1 50 88"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        className="text-brand-gold"
+      />
+
+      {/* Signature Luxury Sparkle Star in the bottom right quadrant */}
+      <g transform="translate(72, 72) scale(0.7)">
+        {/* Vertical ray */}
+        <path
+          d="M 0 -22 L 0 22"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="text-brand-gold"
+        />
+        {/* Horizontal ray */}
+        <path
+          d="M -22 0 L 22 0"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="text-brand-gold"
+        />
+        {/* Accent diamond dots */}
+        <circle
+          cx="-10"
+          cy="-10"
+          r="1.5"
+          className="fill-brand-gold text-brand-gold"
+        />
+        <circle
+          cx="10"
+          cy="10"
+          r="1.5"
+          className="fill-brand-gold text-brand-gold"
+        />
+      </g>
+    </svg>
+  );
 
   return (
     <footer className="bg-[#0B0B0B] text-brand-cream pt-20 pb-10 border-t border-brand-cream/10 relative overflow-hidden text-left font-sans-inter">
@@ -29,22 +80,24 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-brand-cream/10">
-          
           {/* SECTION 1: Brand & Philosophy Descriptions */}
           <div className="md:col-span-4 space-y-6">
-            <Link 
+            <Link
               to="/"
               className="flex items-center space-x-2 text-left group focus:outline-none"
               id="footer-logo-btn"
             >
-              <Leaf className="h-5 w-5 text-brand-gold group-hover:rotate-12 transition-transform duration-500" />
+              <LavishLathersIcon className="h-7 w-7 text-brand-gold group-hover:rotate-12 transition-transform duration-500 ease-out shrink-0" />
               <span className="font-serif-playfair text-xl tracking-[0.2em] uppercase text-brand-cream group-hover:text-brand-gold transition-colors font-light">
                 Lavish Lathers
               </span>
             </Link>
 
             <p className="text-xs text-brand-cream/65 leading-relaxed font-light">
-              We translate centuries of unhurried cold-process soapmaking into premium botanical skincare and exquisite hand-carved keepsakes bound with silk ribbons. Craft takes absolute patience; luxury takes time.
+              We translate centuries of unhurried cold-process soapmaking into
+              premium botanical skincare and exquisite hand-carved keepsakes
+              bound with silk ribbons. Craft takes absolute patience; luxury
+              takes time.
             </p>
 
             <div className="flex items-center space-x-2 text-[10px] text-brand-gold font-sans-poppins font-semibold uppercase tracking-widest pt-1">
@@ -56,12 +109,12 @@ export default function Footer() {
           {/* SECTION 2: Quick Links */}
           <div className="md:col-span-2 space-y-4">
             <h4 className="font-serif-playfair text-sm text-brand-cream tracking-widest uppercase pb-1 border-b border-brand-cream/10 font-bold">
-               Curation
+              Curation
             </h4>
             <ul className="space-y-2 text-xs font-sans-poppins text-brand-cream/70 font-light uppercase tracking-widest">
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Herbal Soaps')}
+                  onClick={() => handleCategoryClick("Herbal Soaps")}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer"
                 >
                   Herbal Soaps
@@ -69,7 +122,7 @@ export default function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Essential Oils')}
+                  onClick={() => handleCategoryClick("Essential Oils")}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer"
                 >
                   Essential Oils
@@ -77,7 +130,7 @@ export default function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Gift Boxes')}
+                  onClick={() => handleCategoryClick("Gift Boxes")}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer"
                 >
                   Gift Boxes
@@ -85,7 +138,7 @@ export default function Footer() {
               </li>
               <li>
                 <button
-                  onClick={() => handleCategoryClick('Souvenirs')}
+                  onClick={() => handleCategoryClick("Souvenirs")}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer"
                 >
                   Keepsake Souvenirs
@@ -97,23 +150,31 @@ export default function Footer() {
           {/* SECTION 3: Brand Story */}
           <div className="md:col-span-2 space-y-4">
             <h4 className="font-serif-playfair text-sm text-brand-cream tracking-widest uppercase pb-1 border-b border-brand-cream/10 font-bold">
-               Reflections
+              Reflections
             </h4>
             <ul className="space-y-2 text-xs font-sans-poppins text-brand-cream/70 font-light uppercase tracking-widest text-left">
               <li>
-                <Link to="/about" className="hover:text-brand-gold transition-colors block">
+                <Link
+                  to="/about"
+                  className="hover:text-brand-gold transition-colors block"
+                >
                   Our Story
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-brand-gold transition-colors block">
+                <Link
+                  to="/contact"
+                  className="hover:text-brand-gold transition-colors block"
+                >
                   Concierge Contacts
                 </Link>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => {
-                    alert("Lavish Lathers operates with physical ateliers in Sisters, OR and Beverly Hills, CA. Tours of our cedarwood drying tunnels can be booked by registered wholesale patrons.");
+                    alert(
+                      "Lavish Lathers operates with physical ateliers in Sisters, OR and Beverly Hills, CA. Tours of our cedarwood drying tunnels can be booked by registered wholesale patrons.",
+                    );
                   }}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer block"
                 >
@@ -121,9 +182,11 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => {
-                    alert("Lavish Lathers provides custom-labeled wedding favors. Order volumes of 50-500 bars receive complimentary stamp mould design engineering!");
+                    alert(
+                      "Lavish Lathers provides custom-labeled wedding favors. Order volumes of 50-500 bars receive complimentary stamp mould design engineering!",
+                    );
                   }}
                   className="hover:text-brand-gold transition-colors text-left cursor-pointer block"
                 >
@@ -131,7 +194,10 @@ export default function Footer() {
                 </button>
               </li>
               <li>
-                <Link to="/admin/login" className="hover:text-brand-gold text-brand-gold/60 text-xs transition-colors block mt-2 pt-2 border-t border-brand-cream/10">
+                <Link
+                  to="/admin/login"
+                  className="hover:text-brand-gold text-brand-gold/60 text-xs transition-colors block mt-2 pt-2 border-t border-brand-cream/10"
+                >
                   Admin Portal &rarr;
                 </Link>
               </li>
@@ -141,18 +207,24 @@ export default function Footer() {
           {/* SECTION 4: Premium Newsletter Signup */}
           <div className="md:col-span-4 space-y-4">
             <h4 className="font-serif-playfair text-sm text-brand-cream tracking-widest uppercase pb-1 border-b border-brand-cream/10 font-bold">
-               Patron Registry Newsletter
+              Patron Registry Newsletter
             </h4>
             <p className="text-xs text-brand-cream/60 leading-relaxed font-light">
-               Register your email address to receive notices regarding limited edition cures, seasonal soap cario carvings, and digital unboxing previews.
+              Register your email address to receive notices regarding limited
+              edition cures, seasonal soap cario carvings, and digital unboxing
+              previews.
             </p>
 
             {success ? (
               <p className="text-xs text-emerald-300 font-sans-inter font-medium animate-fade-in">
-                 Success: Your email has been added to the Lavish Ledger patronage list. Welcome.
+                Success: Your email has been added to the Lavish Ledger
+                patronage list. Welcome.
               </p>
             ) : (
-              <form onSubmit={handleNewsletterSubmit} className="flex space-x-2">
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="flex space-x-2"
+              >
                 <input
                   type="email"
                   required
@@ -173,26 +245,44 @@ export default function Footer() {
               </form>
             )}
           </div>
-
         </div>
 
         {/* BOTTOM SECTION FOOTER */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans-poppins text-brand-cream/45 font-light uppercase tracking-wider">
           <div className="flex flex-wrap items-center gap-1.5 justify-center sm:justify-start">
-             <span>&copy; 2026 Lavish Lathers Boutique. All Rights Reserved.</span>
-             <span>|</span>
-             <button onClick={() => alert("Lavish Lathers respects privacy. We do not sell or trade guest checkout details.")} className="hover:text-brand-cream transition-colors cursor-pointer">Privacy Policy</button>
-             <span>|</span>
-             <button onClick={() => alert("Terms: Formulas require unhurried delivery conditions. Returns accepted within 15 days of unboxing.")} className="hover:text-brand-cream transition-colors cursor-pointer">Terms of Patronage</button>
+            <span>
+              &copy; 2026 Lavish Lathers Boutique. All Rights Reserved.
+            </span>
+            <span>|</span>
+            <button
+              onClick={() =>
+                alert(
+                  "Lavish Lathers respects privacy. We do not sell or trade guest checkout details.",
+                )
+              }
+              className="hover:text-brand-cream transition-colors cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            <span>|</span>
+            <button
+              onClick={() =>
+                alert(
+                  "Terms: Formulas require unhurried delivery conditions. Returns accepted within 15 days of unboxing.",
+                )
+              }
+              className="hover:text-brand-cream transition-colors cursor-pointer"
+            >
+              Terms of Patronage
+            </button>
           </div>
 
           <div className="flex items-center space-x-1">
-             <span>Formulated with</span>
-             <Heart className="h-3 w-3 fill-current text-[#D4AF37]" />
-             <span>&amp; Red Clays</span>
+            <span>Formulated with</span>
+            <Heart className="h-3 w-3 fill-current text-[#D4AF37]" />
+            <span>&amp; Red Clays</span>
           </div>
         </div>
-
       </div>
     </footer>
   );

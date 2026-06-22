@@ -300,7 +300,7 @@ export default function Hero() {
               <div className="space-y-4">
                 <div className="aspect-square w-full rounded-2xl overflow-hidden bg-brand-ivory relative">
                   <img
-                    src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780578665/Gemini_Generated_Image_ey0u5jey0u5jey0u_yzlmm1.png"
+                    src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1782134131/gemini-watermark-removed_mpfdln.png"
                     alt="Saffron Mysore"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
