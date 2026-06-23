@@ -12,12 +12,12 @@ const createAdmin = async () => {
     await connectDB();
 
     const hashedPassword = await bcrypt.hash(
-      "admin123",
+      "lavishleather@2026",
       10
     );
 
     const adminExists = await Admin.findOne({
-      email: "admin@lavishlathers.com",
+      email: "admin@lavishlathers.in",
     });
 
     if (adminExists) {
@@ -26,7 +26,7 @@ const createAdmin = async () => {
     }
 
     const admin = await Admin.create({
-      email: "admin@lavishlathers.com",
+      email: "admin@lavishlathers.in",
       password: hashedPassword,
     });
 

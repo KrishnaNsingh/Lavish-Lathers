@@ -6,17 +6,17 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 export async function apiClient<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
-  const token = localStorage.getItem('lavish_lathers_admin_token');
-  
+  const token = localStorage.getItem("lavish_lathers_admin_token");
+
   const headers = new Headers(options.headers || {});
-  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
-    headers.set('Content-Type', 'application/json');
+  if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
   }
-  
+
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
   const config: RequestInit = {
@@ -26,8 +26,16 @@ export async function apiClient<T>(
 
   const response = await fetch(`${BASE_URL}${endpoint}`, config);
 
+  if (response.status === 401) {
+    localStorage.removeItem("lavish_lathers_admin_token");
+
+    window.location.replace("/admin/login");
+
+    throw new Error("Session expired. Please login again.");
+  }
+
   if (!response.ok) {
-    let errorMsg = 'An error occurred during the API call';
+    let errorMsg = "An error occurred during the API call";
     try {
       const errorData = await response.json();
       errorMsg = errorData.error || errorData.message || errorMsg;

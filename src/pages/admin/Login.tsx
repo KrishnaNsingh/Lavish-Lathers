@@ -93,7 +93,7 @@ export default function AdminLogin() {
                 <input
                   type="email"
                   required
-                  placeholder="admin@lavishlathers.com"
+                  placeholder="owner@login.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full text-xs pl-10 pr-4 py-3.5 rounded-xl border border-brand-cream/10 bg-[#0A0A09] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold transition-all"
@@ -123,14 +123,14 @@ export default function AdminLogin() {
             </div>
 
             {/* Helper block */}
-            <div className="text-[10px] text-brand-cream/45 bg-[#0F0E0D] p-3 rounded-lg border border-brand-cream/5 leading-relaxed text-center font-sans-poppins">
+            {/* <div className="text-[10px] text-brand-cream/45 bg-[#0F0E0D] p-3 rounded-lg border border-brand-cream/5 leading-relaxed text-center font-sans-poppins">
               Demo access credentials:
               <br />
               <strong className="text-brand-gold select-all">
-                admin@lavishlathers.com
+                owner@longin.com
               </strong>{" "}
-              / <strong className="text-brand-gold select-all">admin123</strong>
-            </div>
+              / <strong className="text-brand-gold select-all">password123</strong>
+            </div> */}
 
             {/* Submit btn */}
             <button
