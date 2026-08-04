@@ -98,7 +98,7 @@ export default function Shop() {
 
   return (
     <div className="bg-brand-cream min-h-screen py-32 text-brand-black font-sans-inter">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
         {/* Main Header description */}
         <div className="text-left space-y-3 mb-12 border-b border-brand-beige/20 pb-6">
           <span className="text-[10px] uppercase tracking-[0.4em] font-sans-poppins font-semibold text-brand-gold">
@@ -283,26 +283,28 @@ export default function Shop() {
                     >
                       {/* Thumbnail frame */}
                       <div className="relative aspect-square overflow-hidden bg-brand-ivory">
+                        {/* Image wrapped in click handler for direct navigation */}
                         <img
                           src={product.imageUrl}
                           alt={product.name}
                           referrerPolicy="no-referrer"
-                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                          onClick={() => navigate(`/product/${product._id}`)}
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 cursor-pointer"
                         />
 
                         {/* Tags */}
-                        <span className="absolute top-4 left-4 bg-brand-black/70 backdrop-blur-xs text-brand-cream text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full font-sans-poppins">
+                        <span className="absolute top-4 left-4 bg-brand-black/70 backdrop-blur-xs text-brand-cream text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-full font-sans-poppins pointer-events-none">
                           {product.category}
                         </span>
 
                         {product.souvenir && (
-                          <span className="absolute bottom-4 left-4 bg-brand-gold text-brand-black text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-md font-sans-poppins font-bold">
+                          <span className="absolute bottom-4 left-4 bg-brand-gold text-brand-black text-[8px] uppercase tracking-widest px-2.5 py-1 rounded-md font-sans-poppins font-bold pointer-events-none">
                             Collectible Soul
                           </span>
                         )}
 
-                        {/* Hover Overlay triggers */}
-                        <div className="absolute inset-0 bg-brand-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3 font-sans-poppins">
+                        {/* Hover Overlay triggers (Hidden on mobile/touch screens, visible on desktop hover) */}
+                        <div className="hidden md:flex absolute inset-0 bg-brand-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 items-center justify-center space-x-3 font-sans-poppins">
                           <button
                             onClick={() => navigate(`/product/${product._id}`)}
                             className="p-3 bg-brand-cream hover:bg-brand-gold rounded-full text-brand-black transition-colors shadow shadow-brand-black/15 duration-300 hover:scale-105 cursor-pointer"
