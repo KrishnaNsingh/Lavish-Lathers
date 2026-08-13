@@ -47,53 +47,6 @@ export default function ProductDetailPage() {
   const [localReviews, setLocalReviews] = useState<any[]>([]);
   const [submitSuccess, setSubmitSuccess] = useState("");
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   if (!id) return;
-
-  //   setLoading(true);
-  //   setError("");
-
-  //   const fetchProductData = async () => {
-  //     try {
-  //       const data = await productApi.getProductById(id!);
-
-  //       setProduct(data);
-
-  //       setActiveImage(data.imageUrl);
-
-  //       setQuantity(1);
-  //       setIsGift(false);
-  //       setGiftNote("");
-  //       setGiftRecipient("");
-  //       setLocalReviews([]);
-  //       setSubmitSuccess("");
-
-  //       const allData = await productApi.getProducts();
-
-  //       const filteredRelated = allData
-  //         .filter(
-  //           (p) =>
-  //             p._id !== id &&
-  //             (p.category === data.category ||
-  //               p.artistryType === data.artistryType),
-  //         )
-  //         .slice(0, 4);
-
-  //       setRelatedProducts(filteredRelated);
-  //     } catch (err: any) {
-  //       console.error("Failed loading selected product details:", err);
-
-  //       setError(
-  //         err.message || "An issue occurred pulling this formula curation.",
-  //       );
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProductData();
-  // }, [id]);
   const { data: product, isLoading, error } = useProduct(id!);
 
   const { data: allProducts = [] } = useProducts();
@@ -101,9 +54,14 @@ export default function ProductDetailPage() {
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+  // React.useEffect(() => {
+  //   if (product?.imageUrl) {
+  //     setActiveImage(product.imageUrl);
+  //   }
+  // }, [product]);
   React.useEffect(() => {
-    if (product?.imageUrl) {
-      setActiveImage(product.imageUrl);
+    if (product?.images?.length) {
+      setActiveImage(product.images[0]);
     }
   }, [product]);
 
@@ -203,7 +161,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Thumbnails list */}
-            <div className="flex items-center space-x-4 pl-2">
+            {/* <div className="flex items-center space-x-4 pl-2">
               <button className="w-20 aspect-square rounded-2xl overflow-hidden bg-brand-ivory border-2 border-brand-gold">
                 <img
                   src={product.imageUrl}
@@ -211,6 +169,25 @@ export default function ProductDetailPage() {
                   className="w-full h-full object-cover"
                 />
               </button>
+            </div> */}
+            <div className="flex items-center space-x-4 pl-2 overflow-x-auto">
+              {product.images?.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveImage(image)}
+                  className={`w-20 aspect-square rounded-2xl overflow-hidden bg-brand-ivory border-2 ${
+                    activeImage === image
+                      ? "border-brand-gold"
+                      : "border-transparent"
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.name} ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           </div>
 
@@ -481,7 +458,7 @@ export default function ProductDetailPage() {
                 >
                   <div className="aspect-square overflow-hidden rounded-xl bg-brand-ivory mb-3">
                     <img
-                      src={p.imageUrl}
+                      src={p.images?.[0]}
                       alt={p.name}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

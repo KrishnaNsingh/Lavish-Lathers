@@ -31,7 +31,8 @@ const orderSchema = new mongoose.Schema(
 
         price: Number,
 
-        imageUrl: String,
+        // imageUrl: String,
+        images: [String],
 
         isGift: {
           type: Boolean,

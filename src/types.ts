@@ -14,16 +14,16 @@ export interface Product {
   stock: number;
 
   category:
-    | 'Herbal Soaps'
-    | 'Essential Oils'
-    | 'Gift Boxes'
-    | 'Souvenirs';
+    | "Herbal Soaps"
+    | "Essential Oils"
+    | "Gift Boxes"
+    | "Souvenirs";
 
   artistryType:
-    | 'Skincare formulation'
-    | 'Keepsake Souvenir';
+    | "Skincare formulation"
+    | "Keepsake Souvenir";
 
-  imageUrl: string;
+  images: string[];
 
   featured: boolean;
 
@@ -47,7 +47,6 @@ export interface Product {
   type?: string;
   isCollectible?: boolean;
   description?: string;
-  images?: string[];
 }
 
 export interface CreateOrderPayload {

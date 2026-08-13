@@ -130,7 +130,7 @@ export default function CartView() {
                     {/* Item Thumbnail */}
                     <div className="w-20 aspect-square rounded-xl overflow-hidden bg-brand-ivory shrink-0 border border-brand-gold/5">
                       <img
-                        src={item.product.imageUrl}
+                        src={item.product.images?.[0]}
                         alt={item.product.name}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"

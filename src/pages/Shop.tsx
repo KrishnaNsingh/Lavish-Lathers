@@ -285,7 +285,7 @@ export default function Shop() {
                       <div className="relative aspect-square overflow-hidden bg-brand-ivory">
                         {/* Image wrapped in click handler for direct navigation */}
                         <img
-                          src={product.imageUrl}
+                          src={product.images?.[0]}
                           alt={product.name}
                           referrerPolicy="no-referrer"
                           onClick={() => navigate(`/product/${product._id}`)}

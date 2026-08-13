@@ -28,26 +28,10 @@ export default function AdminProducts() {
   const [stock, setStock] = useState(10);
   const [featured, setFeatured] = useState(false);
   const [souvenir, setSouvenir] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  // const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState([""]);
   const [ingredients, setIngredients] = useState("");
   const [benefits, setBenefits] = useState("");
-
-  // const fetchProducts = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const data = await productApi.getProducts();
-  //     setProducts(data);
-  //   } catch (err) {
-  //     console.error("Error loading admin products:", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   fetchProducts();
-  // }, []);
 
   const queryClient = useQueryClient();
 
@@ -74,9 +58,12 @@ export default function AdminProducts() {
     setSouvenir(false);
     setIngredients("");
     setBenefits("");
-    setImageUrl(
+    // setImageUrl(
+    //   "https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80",
+    // );
+    setImages([
       "https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80",
-    );
+    ]);
     setIsFormOpen(true);
   };
 
@@ -94,7 +81,15 @@ export default function AdminProducts() {
     setSouvenir(prod.souvenir || false);
     setIngredients((prod.ingredients || []).join("\n"));
     setBenefits((prod.benefits || []).join("\n"));
-    setImageUrl(prod.imageUrl || "");
+    // setImageUrl(prod.imageUrl || "");
+    setImages(prod.images?.length ? prod.images : [""]);
+    // setImages(
+    //   prod.images?.length
+    //     ? prod.images
+    //     : prod.imageUrl
+    //       ? [prod.imageUrl]
+    //       : [""],
+    // );
     setIsFormOpen(true);
   };
 
@@ -120,7 +115,13 @@ export default function AdminProducts() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !shortDescription || !registryId || !imageUrl) {
+    // if (!name || !shortDescription || !registryId || !imageUrl) {
+    //   alert(
+    //     "Please key in core product parameters (Name, Image, Short Description).",
+    //   );
+    //   return;
+    // }
+    if (!name || !shortDescription || !registryId || !images.some(Boolean)) {
       alert(
         "Please key in core product parameters (Name, Image, Short Description).",
       );
@@ -138,7 +139,8 @@ export default function AdminProducts() {
       stock: Number(stock),
       featured,
       souvenir,
-      imageUrl,
+      // imageUrl,
+      images: images.filter(Boolean),
       customMessageAvailable: souvenir,
       // ingredients: editingProduct?.ingredients || [],
       // benefits: editingProduct?.benefits || [],
@@ -249,8 +251,14 @@ export default function AdminProducts() {
                       {/* Image + Title Column */}
                       <td className="px-6 py-4 flex items-center space-x-4">
                         <div className="w-12 aspect-square rounded-lg overflow-hidden bg-[#242221] shrink-0">
-                          <img
+                          {/* <img
                             src={p.imageUrl}
+                            alt={p.name}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                          /> */}
+                          <img
+                            src={p.images?.[0]}
                             alt={p.name}
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover"
@@ -488,16 +496,47 @@ Supports healthy skin`}
 
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
-                    Exquisite Thumbnail URL *
+                    Exquisite Product Images *
                   </label>
-                  <input
-                    type="url"
-                    required
-                    placeholder="https://images.unsplash.com/..."
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none"
-                  />
+
+                  <div className="space-y-2">
+                    {images.map((image, index) => (
+                      <div key={index} className="flex gap-2">
+                        <input
+                          type="url"
+                          required={index === 0}
+                          placeholder={`Image ${index + 1} URL`}
+                          value={image}
+                          onChange={(e) => {
+                            const updated = [...images];
+                            updated[index] = e.target.value;
+                            setImages(updated);
+                          }}
+                          className="flex-1 pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none"
+                        />
+
+                        {images.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setImages(images.filter((_, i) => i !== index))
+                            }
+                            className="px-3 text-red-400"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setImages([...images, ""])}
+                    className="mt-3 text-xs text-brand-gold"
+                  >
+                    + Add Another Image
+                  </button>
                 </div>
 
                 <div>

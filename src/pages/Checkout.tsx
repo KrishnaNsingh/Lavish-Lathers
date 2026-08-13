@@ -544,7 +544,7 @@ export default function CheckoutPage() {
                   >
                     <div className="w-14 aspect-square rounded-lg overflow-hidden bg-brand-ivory shrink-0 border border-brand-gold/10">
                       <img
-                        src={item.product.imageUrl}
+                        src={item.product.images?.[0]}
                         alt={item.product.name}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
