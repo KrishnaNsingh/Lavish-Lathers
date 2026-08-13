@@ -158,7 +158,7 @@ export default function SouvenirSection({
                 {/* Visual Image container with silk ribbon mockup border */}
                 <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-brand-ivory mb-6 border border-brand-gold/5">
                   <img
-                    src={product.imageUrl}
+                    src={product.images[0]}
                     alt={product.name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
