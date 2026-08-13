@@ -324,7 +324,7 @@ export default function Hero({ setCurrentPage, setFilterCategory }: HeroProps) {
                     Price per elixir
                   </span>
                   <span className="font-serif-cormorant italic font-bold text-lg text-brand-black">
-                    ₹3,990
+                    ₹499
                   </span>
                 </div>
                 <button
