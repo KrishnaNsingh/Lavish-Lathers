@@ -58,7 +58,7 @@ const productSchema = new mongoose.Schema(
         message: "At least one image is required",
       },
     },
-    
+
     featured: {
       type: Boolean,
       default: false,
@@ -77,6 +77,31 @@ const productSchema = new mongoose.Schema(
     benefits: {
       type: [String],
       default: [],
+    },
+
+    skinFeel: {
+      type: [String],
+      default: [],
+    },
+
+    howToUse: {
+      type: String,
+      default: "",
+    },
+
+    productInformation: {
+      netWeight: {
+        type: String,
+        default: "",
+      },
+      soapType: {
+        type: String,
+        default: "",
+      },
+      handcraftedIn: {
+        type: String,
+        default: "",
+      },
     },
 
     customMessageAvailable: {

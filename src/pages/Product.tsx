@@ -244,6 +244,22 @@ export default function ProductDetailPage() {
                 {product.shortDescription}
               </p>
             </div>
+            <div className="space-y-3 text-sm text-brand-black/75">
+              <div className="flex justify-between gap-4 border-b border-brand-beige/20 pb-3">
+                <span className="font-semibold">Net Weight</span>
+                <span>{product.productInformation?.netWeight}</span>
+              </div>
+
+              <div className="flex justify-between gap-4 border-b border-brand-beige/20 pb-3">
+                <span className="font-semibold">Soap Type</span>
+                <span>{product.productInformation?.soapType}</span>
+              </div>
+
+              <div className="flex justify-between gap-4">
+                <span className="font-semibold">Handcrafted In</span>
+                <span>{product.productInformation?.handcraftedIn}</span>
+              </div>
+            </div>
 
             {/* TAB SYSTEM (Philosophy, Ingredients, Benefits) */}
             <div className="border border-brand-beige/30 rounded-2xl overflow-hidden bg-brand-cream shadow-sm">
@@ -255,7 +271,7 @@ export default function ProductDetailPage() {
                 className="w-full flex items-center justify-between px-6 py-5 text-left border-b border-brand-beige/30 hover:bg-[#FAF7F2] transition-all duration-300"
               >
                 <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
-                  Philosophy
+                  Product Description
                 </span>
 
                 <ChevronDown
@@ -268,8 +284,7 @@ export default function ProductDetailPage() {
               {openSection === "details" && (
                 <div className="px-6 py-5 bg-[#FCFBF8] border-b border-brand-beige/20">
                   <p className="text-sm leading-7 text-brand-black/75 font-sans-inter">
-                    {product.detailedDescription ||
-                      "Crafted using traditional botanical techniques and carefully selected ingredients."}
+                    {product.detailedDescription}
                   </p>
                 </div>
               )}
@@ -284,7 +299,7 @@ export default function ProductDetailPage() {
                 className="w-full flex items-center justify-between px-6 py-5 text-left border-b border-brand-beige/30 hover:bg-[#FAF7F2] transition-all duration-300"
               >
                 <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
-                  Active Ingredients
+                  Ingredients
                 </span>
 
                 <ChevronDown
@@ -296,23 +311,15 @@ export default function ProductDetailPage() {
 
               {openSection === "ingredients" && (
                 <div className="px-6 py-5 bg-[#FCFBF8] border-b border-brand-beige/20">
-                  <ul className="space-y-3">
+                  <div className="text-sm leading-7 text-brand-black/75 font-sans-inter">
                     {product.ingredients?.length > 0 ? (
-                      product.ingredients.map((ing, i) => (
-                        <li
-                          key={i}
-                          className="flex items-center gap-3 text-sm text-brand-black/75"
-                        >
-                          <span className="h-2 w-2 rounded-full bg-brand-gold" />
-                          <span>{ing}</span>
-                        </li>
-                      ))
+                      <p>{product.ingredients.join(", ")}</p>
                     ) : (
-                      <li className="italic text-brand-black/50">
+                      <p className="italic text-brand-black/50">
                         Ingredient information coming soon.
-                      </li>
+                      </p>
                     )}
-                  </ul>
+                  </div>
                 </div>
               )}
 
@@ -324,7 +331,7 @@ export default function ProductDetailPage() {
                 className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#FAF7F2] transition-all duration-300"
               >
                 <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
-                  Ritual Benefits
+                  Why You'll Love It
                 </span>
 
                 <ChevronDown
@@ -353,6 +360,66 @@ export default function ProductDetailPage() {
                       </li>
                     )}
                   </ul>
+                </div>
+              )}
+
+              {/* Skin Feel */}
+              <button
+                onClick={() =>
+                  setOpenSection(openSection === "skinFeel" ? "" : "skinFeel")
+                }
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#FAF7F2] transition-all duration-300"
+              >
+                <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
+                  Skin Feel
+                </span>
+
+                <ChevronDown
+                  className={`h-5 w-5 text-brand-gold transition-transform duration-300 ${
+                    openSection === "skinFeel" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {openSection === "skinFeel" && (
+                <div className="px-6 py-5 bg-[#FCFBF8]">
+                  <ul className="space-y-3">
+                    {product.skinFeel?.map((item, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-3 text-sm text-brand-black/75"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-brand-gold" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* How to Use */}
+              <button
+                onClick={() =>
+                  setOpenSection(openSection === "howToUse" ? "" : "howToUse")
+                }
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#FAF7F2] transition-all duration-300"
+              >
+                <span className="uppercase tracking-[0.18em] text-sm font-semibold text-brand-gold font-sans-poppins">
+                  How to Use
+                </span>
+
+                <ChevronDown
+                  className={`h-5 w-5 text-brand-gold transition-transform duration-300 ${
+                    openSection === "howToUse" ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {openSection === "howToUse" && (
+                <div className="px-6 py-5 bg-[#FCFBF8]">
+                  <p className="text-sm text-brand-black/75">
+                    {product.howToUse || "How to use information coming soon."}
+                  </p>
                 </div>
               )}
             </div>

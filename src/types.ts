@@ -33,6 +33,16 @@ export interface Product {
 
   benefits: string[];
 
+  skinFeel: string[];
+
+  howToUse: string;
+
+  productInformation: {
+    netWeight: string;
+    soapType: string;
+    handcraftedIn: string;
+  };
+  
   customMessageAvailable: boolean;
 
   createdAt?: string;

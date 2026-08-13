@@ -32,6 +32,11 @@ export default function AdminProducts() {
   const [images, setImages] = useState([""]);
   const [ingredients, setIngredients] = useState("");
   const [benefits, setBenefits] = useState("");
+  const [skinFeel, setSkinFeel] = useState("");
+  const [howToUse, setHowToUse] = useState("");
+  const [netWeight, setNetWeight] = useState("");
+  const [soapType, setSoapType] = useState("");
+  const [handcraftedIn, setHandcraftedIn] = useState("");
 
   const queryClient = useQueryClient();
 
@@ -58,9 +63,11 @@ export default function AdminProducts() {
     setSouvenir(false);
     setIngredients("");
     setBenefits("");
-    // setImageUrl(
-    //   "https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80",
-    // );
+    setSkinFeel("");
+    setHowToUse("");
+    setNetWeight("");
+    setSoapType("");
+    setHandcraftedIn("");
     setImages([
       "https://images.unsplash.com/photo-1607006342411-12f5a54b38bf?auto=format&fit=crop&w=500&q=80",
     ]);
@@ -83,13 +90,14 @@ export default function AdminProducts() {
     setBenefits((prod.benefits || []).join("\n"));
     // setImageUrl(prod.imageUrl || "");
     setImages(prod.images?.length ? prod.images : [""]);
-    // setImages(
-    //   prod.images?.length
-    //     ? prod.images
-    //     : prod.imageUrl
-    //       ? [prod.imageUrl]
-    //       : [""],
-    // );
+
+    setSkinFeel((prod.skinFeel || []).join("\n"));
+    setHowToUse(prod.howToUse || "");
+
+    setNetWeight(prod.productInformation?.netWeight || "");
+    setSoapType(prod.productInformation?.soapType || "");
+    setHandcraftedIn(prod.productInformation?.handcraftedIn || "");
+
     setIsFormOpen(true);
   };
 
@@ -153,24 +161,29 @@ export default function AdminProducts() {
         .split("\n")
         .map((item) => item.trim())
         .filter(Boolean),
+
+      skinFeel: skinFeel
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+
+      howToUse: howToUse.trim(),
+
+      productInformation: {
+        netWeight: netWeight.trim(),
+        soapType: soapType.trim(),
+        handcraftedIn: handcraftedIn.trim(),
+      },
     };
 
     try {
       if (editingProduct) {
-        // const res = await productApi.editProduct(editingProduct._id, payload);
-        // // Clean dynamic UI update mapping
-        // setProducts((prev) =>
-        //   prev.map((p) => (p._id === editingProduct._id ? res.product : p)),
-        // );
         await productApi.editProduct(editingProduct._id, payload);
 
         await queryClient.invalidateQueries({
           queryKey: ["products"],
         });
       } else {
-        // const res = await productApi.addProduct(payload);
-        // // Append newly created database product record directly
-        // setProducts((prev) => [res.product, ...prev]);
         await productApi.addProduct(payload);
 
         await queryClient.invalidateQueries({
@@ -251,12 +264,6 @@ export default function AdminProducts() {
                       {/* Image + Title Column */}
                       <td className="px-6 py-4 flex items-center space-x-4">
                         <div className="w-12 aspect-square rounded-lg overflow-hidden bg-[#242221] shrink-0">
-                          {/* <img
-                            src={p.imageUrl}
-                            alt={p.name}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover"
-                          /> */}
                           <img
                             src={p.images?.[0]}
                             alt={p.name}
@@ -464,34 +471,114 @@ export default function AdminProducts() {
 
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
-                    Active Ingredients
+                    Ingredients
                   </label>
 
                   <textarea
                     rows={5}
                     value={ingredients}
                     onChange={(e) => setIngredients(e.target.value)}
-                    placeholder={`Goat Milk
-Coconut Oil
-Olive Oil`}
+                    placeholder={`Saponified Oils of Coconut, Palm, Castor, Hemp Seed & Almond Oils
+Mango Butter
+Distilled Water
+Activated Charcoal Powder
+Peppermint Essential Oil
+Tea Tree Essential Oil
+Bulgarian Rose Fragrance Oil
+Dried Rose Petals`}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
-                    Ritual Benefits
+                    Why You'll Love It
                   </label>
 
                   <textarea
                     rows={5}
                     value={benefits}
                     onChange={(e) => setBenefits(e.target.value)}
-                    placeholder={`Deep hydration
-Gentle cleansing
-Supports healthy skin`}
+                    placeholder={`Traditional Cold Process Soap
+True Soap made by Natural Saponification
+Naturally Cured for 4–6 Weeks
+Rich in Naturally Produced Glycerin
+Deep Cleansing Activated Charcoal
+Handmade in Small Batches
+Premium Plant Oils & Mango Butter
+Refreshing Peppermint & Tea Tree Essential Oils
+Beautifully Finished with Dried Rose Petals
+Free from SLS & SLES
+Free from Parabens
+No Artificial Fillers
+No Harsh Detergents
+Cruelty-Free`}
                     className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Skin Feel
+                  </label>
+
+                  <textarea
+                    rows={5}
+                    value={skinFeel}
+                    onChange={(e) => setSkinFeel(e.target.value)}
+                    placeholder={`Clean
+Fresh
+Soft
+Refreshed
+Comfortable without feeling overly stripped`}
+                    className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    How to Use
+                  </label>
+
+                  <textarea
+                    rows={4}
+                    value={howToUse}
+                    onChange={(e) => setHowToUse(e.target.value)}
+                    placeholder="Lather with water and gently massage over wet skin. Rinse thoroughly. Allow the soap to dry between uses to extend its life."
+                    className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 mb-1 font-bold">
+                    Product Information
+                  </label>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input
+                      type="text"
+                      value={netWeight}
+                      onChange={(e) => setNetWeight(e.target.value)}
+                      placeholder="Net Weight: Approx. 130 g"
+                      className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none"
+                    />
+
+                    <input
+                      type="text"
+                      value={soapType}
+                      onChange={(e) => setSoapType(e.target.value)}
+                      placeholder="Cold Process Soap"
+                      className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none"
+                    />
+
+                    <input
+                      type="text"
+                      value={handcraftedIn}
+                      onChange={(e) => setHandcraftedIn(e.target.value)}
+                      placeholder="Handcrafted in Goa, India"
+                      className="w-full pl-3 pr-3 py-2.5 rounded-lg border border-brand-cream/10 bg-[#0F0E0D] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div>
