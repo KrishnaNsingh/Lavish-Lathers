@@ -7,7 +7,15 @@ const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const admin = await Admin.findOne({ email });
+    // Guard against NoSQL injection — reject any non-string values
+    // e.g. { "email": { "$gt": "" } } would otherwise bypass the query
+    if (typeof email !== "string" || typeof password !== "string") {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    const admin = await Admin.findOne({ email: email.trim().toLowerCase() });
 
     if (!admin) {
       return res.status(401).json({
@@ -33,7 +41,7 @@ const loginAdmin = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "30d",
+        expiresIn: "7d",
       }
     );
 

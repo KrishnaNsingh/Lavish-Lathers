@@ -20,6 +20,13 @@ const protectAdmin = (req, res, next) => {
       process.env.JWT_SECRET
     );
 
+    // Verify the token was actually issued for an admin role
+    if (decoded.role !== "admin") {
+      return res.status(403).json({
+        message: "Forbidden",
+      });
+    }
+
     req.admin = decoded;
 
     next();
