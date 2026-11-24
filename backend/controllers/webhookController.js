@@ -1,11 +1,7 @@
 const crypto = require("crypto");
 const Order = require("../models/Order");
-const Product = require("../models/Product");
-const {
-  sendCustomerOrderEmail,
-  sendAdminOrderEmail,
-  sendPaymentFailedEmail,
-} = require("../services/emailService");
+const { recordPayment } = require("../services/fulfillment");
+const { sendPaymentFailedEmail } = require("../services/emailService");
 
 const razorpayWebhook = async (req, res) => {
   try {
@@ -30,60 +26,15 @@ const razorpayWebhook = async (req, res) => {
       payload.event === "order.paid" ||
       payload.event === "payment.captured"
     ) {
-      const paymentEntity = payload.payload.payment.entity;
-      const razorpayOrderId = paymentEntity.order_id;
-      const razorpayPaymentId = paymentEntity.id;
-
-      const order = await Order.findOne({
-        "payment.razorpayOrderId": razorpayOrderId,
-      });
-      if (order && order.payment.paymentStatus !== "paid") {
-        order.payment.paymentStatus = "paid";
-        order.payment.razorpayPaymentId = razorpayPaymentId;
-        await order.save();
-        
-        for (const item of order.items) {
-          const product = await Product.findById(item.productId);
-
-          if (!product) continue;
-
-          product.stock -= item.quantity;
-
-          await product.save();
-        }
-
-        try {
-          await sendCustomerOrderEmail(order);
-          await sendAdminOrderEmail(order);
-          console.log("Webhook email notifications dispatched successfully");
-        } catch (emailError) {
-          console.error("Webhook email notification failure:", emailError);
-        }
-      }
+      await recordPayment(payload.payload.payment.entity);
     }
 
     if (payload.event === "payment.failed") {
-      const paymentEntity = payload.payload.payment.entity;
-
-      const razorpayOrderId = paymentEntity.order_id;
-
-      const order = await Order.findOne({
-        "payment.razorpayOrderId": razorpayOrderId,
-      });
-
-      if (order) {
-        order.payment.paymentStatus = "failed";
-
-        await order.save();
-
-        try {
-          await sendPaymentFailedEmail(order);
-
-          console.log("Payment failure email sent");
-        } catch (emailError) {
-          console.error("Payment failure email error:", emailError);
-        }
-      }
+      const order = await Order.findOneAndUpdate({
+        "payment.razorpayOrderId": payload.payload.payment.entity.order_id,
+        "payment.paymentStatus": "pending",
+      }, { $set: { "payment.paymentStatus": "failed" } }, { new: true });
+      if (order) await sendPaymentFailedEmail(order);
     }
 
     res.status(200).json({

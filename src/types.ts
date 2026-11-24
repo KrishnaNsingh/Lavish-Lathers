@@ -173,10 +173,11 @@ export interface Order {
 }
 
 export interface ContactMessage {
+  subject: string;
+  createdAt: string;
   _id: string;
   name: string;
   email: string;
   phone?: string;
   message: string;
-  date: string;
 }

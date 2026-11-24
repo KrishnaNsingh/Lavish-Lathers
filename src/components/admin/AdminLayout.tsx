@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   ClipboardList,
+  Mail,
   LogOut,
   ArrowLeft,
   Heart,
@@ -33,6 +34,7 @@ export default function AdminLayout({
     },
     { name: "curate products", path: "/admin/products", icon: ShoppingBag },
     { name: "orders registry", path: "/admin/orders", icon: ClipboardList },
+    { name: "Contact Form", path: "/admin/contact", icon: Mail },
   ];
 
   const handleLogout = () => {

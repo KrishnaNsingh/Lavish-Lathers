@@ -31,7 +31,8 @@ export default function CheckoutPage() {
 
   const [whatsappAlerts, setWhatsappAlerts] = useState(true);
   const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const discount = appliedCoupon ? Math.round(subtotal * 20) / 100 : 0;
   const [message, setMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [validationErrors, setValidationErrors] = useState<
@@ -61,7 +62,7 @@ export default function CheckoutPage() {
 
   const applyCoupon = () => {
     if (couponCode.toUpperCase() === "LAVISH20") {
-      setDiscount(subtotal * 0.2);
+      setAppliedCoupon("LAVISH20");
       setMessage("Success: 20% Discount applied with Botanical Love!");
     } else {
       setMessage("Error: Invalid or stale coupon code.");
@@ -128,7 +129,7 @@ export default function CheckoutPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            total: grandTotal - discount,
+            couponCode: appliedCoupon,
             customer: {
               name: formData.fullName,
               email: formData.email,
@@ -143,30 +144,29 @@ export default function CheckoutPage() {
             },
             items: cart.map((item) => ({
               productId: item.product._id,
-              registryId: item.product.registryId,
-              name: item.product.name,
-              price: item.product.price,
               quantity: item.quantity,
               isGift: item.isGift,
               giftNote: item.giftNote,
               giftRecipient: item.giftRecipient,
             })),
-            pricing: {
-              subtotal,
-              shipping: shippingCharge,
-              total: grandTotal - discount,
-            },
           }),
         },
       );
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to compile transactional variables with backend route.",
-        );
+        const failure = await response.json();
+        throw new Error(failure.message || "Unable to start checkout.");
       }
 
       const order = await response.json();
+
+      if (Number(order.amount) !== Math.round((grandTotal - discount) * 100)) {
+        const proceed = window.confirm(`The current total is INR ${(order.amount / 100).toFixed(2)}, including shipping and discounts. Continue to payment?`);
+        if (!proceed) {
+          setIsProcessing(false);
+          return;
+        }
+      }
 
       // STEP 2: Configure initialization options block for Razorpay
       const options = {
@@ -192,33 +192,6 @@ export default function CheckoutPage() {
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
-                  customer: {
-                    name: formData.fullName,
-                    email: formData.email,
-                    phone: formData.phone,
-                  },
-                  shippingAddress: {
-                    street: formData.address,
-                    city: formData.city,
-                    state: formData.state,
-                    postalCode: formData.zipCode,
-                    instructions: formData.notes,
-                  },
-                  items: cart.map((item) => ({
-                    productId: item.product._id,
-                    registryId: item.product.registryId,
-                    name: item.product.name,
-                    price: item.product.price,
-                    quantity: item.quantity,
-                    isGift: item.isGift,
-                    giftNote: item.giftNote,
-                    giftRecipient: item.giftRecipient,
-                  })),
-                  pricing: {
-                    subtotal,
-                    shipping: shippingCharge,
-                    total: grandTotal - discount,
-                  },
                 }),
               },
             );
@@ -236,7 +209,7 @@ export default function CheckoutPage() {
               }, 100);
             } else {
               alert(
-                "Payment Verification Failed. Cryptographic signature check rejected.",
+                data.message || "Payment confirmation is pending. Please check your email before retrying.",
               );
             }
           } catch (verifyErr) {
@@ -270,7 +243,7 @@ export default function CheckoutPage() {
     } catch (error) {
       console.error(error);
       alert(
-        "Encountered initialization error building client transaction pipeline.",
+        error instanceof Error ? error.message : "Unable to start checkout.",
       );
       setIsProcessing(false);
     }

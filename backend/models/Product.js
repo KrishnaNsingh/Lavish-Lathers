@@ -29,6 +29,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    fulfilledOrders: { type: [mongoose.Schema.Types.ObjectId], select: false, default: undefined },
+
     stock: {
       type: Number,
       default: 0,

@@ -7,6 +7,7 @@ export const contactApi = {
     name: string;
     email: string;
     phone?: string;
+    subject: string;
     message: string;
   }): Promise<{ success: boolean; message: string; ticketId: string }> => {
     return apiClient<{ success: boolean; message: string; ticketId: string }>('/contact', {

@@ -36,6 +36,12 @@ const appendOrderToSheet = async (order) => {
       new Date(order.createdAt || Date.now()).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
     ]];
 
+    // A prior append may have succeeded before its acknowledgement was saved.
+    const ledger = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.GOOGLE_SHEET_ID, range: "Sheet1!A:A",
+    });
+    if (ledger.data.values?.some(([id]) => id === String(order._id))) return;
+
     // 4. Fire append request using spreadsheet environment parameters
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
@@ -49,7 +55,7 @@ const appendOrderToSheet = async (order) => {
     console.log("📊 Order successfully synced to Google Sheets row:", response.data.updates?.updatedRange);
   } catch (error) {
     console.error("❌ Google Sheets append process failure:", error.message);
-    // Kept non-blocking so an API failure here won't crash checkout operations
+    throw error;
   }
 };
 

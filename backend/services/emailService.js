@@ -166,11 +166,12 @@ const sendCustomerOrderEmail = async (order) => {
         </table>
       </div>
       `,
-    });
-
+    }, { idempotencyKey: `order/${order._id}/customer` });
+    if (response.error) throw new Error(response.error.message);
     console.log("Customer Email Response ID:", response.data?.id);
   } catch (error) {
     console.error("Customer email delivery crash:", error);
+    throw error;
   }
 };
 
@@ -272,11 +273,12 @@ const sendAdminOrderEmail = async (order) => {
         </table>
       </div>
       `,
-    });
-
+    }, { idempotencyKey: `order/${order._id}/admin` });
+    if (response.error) throw new Error(response.error.message);
     console.log("Admin Email Response ID:", response.data?.id);
   } catch (error) {
     console.error("Admin notification dispatch failure:", error);
+    throw error;
   }
 };
 

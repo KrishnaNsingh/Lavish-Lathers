@@ -17,6 +17,7 @@ const {
 
 const { protectAdmin } = require("../middleware/authMiddleware");
 
+router.get("/messages", protectAdmin, require("../controllers/contactController").listMessages);
 router.get("/stats", protectAdmin, getDashboardStats);
 router.get("/orders", protectAdmin, getAllOrders);
 router.get("/orders/export", protectAdmin, exportOrdersExcel);

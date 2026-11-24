@@ -57,6 +57,7 @@ app.use("/api/webhooks", webhookRoutes);
 
 app.use(express.json());
 
+app.post("/api/contact", require("./controllers/contactController").submitContact);
 app.use("/api/products", productRoutes);
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/orders", orderRoutes);

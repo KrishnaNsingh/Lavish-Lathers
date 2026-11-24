@@ -21,6 +21,7 @@ import ContactPage from "./pages/Contact";
 import AdminLoginPage from "./pages/admin/Login";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import AdminProductsPage from "./pages/admin/Products";
+import AdminContact from "./pages/admin/Contact";
 import AdminOrdersPage from "./pages/admin/Orders";
 
 // Routing guard wraps
@@ -61,6 +62,7 @@ function AppContent() {
           <Route path="/terms-conditions" element={<TermsConditions />} />
 
           {/* Admin Back-Office Panel directories */}
+          <Route path="/admin/contact" element={<ProtectedRoute><AdminContact /></ProtectedRoute>} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
 
           <Route

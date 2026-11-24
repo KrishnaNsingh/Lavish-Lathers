@@ -1,3 +1,4 @@
+import { contactApi } from "../api/contactApi";
 import React, { useState, useEffect } from "react";
 import {
   Send,
@@ -55,22 +56,7 @@ export default function ContactPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          message: `[Subject: ${subject}] - ${message}`,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Contact ticket post failed");
-
-      const responseData = await response.json();
+      const responseData = await contactApi.submitMessage({ name, email, phone, subject, message });
       setTicketId(responseData.ticketId);
       setFeedback(responseData.message);
 
@@ -80,7 +66,7 @@ export default function ContactPage() {
       setMessage("");
     } catch (err) {
       alert(
-        "Issue submitting support ticket. Our server will receive it shortly.",
+        err instanceof Error ? err.message : "Your inquiry could not be saved. Please try again.",
       );
     } finally {
       setLoading(false);

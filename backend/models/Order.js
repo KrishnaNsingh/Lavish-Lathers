@@ -59,7 +59,18 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
+    fulfillment: {
+      pending: Boolean,
+      retryAt: Date,
+      lease: String,
+      inventory: Boolean,
+      sheet: Boolean,
+      customerEmail: Boolean,
+      adminEmail: Boolean,
+    },
+
     pricing: {
+      discount: Number,
       subtotal: Number,
       shipping: Number,
       total: Number,
@@ -75,6 +86,9 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+orderSchema.index({ "payment.razorpayOrderId": 1 });
+orderSchema.index({ "fulfillment.pending": 1, "fulfillment.retryAt": 1 }, { partialFilterExpression: { "fulfillment.pending": true } });
 
 // Add index on paymentStatus for dashboard sales aggregates
 orderSchema.index({ "payment.paymentStatus": 1 });
