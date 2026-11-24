@@ -112,6 +112,7 @@ export interface CheckoutDetails {
 }
 
 export interface OrderItem {
+  images?: string[];
   productId: string;
   registryId: string;
 
