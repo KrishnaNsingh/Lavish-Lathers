@@ -12,6 +12,8 @@ interface AppContextType {
   confirmedOrder: Order | null;
   filterCategory: string;
   setFilterCategory: (category: string) => void;
+  remainingStock: (product: Product) => number;
+  checkingCartStock: boolean;
   addToCart: (
     product: Product,
     isGift: boolean,
@@ -54,10 +56,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     localStorage.getItem("lavish_lathers_admin_token"),
   );
   const {
-    data: products = [],
+    data: catalog,
+    isFetching: checkingCartStock,
     isLoading: productsLoading,
     refetch: fetchProducts,
   } = useProducts();
+  const products = catalog ?? [];
+  useEffect(() => {
+    if (isCartOpen) void fetchProducts();
+  }, [isCartOpen, fetchProducts]);
+
+  function remainingStock(product: Product) {
+    const stock = catalog ? catalog.find(entry => entry._id === product._id)?.stock ?? 0 : product.stock;
+    const inCart = cart.reduce((total, line) => line.product._id === product._id ? total + line.quantity : total, 0);
+    return Math.max(0, stock - inCart);
+  }
+
   const fetchProductsManually = async () => {
     await fetchProducts();
   };
@@ -114,6 +128,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     giftRecipient?: string,
     quantity = 1,
   ) => {
+    if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > remainingStock(product)) {
+      window.alert(`${product.name}: you can add ${remainingStock(product)} more to your cart.`);
+      return;
+    }
     const existingIdx = cart.findIndex(
       (it) =>
         it.product._id === product._id &&
@@ -151,15 +169,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateCartQty = (index: number, newQty: number) => {
-    if (newQty < 1) return;
-    const updated = [...cart];
-    updated[index].quantity = newQty;
-    updateCartState(updated);
+    const line = cart[index];
+    if (!line || !Number.isSafeInteger(newQty) || newQty < 1) return;
+    if (newQty - line.quantity > remainingStock(line.product)) return;
+    updateCartState(cart.map((item, i) => i === index ? { ...item, quantity: newQty } : item));
   };
 
   const addMissingToCart = (candidates: Product[]) => {
     const additions = candidates
-      .filter(product => product.stock > 0 && !cart.some(item => item.product._id === product._id))
+      .filter(product => remainingStock(product) > 0 && !cart.some(item => item.product._id === product._id))
       .map(product => ({ product, quantity: 1, isGift: false }));
     if (additions.length) updateCartState([...cart, ...additions]);
   };
@@ -208,6 +226,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         confirmedOrder,
         filterCategory,
         setFilterCategory,
+        remainingStock,
+        checkingCartStock,
         addToCart,
         removeFromCart,
         updateCartQty,

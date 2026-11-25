@@ -13,6 +13,7 @@ export default function Shop() {
     wishlist,
     toggleWishlist,
     addToCart,
+    remainingStock,
     filterCategory,
     setFilterCategory,
   } = useApp();
@@ -315,6 +316,7 @@ export default function Shop() {
                           </button>
 
                           <button
+                            disabled={remainingStock(product) === 0}
                             onClick={() => addToCart(product, false)}
                             className="p-3 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black rounded-full transition-colors shadow shadow-brand-black/15 duration-300 hover:scale-105 cursor-pointer"
                             title="Add directly to Bag"

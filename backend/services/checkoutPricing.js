@@ -17,11 +17,25 @@ async function priceCart(items, couponCode) {
   }
   const products = await Product.find({ _id: { $in: [...quantities.keys()] } }).lean();
   const catalog = new Map(products.map(product => [String(product._id), product]));
+  const shortages = [];
+  for (const [id, requested] of quantities) {
+    const product = catalog.get(id);
+    if (!product) {
+      const line = items.find(item => String(item.productId).toLowerCase() === id);
+      const label = typeof line.name === "string" && line.name.trim() ? line.name.trim().slice(0, 160) : `Product ${id}`;
+      shortages.push(`${label} is no longer available. Remove it from your cart.`);
+    } else if (!(product.stock > 0)) {
+      shortages.push(`${product.name} is out of stock. Remove it from your cart.`);
+    } else if (requested > product.stock) {
+      shortages.push(`${product.name}: only ${product.stock} available. Your cart contains ${requested}.`);
+    }
+  }
+  if (shortages.length) throw Object.assign(new Error(shortages.join("\n")), { status: 409 });
+
   let subtotalPaise = 0;
   const lines = items.map(({ productId, quantity, isGift, giftNote, giftRecipient, customMessage }) => {
     const id = String(productId).toLowerCase();
     const product = catalog.get(id);
-    if (!product || product.stock < quantities.get(id)) reject("An item is no longer available in the requested quantity.");
     subtotalPaise += Math.round(product.price * 100) * quantity;
     return { productId: product._id, registryId: product.registryId, name: product.name,
       price: product.price, images: product.images, quantity, isGift, giftNote, giftRecipient, customMessage };

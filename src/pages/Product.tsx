@@ -21,7 +21,7 @@ import { productApi } from "../api/productApi";
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useApp();
+  const { wishlist, toggleWishlist, remainingStock, addToCart } = useApp();
 
   // const [product, setProduct] = useState<Product | null>(null);
   // const [loading, setLoading] = useState(true);
@@ -76,9 +76,14 @@ export default function ProductDetailPage() {
         .slice(0, 4)
     : [];
 
+  const availableToAdd = product ? remainingStock(product) : 0;
+  React.useEffect(() => {
+    setQuantity(current => Math.max(1, Math.min(current, availableToAdd)));
+  }, [availableToAdd]);
+
   const handleIncrement = () => {
     if (!product) return;
-    setQuantity((prev) => Math.min(product.stock, prev + 1));
+    setQuantity((prev) => Math.min(availableToAdd, prev + 1));
   };
   const handleDecrement = () => setQuantity((prev) => Math.max(1, prev - 1));
 
@@ -454,7 +459,7 @@ export default function ProductDetailPage() {
                   <span className="font-semibold text-sm">{quantity}</span>
                   <button
                     onClick={handleIncrement}
-                    disabled={quantity >= product.stock}
+                    disabled={quantity >= availableToAdd}
                     className="p-2 sm:p-2.5 hover:text-brand-gold disabled:opacity-35 transition-colors cursor-pointer"
                     id="qty-increment-btn"
                   >
@@ -467,13 +472,13 @@ export default function ProductDetailPage() {
                   {/* Bag Addition Button */}
                   <button
                     onClick={handleAddToBag}
-                    disabled={product.stock <= 0}
+                    disabled={quantity > availableToAdd}
                     className="flex-1 group py-4 px-8 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black disabled:bg-brand-beige/50 disabled:text-brand-black/40 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg shadow-brand-black/10 transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
                     id="add-to-bag-cta"
                   >
                     <ShoppingBag className="h-4 w-4 group-hover:scale-110 transition-transform" />
                     <span>
-                      {isGift
+                      {availableToAdd === 0 ? "No more available to add" : isGift
                         ? "Add Custom Gifting Pack"
                         : "Add to Sandalwood Bag"}
                     </span>

@@ -14,7 +14,7 @@ import { useApp } from "../context/AppContext";
 
 export default function CartView() {
   const navigate = useNavigate();
-  const { cart, removeFromCart, updateCartQty, isCartOpen, setIsCartOpen } =
+  const { cart, remainingStock, checkingCartStock, removeFromCart, updateCartQty, isCartOpen, setIsCartOpen } =
     useApp();
 
   if (!isCartOpen) return null;
@@ -180,7 +180,7 @@ export default function CartView() {
                             onClick={() =>
                               updateCartQty(idx, item.quantity + 1)
                             }
-                            disabled={item.quantity >= item.product.stock}
+                            disabled={checkingCartStock || remainingStock(item.product) === 0}
                             className="p-0.5 text-brand-black/55 hover:text-brand-gold disabled:opacity-30 cursor-pointer"
                             id={`increment-${idx}`}
                           >

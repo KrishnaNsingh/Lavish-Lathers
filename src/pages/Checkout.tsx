@@ -15,7 +15,7 @@ export default function CheckoutPage() {
   useEffect(() => { setSaveDetails(true); }, [customer?.email]);
   const saved = customer?.savedCheckout;
   const navigate = useNavigate();
-  const { cart, clearCart, setConfirmedOrder } = useApp();
+  const { cart, setIsCartOpen, clearCart, setConfirmedOrder } = useApp();
 
   const subtotal = cart.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -155,6 +155,7 @@ export default function CheckoutPage() {
             },
             items: cart.map((item) => ({
               productId: item.product._id,
+              name: item.product.name,
               quantity: item.quantity,
               isGift: item.isGift,
               giftNote: item.giftNote,
@@ -166,6 +167,7 @@ export default function CheckoutPage() {
 
       if (!response.ok) {
         const failure = await response.json();
+        if (response.status === 409) setIsCartOpen(true);
         throw new Error(failure.message || "Unable to start checkout.");
       }
 
