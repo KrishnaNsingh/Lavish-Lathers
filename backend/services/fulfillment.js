@@ -1,8 +1,9 @@
 const { randomUUID } = require("crypto");
 const Order = require("../models/Order");
+const { saveOrderProfile } = require("./checkoutProfile");
 const Product = require("../models/Product");
 const { appendOrderToSheet } = require("./orderSheetService");
-const { sendCustomerOrderEmail, sendAdminOrderEmail } = require("./emailService");
+const { sendCustomerOrderEmail } = require("./emailService");
 
 async function recordPayment(payment, signature) {
   const match = { "payment.razorpayOrderId": payment.order_id };
@@ -43,7 +44,7 @@ async function updateInventory(order) {
 }
 
 const steps = { inventory: updateInventory, sheet: appendOrderToSheet,
-  customerEmail: sendCustomerOrderEmail, adminEmail: sendAdminOrderEmail };
+  customerEmail: sendCustomerOrderEmail, checkoutProfile: saveOrderProfile };
 
 async function processNextOrder() {
   const lease = randomUUID();

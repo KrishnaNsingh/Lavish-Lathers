@@ -175,112 +175,15 @@ const sendCustomerOrderEmail = async (order) => {
   }
 };
 
-const sendAdminOrderEmail = async (order) => {
-  try {
-    console.log("Admin Email Destination:", process.env.ADMIN_EMAIL);
-
-    const response = await resend.emails.send({
-      from: "Lavish Lathers <orders@mail.lavishlathers.in>",
-      to: process.env.ADMIN_EMAIL,
-      subject: `New Patron Order Received - Ref: ${order._id.toString().slice(-6).toUpperCase()}`,
-      html: `
-      <div style="background-color: #1A1817; padding: 40px 15px; font-family: Arial, sans-serif;">
-        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #EFECE6; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
-          <!-- Header Banner -->
-          <tr>
-            <td align="center" style="background-color: #BFA873; padding: 30px 20px;">
-              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 22px; color: #1A1817; text-transform: uppercase; font-weight: normal; letter-spacing: 0.1em;">NEW PATRON ORDER</h1>
-              <p style="margin: 5px 0 0 0; font-family: sans-serif; font-size: 9px; letter-spacing: 0.2em; color: #ffffff; text-transform: uppercase; font-weight: bold;">Atelier Fulfillment Request</p>
-            </td>
-          </tr>
-
-          <!-- Patron Details Block -->
-          <tr>
-            <td style="padding: 30px 30px 15px 30px;">
-              <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 16px; color: #1A1817; border-bottom: 2px solid #EFECE6; padding-bottom: 8px;">1. Patron Credentials</h3>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; line-height: 1.6; color: #2F2C2A;">
-                <tr>
-                  <td style="font-weight: bold; width: 120px;">Name:</td>
-                  <td>${order.customer.name}</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold;">Email:</td>
-                  <td>${order.customer.email}</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold;">Phone:</td>
-                  <td>${order.customer.phone}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Dispatch Destination Block -->
-          <tr>
-            <td style="padding: 0 30px 15px 30px;">
-              <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 16px; color: #1A1817; border-bottom: 2px solid #EFECE6; padding-bottom: 8px;">2. Shipping Address</h3>
-              <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #2F2C2A;">
-                ${order.shippingAddress.street}<br>
-                ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.postalCode}<br>
-                ${order.shippingAddress.instructions ? `<span style="font-style: italic; color: #7E7771;">Instructions: ${order.shippingAddress.instructions}</span>` : ""}
-              </p>
-            </td>
-          </tr>
-
-          <!-- Ordered Items Table -->
-          <tr>
-            <td style="padding: 10px 30px 20px 30px;">
-              <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 16px; color: #1A1817; border-bottom: 2px solid #EFECE6; padding-bottom: 8px;">3. Curation Manifest</h3>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
-                <thead>
-                  <tr style="border-bottom: 1px solid #EFECE6;">
-                    <th align="left" style="padding-bottom: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #7E7771; font-weight: bold;">Item</th>
-                    <th align="center" style="padding-bottom: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #7E7771; font-weight: bold; width: 60px;">Qty</th>
-                    <th align="right" style="padding-bottom: 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #7E7771; font-weight: bold; width: 90px;">Price</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${formatOrderItemsHtml(order.items)}
-                </tbody>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Pricing Clearance Breakdown -->
-          <tr>
-            <td style="padding: 0 30px 30px 30px;">
-              <table align="right" border="0" cellpadding="0" cellspacing="0" style="width: 100%; border-top: 1px solid #EFECE6; padding-top: 15px;">
-                <tr>
-                  <td style="font-size: 13px; color: #7E7771;">Total Revenue Cleared:</td>
-                  <td align="right" style="font-family: Georgia, serif; font-size: 18px; color: #BFA873; font-weight: bold;">₹${order.pricing.total}</td>
-                </tr>
-                <tr>
-                  <td style="font-size: 13px; color: #7E7771; padding-top: 5px;">Payment ID:</td>
-                  <td align="right" style="font-family: monospace; font-size: 12px; color: #2F2C2A; padding-top: 5px;">${order.payment?.razorpayPaymentId || "N/A"}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Admin instructions -->
-          <tr>
-            <td align="center" style="background-color: #FAF7F2; padding: 25px 20px; text-align: center; border-top: 1px solid #EFECE6;">
-              <p style="margin: 0; font-size: 11px; color: #7E7771; font-family: sans-serif;">
-                Verify customization scroll messages above prior to box assembly.
-              </p>
-            </td>
-          </tr>
-        </table>
-      </div>
-      `,
-    }, { idempotencyKey: `order/${order._id}/admin` });
-    if (response.error) throw new Error(response.error.message);
-    console.log("Admin Email Response ID:", response.data?.id);
-  } catch (error) {
-    console.error("Admin notification dispatch failure:", error);
-    throw error;
-  }
-};
+async function sendOtpEmail(email, code) {
+  const { error } = await resend.emails.send({
+    from: "Lavish Lathers <orders@mail.lavishlathers.in>",
+    to: email,
+    subject: "Your Lavish Lathers sign-in code",
+    text: `Your sign-in code is ${code}. It expires in 10 minutes. If you did not request it, you can ignore this email.`,
+  });
+  if (error) throw new Error("OTP delivery failed");
+}
 
 const sendPaymentFailedEmail = async (order) => {
   try {
@@ -378,6 +281,6 @@ const sendPaymentFailedEmail = async (order) => {
 
 module.exports = {
   sendCustomerOrderEmail,
-  sendAdminOrderEmail,
+  sendOtpEmail,
   sendPaymentFailedEmail,
 };

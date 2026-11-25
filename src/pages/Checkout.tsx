@@ -4,7 +4,16 @@ import { ArrowLeft, ShieldCheck, Loader2 } from "lucide-react";
 import { CheckoutDetails, Order } from "../types";
 import { useApp } from "../context/AppContext";
 
+import { useCustomer } from "../context/CustomerContext";
+import { customerApiBase, customerRequest, type Customer } from "../api/customerApi";
+import { useQueryClient } from "@tanstack/react-query";
+
 export default function CheckoutPage() {
+  const { customer, loading: sessionLoading, openAccount } = useCustomer();
+  const [saveDetails, setSaveDetails] = useState(true);
+  const queryClient = useQueryClient();
+  useEffect(() => { setSaveDetails(true); }, [customer?.email]);
+  const saved = customer?.savedCheckout;
   const navigate = useNavigate();
   const { cart, clearCart, setConfirmedOrder } = useApp();
 
@@ -122,13 +131,15 @@ export default function CheckoutPage() {
     try {
       // STEP 1: Initialize Razorpay order mapping values against core server
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/orders/create-razorpay-order`,
+        `${customer && saveDetails ? customerApiBase : import.meta.env.VITE_API_URL}/orders/create-razorpay-order`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            saveCheckout: Boolean(customer && saveDetails),
             couponCode: appliedCoupon,
             customer: {
               name: formData.fullName,
@@ -199,6 +210,12 @@ export default function CheckoutPage() {
             const data = await verifyResponse.json();
 
             if (data.success) {
+              if (customer && saveDetails) {
+                // The fulfillment worker also saves this profile if the browser closes.
+                void customerRequest<Customer>("/user/checkout-profile", { orderId: data.order._id })
+                  .catch(() => undefined)
+                  .then(() => queryClient.invalidateQueries({ queryKey: ["customer-session"] }));
+              }
               setConfirmedOrder(data.order);
               clearCart();
               
@@ -286,6 +303,22 @@ export default function CheckoutPage() {
             className="lg:col-span-7 space-y-8"
             noValidate
           >
+            {!sessionLoading && <section className="space-y-3 rounded-2xl border border-brand-beige bg-brand-pink/20 p-4 text-sm">
+              {customer ? <>
+                {saved ? <div className="space-y-2">
+                  <p>Saved details found for {saved.fullName} ({saved.city}, {saved.pincode})</p>
+                  <button type="button" className="rounded-full bg-brand-black px-4 py-2 text-brand-cream" onClick={() => {
+                    setFormData(prev => ({ ...prev, fullName: saved.fullName, phone: saved.phone,
+                      email: customer.email, address: saved.address, city: saved.city, state: saved.state, zipCode: saved.pincode }));
+                    setValidationErrors({});
+                  }}>Autofill Details</button>
+                </div> : <p>Signed in as {customer.email}</p>}
+                <label className="flex items-start gap-2"><input type="checkbox" checked={saveDetails} onChange={e => setSaveDetails(e.target.checked)} className="mt-1" />Save my details in my account for faster checkout next time</label>
+              </> : <>
+                <p>Sign in with Email OTP to save your details for 1-click checkout next time.</p>
+                <button type="button" onClick={openAccount} className="font-semibold underline underline-offset-4">Sign in with email</button>
+              </>}
+            </section>}
             {/* GUEST DETAILS */}
             <div className="space-y-4">
               <h2 className="font-serif-playfair text-2xl text-brand-black tracking-wide font-medium">

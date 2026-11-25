@@ -1,3 +1,6 @@
+const User = require("../models/User");
+const { sessionId } = require("./customerAuth");
+const { deliveryProfile } = require("../services/checkoutProfile");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Order = require("../models/Order");
@@ -12,11 +15,19 @@ const razorpay = new Razorpay({
 async function createRazorpayOrder(req, res) {
   try {
     const { customer, shippingAddress, items, couponCode } = req.body;
+    const saveCheckoutFor = req.body.saveCheckout === true ? sessionId(req) : null;
+    if (req.body.saveCheckout === true && !saveCheckoutFor) return res.status(401).json({ message: "Please sign in again or turn off saving details." });
+    if (saveCheckoutFor) {
+      const user = await User.findOne({ _id: saveCheckoutFor, isVerified: true });
+      if (!user) return res.status(401).json({ message: "Please sign in again to save your details." });
+      user.savedCheckout = deliveryProfile(customer, shippingAddress);
+      if (user.validateSync()) return res.status(400).json({ message: "Check your delivery details before saving." });
+    }
     const quote = await priceCart(items, couponCode);
     const paymentOrder = await razorpay.orders.create({
       amount: quote.amount, currency: "INR", receipt: "receipt_" + Date.now(),
     });
-    await Order.create({ customer, shippingAddress, items: quote.items, pricing: quote.pricing,
+    await Order.create({ saveCheckoutFor, customer, shippingAddress, items: quote.items, pricing: quote.pricing,
       payment: { razorpayOrderId: paymentOrder.id, paymentStatus: "pending" } });
     res.json(paymentOrder);
   } catch (error) {

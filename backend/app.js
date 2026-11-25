@@ -15,6 +15,7 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   "https://www.lavishlathers.in",
+  "https://lavishlathers.in",
   "http://localhost:5173",
 ];
 
@@ -59,7 +60,13 @@ app.use(express.json());
 
 app.post("/api/contact", require("./controllers/contactController").submitContact);
 app.use("/api/products", productRoutes);
+const customer = require("./controllers/customerAuth");
+app.get("/api/auth/me", customer.me);
+app.post("/api/auth/logout", customer.logout);
+app.post("/api/auth/send-otp", authLimiter, customer.sendOtp);
+app.post("/api/auth/verify-otp", authLimiter, customer.verifyOtp);
 app.use("/api/auth", authLimiter, authRoutes);
+app.post("/api/user/checkout-profile", customer.saveProfile);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminLimiter, adminRoutes);
 

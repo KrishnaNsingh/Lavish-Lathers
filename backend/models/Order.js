@@ -59,6 +59,7 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
+    saveCheckoutFor: mongoose.Schema.Types.ObjectId,
     fulfillment: {
       pending: Boolean,
       retryAt: Date,
@@ -66,7 +67,7 @@ const orderSchema = new mongoose.Schema(
       inventory: Boolean,
       sheet: Boolean,
       customerEmail: Boolean,
-      adminEmail: Boolean,
+      checkoutProfile: Boolean,
     },
 
     pricing: {

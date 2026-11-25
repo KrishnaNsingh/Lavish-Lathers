@@ -114,7 +114,7 @@ sequenceDiagram
         API->>API: Verify Webhook HMAC Signature against Raw Stream
         API->>DB: Find order by rzp_order_id & mark "paid"
         API->>DB: Automatically Decrement Product Stock
-        API->>Mail: sendCustomerOrderEmail() & sendAdminOrderEmail()
+        API->>Mail: sendCustomerOrderEmail()
         API-->>RZP: 200 OK
     end
 ```
@@ -201,7 +201,7 @@ erDiagram
 | **Interactive Dispatch Console** | Fulfillment table with status pipeline (`pending` ➔ `packaging` ➔ `shipped` ➔ `delivered`). | React Query optimistic mutation invalidation (`queryKey: ["orders"]`) preventing full-page reload flashes. |
 | **Administrative Sales Analytics** | Live dashboard showing gross patron sales, order counts, and catalog volume. | MongoDB `$match` & `$group` aggregation pipeline; zero client-side calculation lag. |
 | **Excel Ledger Export** | Instant compilation and downloading of the complete orders registry into a styled spreadsheet. | `ExcelJS` streaming `orders.xlsx` with custom column widths directly from Express. |
-| **Botanical Email Dispatches** | Elegant HTML transactional emails styled with brand serif typography and wax-seal formatting. | `Resend` API triggers for customer receipt, admin dispatch alerts, and payment failure notices. |
+| **Botanical Email Dispatches** | Elegant HTML transactional emails styled with brand serif typography and wax-seal formatting. | `Resend` API triggers for customer receipts, email sign-in codes, and customer payment failure notices. |
 | **Multi-Tiered Rate Limiting** | Defends against brute-force attacks and denial-of-service traffic spikes. | `express-rate-limit`: Global API (300/15m), Auth login (20/15m), Admin (1000/15m). |
 
 ---
@@ -366,7 +366,6 @@ RAZORPAY_WEBHOOK_SECRET="YourWebhookSecret"
 
 # Resend Transactional Email API Key & Dispatcher
 RESEND_API_KEY="re_YourResendApiKey"
-ADMIN_EMAIL="concierge@lavishlathers.in"
 
 # Google Sheets Automated Bookkeeping
 GOOGLE_SHEET_ID="your_google_sheet_spreadsheet_id"
@@ -462,3 +461,12 @@ npm start
 This project is licensed under the [ISC License](LICENSE).
 
 &copy; 2026 Lavish Lathers – Handcrafted Botanical Formulations & Keepsakes.
+### Customer email sign-in and checkout profiles
+
+A shopper can request an email code from the account button or checkout. Codes expire after ten minutes. MongoDB enforces a per-email resend cooldown and tracks verification attempts. Keep the unique email indexes on the User and Otp collections and the TTL index on Otp.expiresAt enabled.
+
+Use the existing backend MONGO_URI, JWT_SECRET and RESEND_API_KEY. Keep JWT_SECRET stable across API instances and deployments. Set NODE_ENV=production on the HTTPS backend so the 30-day customer cookie is Secure. The customer cookie is HttpOnly and scoped to /api. Admin login continues to use its separate bearer token.
+
+The Vercel rewrite forwards /api to the Render API before the storefront fallback. Keep that destination aligned with the backend selected by VITE_API_URL. For another host, provide the same first-party proxy or set VITE_CUSTOMER_API_URL to a same-site HTTPS API base including /api and configure FRONTEND_URL for the storefront origin. Local Vite development uses VITE_API_URL by default.
+
+A successful payment saves the delivery profile only when the signed-in shopper selects the save checkbox. The payment webhook can complete that work if the browser closes. Fulfillment sends the customer confirmation, and Razorpay handles owner notifications.

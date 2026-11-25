@@ -38,7 +38,14 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("lavish_lathers_cart") || "[]");
+      return Array.isArray(stored) ? stored : [];
+    } catch {
+      return [];
+    }
+  });
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("All");
@@ -57,14 +64,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // const [products, setProducts] = useState<Product[]>([]);
   // const [productsLoading, setProductsLoading] = useState(true);
 
-  // Load cart & wishlist from localStorage on mounting
+  // Restore saved likes on mount.
   useEffect(() => {
     try {
-      const cachedCart = localStorage.getItem("lavish_lathers_cart");
       const cachedWishlist = localStorage.getItem("lavish_lathers_wishlist");
-      if (cachedCart) {
-        setCart(JSON.parse(cachedCart));
-      }
       if (cachedWishlist) {
         setWishlist(JSON.parse(cachedWishlist));
       }

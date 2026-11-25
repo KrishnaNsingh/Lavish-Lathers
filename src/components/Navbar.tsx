@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ShoppingBag, Heart, Menu, X, Sparkles, MapPin } from "lucide-react";
+import { useCustomer } from "../context/CustomerContext";
+import { UserRound, ShoppingBag, Heart, Menu, X, Sparkles, MapPin } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import LavishLathersLogo from "./LavishLathersLogo";
 
 export default function Navbar() {
+  const { customer, openAccount } = useCustomer();
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, setIsCartOpen, openWishlistCart, productsLoading, wishlist, setFilterCategory, filterCategory } =
@@ -241,6 +243,11 @@ export default function Navbar() {
                 )}
               </button>
             </nav>
+
+            <button onClick={openAccount} aria-label={customer ? "Your account" : "Sign in with email"}
+              title={customer ? customer.email : "Sign in with email"} className={`p-1.5 hover:text-brand-gold ${iconColorClass}`}>
+              <UserRound size={18} aria-hidden="true" />
+            </button>
 
             {/* Wishlist Heart Icon */}
             <button
