@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ShieldAlert, LogIn, Lock, Mail } from "lucide-react";
+import { ShieldAlert, LogIn, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { authApi } from "../../api/authApi";
 import { useApp } from "../../context/AppContext";
 
@@ -11,6 +11,7 @@ export default function AdminLogin() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -105,20 +106,40 @@ export default function AdminLogin() {
 
             {/* Password input */}
             <div className="space-y-1.5">
-              <label className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold">
+              <label
+                htmlFor="admin-password-input"
+                className="block text-[10px] uppercase tracking-widest text-brand-cream/50 font-sans-poppins font-bold"
+              >
                 Secure Passphrase
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
+                  autoComplete="current-password"
                   required
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full text-xs pl-10 pr-4 py-3.5 rounded-xl border border-brand-cream/10 bg-[#0A0A09] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold transition-all"
+                  className="w-full text-xs pl-10 pr-12 py-3.5 rounded-xl border border-brand-cream/10 bg-[#0A0A09] text-brand-cream placeholder-brand-cream/25 focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold transition-all [&::-ms-reveal]:hidden"
                   id="admin-password-input"
                 />
                 <Lock className="absolute left-3.5 top-4 h-4 w-4 text-brand-cream/30" />
+                <button
+                  type="button"
+                  aria-controls="admin-password-input"
+                  aria-label={
+                    passwordVisible ? "Hide password" : "Show password"
+                  }
+                  title={passwordVisible ? "Hide password" : "Show password"}
+                  onClick={() => setPasswordVisible((visible) => !visible)}
+                  className="absolute inset-y-0 right-0 grid w-11 place-items-center rounded-xl text-brand-black/65 hover:text-brand-gold focus-visible:outline-brand-gold cursor-pointer"
+                >
+                  {passwordVisible ? (
+                    <EyeOff size={18} aria-hidden="true" />
+                  ) : (
+                    <Eye size={18} aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
 
