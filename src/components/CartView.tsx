@@ -5,7 +5,7 @@ import {
   Trash2,
   ArrowRight,
   Gift,
-  Percent,
+  Truck,
   Plus,
   Minus,
   ShieldCheck,
@@ -27,6 +27,7 @@ export default function CartView() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
   const subtotal = cart.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0,
@@ -50,58 +51,46 @@ export default function CartView() {
       <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
         {/* Cart Slide Sheet panel */}
         <div className="w-screen max-w-md bg-brand-cream border-l border-brand-beige/20 shadow-2xl flex flex-col justify-between">
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-brand-beige/20 bg-[#FAF7F2] flex items-center justify-between">
-            <div className="flex items-center space-x-2.5 text-brand-black">
-              <span className="font-serif-playfair text-xl tracking-wider text-brand-black font-semibold">
-                Your Canvas Bag
-              </span>
-              <span className="bg-brand-black text-brand-cream text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full font-sans-poppins pt-0.5 font-bold">
-                {cart.reduce((tot, it) => tot + it.quantity, 0)} Items
-              </span>
+          <header className="shrink-0 border-b border-brand-beige/30 bg-[#FAF7F2] text-left">
+            <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+              <div className="min-w-0">
+                <h2 className="font-serif-playfair text-xl font-semibold leading-tight text-brand-black sm:text-2xl">
+                  Your Canvas Bag
+                </h2>
+                <p className="mt-1 text-xs leading-4 text-brand-black/65">
+                  {itemCount} {itemCount === 1 ? "item" : "items"}
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="Close cart"
+                onClick={onClose}
+                className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-brand-black/15 text-brand-black transition-colors hover:bg-brand-beige/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-black"
+                id="close-cart-btn"
+              >
+                <X aria-hidden="true" className="size-5" />
+              </button>
             </div>
 
-            <button
-              onClick={onClose}
-              className="p-1.5 border border-brand-black/10 hover:border-brand-gold rounded-full transition-colors group cursor-pointer focus:outline-none"
-              id="close-cart-btn"
-            >
-              <X className="h-5 w-5 text-brand-black group-hover:rotate-90 transition-transform" />
-            </button>
-          </div>
-
-          {/* Cart Free Shipping Goal Bar */}
-          <div className="px-6 py-4 bg-brand-pink/30 border-b border-brand-beige/10 text-left text-xs font-sans-poppins space-y-2">
-            {isFreeShipping ? (
-              <p className="text-emerald-800 font-medium flex items-center space-x-1.5">
-                <Percent className="h-3.5 w-3.5" />
+            <div className="space-y-2 border-t border-brand-beige/20 bg-brand-pink/20 px-4 py-3 sm:px-6">
+              <p className="flex items-start gap-2 text-xs leading-5 text-brand-black/80 sm:text-sm">
+                <Truck aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
                 <span>
-                  Splendid! You have gained **Free Velvet Wrappings &amp;
-                  Shipping**!
+                  {isFreeShipping ? (
+                    <>Free wrapping and shipping unlocked.</>
+                  ) : (
+                    <>Add <strong className="font-semibold">&#8377;{shippingShortfall.toFixed(2)}</strong> for free wrapping and shipping.</>
+                  )}
                 </span>
               </p>
-            ) : (
-              <p className="text-brand-black/70 font-light leading-relaxed">
-                Add{" "}
-                <span className="font-bold text-brand-gold">
-                  ₹{shippingShortfall.toFixed(2)}
-                </span>{" "}
-                more to unlock{" "}
-                <span className="text-brand-gold font-medium">
-                  Free Silk Ribbon Wrappings &amp; Delivery
-                </span>
-                .
-              </p>
-            )}
-
-            {/* Slider meter */}
-            <div className="w-full bg-brand-cream rounded-full h-1 pl-0.5">
-              <div
-                className="bg-brand-gold h-1 rounded-full transition-all duration-500"
-                style={{ width: `${progressPercent}%` }}
-              />
+              <div aria-hidden="true" className="h-1 overflow-hidden rounded-full bg-brand-black/10">
+                <div
+                  className="h-full rounded-full bg-brand-gold motion-safe:transition-[width] motion-safe:duration-300"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
             </div>
-          </div>
+          </header>
 
           {/* Items Lists */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
