@@ -21,7 +21,8 @@ interface AppContextType {
   ) => void;
   removeFromCart: (index: number) => void;
   updateCartQty: (index: number, newQty: number) => void;
-  toggleWishlist: (id: string) => void;
+  toggleWishlist: (product: Product) => void;
+  openWishlistCart: () => void;
   clearCart: () => void;
   setConfirmedOrder: (order: Order | null) => void;
   isCartOpen: boolean;
@@ -153,14 +154,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     updateCartState(updated);
   };
 
-  const toggleWishlist = (id: string) => {
-    let updated: string[];
-    if (wishlist.includes(id)) {
-      updated = wishlist.filter((item) => item !== id);
-    } else {
-      updated = [...wishlist, id];
+  const addMissingToCart = (candidates: Product[]) => {
+    const additions = candidates
+      .filter(product => product.stock > 0 && !cart.some(item => item.product._id === product._id))
+      .map(product => ({ product, quantity: 1, isGift: false }));
+    if (additions.length) updateCartState([...cart, ...additions]);
+  };
+
+  const toggleWishlist = (product: Product) => {
+    if (wishlist.includes(product._id)) {
+      updateWishlistState(wishlist.filter(id => id !== product._id));
+      return;
     }
-    updateWishlistState(updated);
+    if (product.stock <= 0) return;
+    addMissingToCart([product]);
+    updateWishlistState([...wishlist, product._id]);
+  };
+
+  const openWishlistCart = () => {
+    addMissingToCart(products.filter(product => wishlist.includes(product._id)));
+    setIsCartOpen(true);
   };
 
   const clearCart = () => {
@@ -196,6 +209,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         removeFromCart,
         updateCartQty,
         toggleWishlist,
+        openWishlistCart,
         clearCart,
         setConfirmedOrder,
         isCartOpen,

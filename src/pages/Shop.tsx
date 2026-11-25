@@ -324,7 +324,10 @@ export default function Shop() {
                           </button>
 
                           <button
-                            onClick={() => toggleWishlist(product._id)}
+                            onClick={() => toggleWishlist(product)}
+                            disabled={!isWishlisted && product.stock <= 0}
+                            aria-label={isWishlisted ? "Unlike product" : "Like product and add to cart"}
+                            aria-pressed={isWishlisted}
                             className={`p-3 rounded-full transition-colors shadow shadow-brand-black/15 duration-300 hover:scale-105 cursor-pointer ${
                               isWishlisted
                                 ? "bg-brand-pink text-red-500"

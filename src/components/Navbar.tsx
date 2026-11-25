@@ -7,7 +7,7 @@ import LavishLathersLogo from "./LavishLathersLogo";
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { cart, setIsCartOpen, wishlist, setFilterCategory, filterCategory } =
+  const { cart, setIsCartOpen, openWishlistCart, productsLoading, wishlist, setFilterCategory, filterCategory } =
     useApp();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -244,11 +244,9 @@ export default function Navbar() {
 
             {/* Wishlist Heart Icon */}
             <button
-              onClick={() => {
-                alert(
-                  "Lavish Lathers Concierge Assistant is ready to customize your orders! Wishlisted items will remain highlighted for easy bulk quoting.",
-                );
-              }}
+              onClick={() => { setIsOpen(false); openWishlistCart(); }}
+              aria-label={`Add liked products to cart (${wishlistCount})`}
+              disabled={wishlistCount > 0 && productsLoading}
               className={`relative p-1.5 transition-colors duration-300 ${iconColorClass} hover:text-brand-gold group cursor-pointer`}
               id="wishlist-btn"
             >

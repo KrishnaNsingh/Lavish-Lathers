@@ -481,7 +481,10 @@ export default function ProductDetailPage() {
 
                   {/* Wishlist Button */}
                   <button
-                    onClick={() => toggleWishlist(product._id)}
+                    onClick={() => toggleWishlist(product)}
+                    disabled={!isWishlisted && product.stock <= 0}
+                    aria-label={isWishlisted ? "Unlike product" : "Like product and add to cart"}
+                    aria-pressed={isWishlisted}
                     className={`p-4 rounded-full border transition-all cursor-pointer ${
                       isWishlisted
                         ? "bg-brand-pink text-red-500 border-transparent"
