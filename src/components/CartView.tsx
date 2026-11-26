@@ -14,8 +14,15 @@ import { useApp } from "../context/AppContext";
 
 export default function CartView() {
   const navigate = useNavigate();
-  const { cart, remainingStock, checkingCartStock, removeFromCart, updateCartQty, isCartOpen, setIsCartOpen } =
-    useApp();
+  const {
+    cart,
+    remainingStock,
+    checkingCartStock,
+    removeFromCart,
+    updateCartQty,
+    isCartOpen,
+    setIsCartOpen,
+  } = useApp();
 
   if (!isCartOpen) return null;
 
@@ -79,11 +86,20 @@ export default function CartView() {
                   {isFreeShipping ? (
                     <>Free wrapping and shipping unlocked.</>
                   ) : (
-                    <>Add <strong className="font-semibold">&#8377;{shippingShortfall.toFixed(2)}</strong> for free wrapping and shipping.</>
+                    <>
+                      Add{" "}
+                      <strong className="font-semibold">
+                        &#8377;{shippingShortfall.toFixed(2)}
+                      </strong>{" "}
+                      for free wrapping and shipping.
+                    </>
                   )}
                 </span>
               </p>
-              <div aria-hidden="true" className="h-1 overflow-hidden rounded-full bg-brand-black/10">
+              <div
+                aria-hidden="true"
+                className="h-1 overflow-hidden rounded-full bg-brand-black/10"
+              >
                 <div
                   className="h-full rounded-full bg-brand-gold motion-safe:transition-[width] motion-safe:duration-300"
                   style={{ width: `${progressPercent}%` }}
@@ -180,7 +196,10 @@ export default function CartView() {
                             onClick={() =>
                               updateCartQty(idx, item.quantity + 1)
                             }
-                            disabled={checkingCartStock || remainingStock(item.product) === 0}
+                            disabled={
+                              checkingCartStock ||
+                              remainingStock(item.product) === 0
+                            }
                             className="p-0.5 text-brand-black/55 hover:text-brand-gold disabled:opacity-30 cursor-pointer"
                             id={`increment-${idx}`}
                           >
@@ -242,11 +261,13 @@ export default function CartView() {
               {/* Checkout Trigger */}
               <button
                 onClick={onCheckout}
-                className="w-full py-4 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black rounded-full font-sans-poppins text-xs font-bold uppercase tracking-widest shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
+                className="w-full px-4 sm:px-6 py-3.5 sm:py-4 bg-brand-black hover:bg-brand-gold text-brand-cream hover:text-brand-black rounded-full font-sans-poppins text-[11px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                 id="drawer-checkout-btn"
               >
-                <span>Proceed to Concierge Checkout</span>
-                <ArrowRight className="h-4 w-4" />
+                <span className="text-center leading-tight">
+                  Proceed to Concierge Checkout
+                </span>
+                <ArrowRight className="h-4 w-4 shrink-0" />
               </button>
 
               <button
