@@ -25,98 +25,67 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* IMAGE AND STORY BLOCK 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center mb-24">
-          <div className="md:col-span-6 space-y-6">
-            <span className="text-[10px] text-brand-gold uppercase tracking-widest font-sans-poppins font-bold">I. Tradition of Curing</span>
-            <h2 className="font-serif-playfair text-2xl sm:text-3xl text-brand-black leading-tight tracking-wide font-light">
-               Why Cold-Process Matters
-            </h2>
-            <p className="text-xs sm:text-sm text-brand-black/70 leading-relaxed font-light font-sans-inter">
-               Commercial soaps are mass-manufactured in hours using high heating pots that boil out natural glycerin, replacing it with synthetic sulfate lathering agents. This damages the skin's defense mechanisms.
-            </p>
-            <p className="text-xs sm:text-sm text-brand-black/70 leading-relaxed font-light font-sans-inter">
-               At Lavish Lathers, we use traditional cold process saponification. Hand-poured fats, direct botanicals, and unrefined African shea butter combine at room temperature. This retains 100% of the moisturizing botanical glycerin.
-            </p>
-            <div className="border-l-2 border-brand-gold pl-4 italic text-lg text-brand-black/85 font-serif-cormorant font-serif-cormorant">
-               “We measure curing times in phases, not hours. The result is a hard, exceptionally long-lasting block with a density unlike typical bars.”
-            </div>
-          </div>
+      </div>
 
-          <div className="md:col-span-6">
-            <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl border border-brand-beige/20 relative group">
-              <img
-                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780560107/359007946961d42f3e5cc8ccedc8a0b3_eja1w3.jpg"
-                alt="Preparing soap ingredients in wooden vats"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-brand-black/10 mix-blend-multiply pointer-events-none" />
-            </div>
+      <section aria-labelledby="goa-story-title" className="relative isolate overflow-hidden lg:bg-brand-black lg:text-brand-cream">
+        <video
+          aria-hidden="true"
+          tabIndex={-1}
+          autoPlay
+          loop
+          muted
+          playsInline
+          disablePictureInPicture
+          disableRemotePlayback
+          poster="https://res.cloudinary.com/dzowyrkcg/video/upload/so_1,w_1280,q_auto/v1795691191/Lavish-Lathers-at-Vibrant-Goa_vy8xue.jpg"
+          src="https://res.cloudinary.com/dzowyrkcg/video/upload/v1795691191/Lavish-Lathers-at-Vibrant-Goa_vy8xue.mp4"
+          onLoadedMetadata={({ currentTarget }) => {
+            currentTarget.defaultPlaybackRate = 1.5;
+            currentTarget.playbackRate = 1.5;
+          }}
+          className="pointer-events-none block aspect-video w-full bg-brand-black object-contain lg:absolute lg:inset-0 lg:h-full lg:object-cover"
+        />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block lg:bg-[linear-gradient(75deg,rgba(11,11,11,.91),rgba(11,11,11,.74)_38%,rgba(11,11,11,.10)_82%)]" />
+
+        <div className="relative mx-auto flex max-w-7xl justify-center px-6 pb-10 pt-12 text-center sm:py-16 lg:min-h-[42rem] lg:items-end lg:justify-start lg:px-8 lg:py-20 lg:text-left">
+          <div className="max-w-md">
+            <p className="mb-4 flex items-center justify-center gap-3 text-[#79602c] lg:justify-start lg:text-brand-cream font-sans-poppins text-xs uppercase tracking-[0.18em]">
+              <span aria-hidden="true" className="hidden h-px w-10 bg-brand-gold lg:block" />Vibrant Goa
+            </p>
+            <h2 id="goa-story-title" className="font-serif-playfair text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              From our <em className="font-serif-cormorant font-normal">atelier</em>
+            </h2>
+            <p className="mx-auto mt-4 max-w-sm text-sm leading-7 text-brand-black/75 sm:text-base lg:mx-0 lg:text-brand-cream">
+              A glimpse of Lavish Lathers at Vibrant Goa, where the soaps and keepsakes we make by hand meet the people who take them home.
+            </p>
           </div>
         </div>
+      </section>
 
-        {/* METRICS ROW */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-24 bg-brand-cream border border-brand-beige/25 p-8 rounded-[2.5rem] shadow-sm">
-          <div className="text-center space-y-2">
-            <h3 className="font-serif-playfair text-4xl text-brand-gold font-light">6 Weeks</h3>
-            <span className="text-[9px] uppercase tracking-widest text-brand-black/50 font-sans-poppins font-medium block">Curing Chamber Quarantine</span>
-            <p className="text-xs text-brand-black/60 font-light px-4 leading-normal font-sans-inter">Our items develop structural density in cedar vaults before they leave our workshop.</p>
-          </div>
-
-          <div className="text-center space-y-2 border-y sm:border-y-0 sm:border-x border-brand-beige/20 py-6 sm:py-0">
-            <h3 className="font-serif-playfair text-4xl text-brand-gold font-light">100%</h3>
-            <span className="text-[9px] uppercase tracking-widest text-brand-black/50 font-sans-poppins font-medium block">Botanical Formulation</span>
-            <p className="text-xs text-brand-black/60 font-light px-4 leading-normal font-sans-inter">Zero testing on animals, zero petrochemical color solvents or paraben detergents.</p>
-          </div>
-
-          <div className="text-center space-y-2">
-            <h3 className="font-serif-playfair text-4xl text-brand-gold font-light">Wax-Sealed</h3>
-            <span className="text-[9px] uppercase tracking-widest text-brand-black/50 font-sans-poppins font-medium block">Personalized Ribbon wrap</span>
-            <p className="text-xs text-brand-black/60 font-light px-4 leading-normal font-sans-inter">Every souvenir box features a customized Cotton scroll stamped with warm wax seals.</p>
-          </div>
-        </div>
-
-        {/* IMAGE AND STORY BLOCK 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center mb-16">
-          <div className="md:col-span-6 order-last md:order-first">
-            <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl border border-brand-beige/20 relative group">
-              <img
-                src="https://res.cloudinary.com/dzowyrkcg/image/upload/v1780559577/fb75614f0d50ab12e57367fb6aa465e2_ybw3d1.jpg"
-                alt="Finishing luxurious souvenir orders"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-brand-black/10 mix-blend-multiply pointer-events-none" />
-            </div>
-          </div>
-
-          <div className="md:col-span-6 space-y-6">
-            <span className="text-[10px] text-brand-gold uppercase tracking-widest font-sans-poppins font-bold">II. Keepsakes &amp; Living Memory</span>
-            <h2 className="font-serif-playfair text-2xl sm:text-3xl text-brand-black leading-tight tracking-wide font-light">
-               Souvenirs with Soul
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="border-y border-brand-beige/60 py-10 sm:py-14 lg:py-16">
+          <section className="mx-auto max-w-3xl text-center">
+            <h2 className="text-balance font-serif-playfair text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              Six weeks from pour to <em className="font-serif-cormorant font-normal">finished bar.</em>
             </h2>
-            <p className="text-xs sm:text-sm text-brand-black/70 leading-relaxed font-light font-sans-inter">
-               Hygiene can also represent a beautiful token of celebration. Our Hand-Carved Lace Hearts and Gold Leaf Soap Curios are engineered to capture life's celebrations.
+            <p className="mx-auto mt-5 max-w-md text-sm leading-7 text-brand-black/75 sm:text-base">
+              We blend botanical oils and unrefined shea butter at room temperature, then pour each batch by hand.
+              The bars rest for six weeks before they leave our workshop.
             </p>
-            <p className="text-xs sm:text-sm text-brand-black/70 leading-relaxed font-light font-sans-inter">
-               We weave Damascus rose extract and amber elements into clay structures, capturing active perfumes. Resting in guest powder rooms, our souvenirs double as passive, aromatic air-fragrancers for several months.
-            </p>
-            <ul className="space-y-2.5 font-sans-inter text-xs text-brand-black/80 font-sans-inter">
-              <li className="flex items-center space-x-2.5">
-                 <span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />
-                 <span>Wedding favor custom ribbons</span>
-              </li>
-              <li className="flex items-center space-x-2.5">
-                 <span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />
-                 <span>Annversary and Bridal collection boxes</span>
-              </li>
-              <li className="flex items-center space-x-2.5">
-                 <span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />
-                 <span>Bespoke corporate gifting chests</span>
-              </li>
-            </ul>
-          </div>
+          </section>
+          <section className="mx-auto mt-10 grid max-w-5xl items-center gap-6 sm:mt-14 md:grid-cols-2 md:gap-12">
+            <img loading="lazy" decoding="async" alt="Botanical oils and shea butter used in our soaps"
+              width={800} height={500}
+              src="https://res.cloudinary.com/dzowyrkcg/image/upload/c_fill,w_800,h_500,q_auto,f_auto/v1780560107/359007946961d42f3e5cc8ccedc8a0b3_eja1w3.jpg"
+              className="aspect-[8/5] w-full rounded-xl object-cover" />
+            <div className="max-w-md">
+              <h2 className="font-serif-playfair text-3xl leading-tight sm:text-4xl">Souvenirs with soul</h2>
+              <p className="mt-3 text-sm leading-7 text-brand-black/75 sm:text-base">
+                A lace heart carved by hand. A ribbon chosen for a wedding. A cotton scroll sealed with wax.
+                Each detail makes a small gift personal.
+              </p>
+            </div>
+          </section>
         </div>
 
         {/* VISION BLOCK DARK */}
