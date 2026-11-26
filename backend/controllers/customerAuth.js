@@ -63,12 +63,12 @@ async function verifyOtp(req, res) {
   const otpHash = hash(email, code);
   const valid = { email, expiresAt: { $gt: new Date() }, attempts: { $lt: 5 } };
   // Reserve one of the five attempts before checking the candidate.
-  const challenge = await Otp.findOneAndUpdate(valid, { $inc: { attempts: 1 } }, { new: true });
+  const challenge = await Otp.findOneAndUpdate(valid, { $inc: { attempts: 1 } }, { returnDocument: "after" });
   const consumed = challenge && challenge.otpHash === otpHash && await Otp.findOneAndDelete({
     _id: challenge._id, sentAt: challenge.sentAt, otpHash, expiresAt: { $gt: new Date() },
   });
   if (!consumed) return res.status(400).json({ message: "Code invalid or expired. Request a new code if needed." });
-  const user = await User.findOneAndUpdate({ email }, { $set: { isVerified: true } }, { upsert: true, new: true });
+  const user = await User.findOneAndUpdate({ email }, { $set: { isVerified: true } }, { upsert: true, returnDocument: "after" });
   const token = jwt.sign({}, process.env.JWT_SECRET, { algorithm: "HS256", subject: user.id, audience, expiresIn: "30d" });
   res.cookie(cookie, token, { ...cookieOptions, maxAge: 30 * 86400000 }).json({ email: user.email, savedCheckout: user.savedCheckout });
 }
@@ -102,7 +102,7 @@ async function saveProfile(req, res) {
   }
   try {
     const user = await User.findOneAndUpdate({ _id: id, isVerified: true }, { $set: { savedCheckout, checkoutSavedAt: new Date() } },
-      { new: true, runValidators: true }).select(fields);
+      { returnDocument: "after", runValidators: true }).select(fields);
     if (!user) return res.status(401).json({ message: "Please sign in again." });
     res.json(user);
   } catch (error) {

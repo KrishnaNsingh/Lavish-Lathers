@@ -61,15 +61,19 @@ const getDashboardStats = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
+    if (!Order.schema.path("orderStatus").enumValues.includes(status)) {
+      return res.status(400).json({ message: "Invalid delivery status." });
+    }
 
     const order =
       await Order.findByIdAndUpdate(
         req.params.id,
         {
-          orderStatus: status,
+          $set: { orderStatus: status, "sheetSync.pending": true },
+          $inc: { "sheetSync.revision": 1 },
         },
         {
-          new: true,
+          returnDocument: "after",
         }
       );
 

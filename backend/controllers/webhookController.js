@@ -33,7 +33,7 @@ const razorpayWebhook = async (req, res) => {
       const order = await Order.findOneAndUpdate({
         "payment.razorpayOrderId": payload.payload.payment.entity.order_id,
         "payment.paymentStatus": "pending",
-      }, { $set: { "payment.paymentStatus": "failed" } }, { new: true });
+      }, { $set: { "payment.paymentStatus": "failed" } }, { returnDocument: "after" });
       if (order) await sendPaymentFailedEmail(order);
     }
 

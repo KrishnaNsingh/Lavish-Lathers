@@ -2,7 +2,7 @@ const { randomUUID } = require("crypto");
 const Order = require("../models/Order");
 const { saveOrderProfile } = require("./checkoutProfile");
 const Product = require("../models/Product");
-const { appendOrderToSheet } = require("./orderSheetService");
+const { syncOrderToSheet } = require("./orderSheetService");
 const { sendCustomerOrderEmail } = require("./emailService");
 
 async function recordPayment(payment, signature) {
@@ -21,7 +21,7 @@ async function recordPayment(payment, signature) {
   // The transition and the durable job are committed in the same document write.
   const updated = await Order.findOneAndUpdate(
     { ...match, "payment.paymentStatus": { $ne: "paid" } },
-    { $set: fields }, { new: true },
+    { $set: fields }, { returnDocument: "after" },
   );
   return updated || await Order.findOne(match);
 }
@@ -43,34 +43,46 @@ async function updateInventory(order) {
   }
 }
 
-const steps = { inventory: updateInventory, sheet: appendOrderToSheet,
+const steps = { inventory: updateInventory, sheet: syncOrderToSheet,
   customerEmail: sendCustomerOrderEmail, checkoutProfile: saveOrderProfile };
 
 async function processNextOrder() {
   const lease = randomUUID();
   const order = await Order.findOneAndUpdate(
-    { "fulfillment.pending": true, "fulfillment.retryAt": { $lte: new Date() } },
+    { $and: [
+      { $or: [{ "fulfillment.pending": true }, { "sheetSync.pending": true, "payment.paymentStatus": "paid" }] },
+      { $or: [{ "fulfillment.retryAt": { $exists: false } }, { "fulfillment.retryAt": { $lte: new Date() } }] },
+    ] },
     { $set: { "fulfillment.lease": lease, "fulfillment.retryAt": new Date(Date.now() + 300000) } },
-    { sort: { "fulfillment.retryAt": 1 }, new: true },
+    { sort: { "fulfillment.retryAt": 1 }, returnDocument: "after" },
   );
   if (!order) return false;
 
   const owner = { _id: order._id, "fulfillment.lease": lease };
   let pending = false;
   for (const [name, run] of Object.entries(steps)) {
-    if (order.fulfillment[name]) continue;
+    const needsStatusSync = name === "sheet" && order.sheetSync?.pending;
+    if (!needsStatusSync && (!order.fulfillment.pending || order.fulfillment[name])) continue;
     try {
       const renewed = await Order.updateOne(owner, { $set: { "fulfillment.retryAt": new Date(Date.now() + 300000) } });
       if (!renewed.matchedCount) return true;
       await run(order);
       await Order.updateOne(owner, { $set: { [`fulfillment.${name}`]: true } });
+      if (needsStatusSync) {
+        // An admin may have changed status while the Sheets request was in flight.
+        await Order.updateOne({ ...owner, "sheetSync.revision": order.sheetSync.revision },
+          { $set: { "sheetSync.pending": false } });
+      }
     } catch (error) {
       pending = true;
       console.error("Fulfillment step failed", order.id, name, error.message);
     }
   }
-  await Order.updateOne(owner, { $set: { "fulfillment.pending": pending,
-    "fulfillment.retryAt": new Date(Date.now() + 60000) }, $unset: { "fulfillment.lease": 1 } });
+  const release = { $set: { "fulfillment.pending": Boolean(order.fulfillment.pending && pending) },
+    $unset: { "fulfillment.lease": 1 } };
+  if (pending) release.$set["fulfillment.retryAt"] = new Date(Date.now() + 60000);
+  else release.$unset["fulfillment.retryAt"] = 1;
+  await Order.updateOne(owner, release);
   return true;
 }
 

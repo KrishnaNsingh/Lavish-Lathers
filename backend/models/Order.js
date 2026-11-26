@@ -70,6 +70,11 @@ const orderSchema = new mongoose.Schema(
       checkoutProfile: Boolean,
     },
 
+    sheetSync: {
+      pending: Boolean,
+      revision: Number,
+    },
+
     pricing: {
       discount: Number,
       subtotal: Number,
@@ -90,6 +95,8 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.index({ "payment.razorpayOrderId": 1 });
 orderSchema.index({ "fulfillment.pending": 1, "fulfillment.retryAt": 1 }, { partialFilterExpression: { "fulfillment.pending": true } });
+
+orderSchema.index({ "sheetSync.pending": 1, "fulfillment.retryAt": 1 }, { partialFilterExpression: { "sheetSync.pending": true } });
 
 // Add index on paymentStatus for dashboard sales aggregates
 orderSchema.index({ "payment.paymentStatus": 1 });
